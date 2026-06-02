@@ -5,8 +5,10 @@ node_modules/
 .gitnexus/
 
 # Skills are installed per-project via the `skills` CLI (reference & auto-install),
-# not redistributed by hero-vibe-kit:
+# NOT redistributed by hero-vibe-kit (license: they belong to obra/superpowers,
+# Leonxlnx/taste-skill, GitNexus — keep them out of this repo):
 .agents/
+.claude/skills/
 
 # hero-vibe-kit per-project runtime config (created by `init` in a consumer repo)
 .hero-vibe-kit/
