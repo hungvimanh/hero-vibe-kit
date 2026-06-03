@@ -15,5 +15,10 @@ All notable changes to hero-vibe-kit are documented here. Format based on
   direct push to main; reminds on commit) and `stop-reminder`.
 - Managed-region markers (`<!-- hero-vibe-kit:start/end -->`) for safe updates.
 - Presets: solo, small-team, enterprise.
+- Design UI/UX sub-workflow: bilingual `DESIGN_STANDARDS.md` (3 design profiles, UX↔UI split, job→skill routing,
+  platform, media production, in-product help), router row #9 + Phase 1–4 design steps (folded into Gate 2),
+  `DESIGN_BRIEF.md` template, `design/` branch prefix, `skills.manifest.json` split into brand / design-direction /
+  design-tools, optional provider-agnostic media-gen integration (stores provider + env-var name only; falls back to
+  Claude subagents), and `docs/design/` + `docs/help/` artifacts.
 - Optional integrations (reference & auto-install, never bundled): superpowers/taste skills via the `skills`
   CLI, GitNexus indexing, and Serena semantic code-intelligence support. All degrade gracefully when absent.
