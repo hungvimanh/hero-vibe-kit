@@ -16,8 +16,9 @@
 | `docs/` | chỉ tài liệu | #2 |
 | `hotfix/` | vá khẩn cấp prod (off `main`) | #4 |
 | `spike/` | nghiên cứu/POC (vứt đi, không merge code) | #8 |
+| `design/` | thiết kế / redesign UI/UX | #9 |
 
-Ví dụ: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`.
+Ví dụ: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`, `design/dashboard-refresh`.
 
 ## Merge Request
 - **Bắt buộc ≥ 1 reviewer** duyệt trước khi merge.
@@ -27,7 +28,7 @@ Ví dụ: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`.
 - Mô tả MR nêu rõ **what + why**, link PRD/TDD nếu là Standard/Full.
 
 ## Commit — Conventional Commits
-Định dạng: `<type>(<scope>): <mô tả>` — type khớp tiền tố nhánh: `feat` `fix` `refactor` `chore` `docs` `test` `perf`.
+Định dạng: `<type>(<scope>): <mô tả>` — type khớp tiền tố nhánh: `feat` `fix` `refactor` `chore` `docs` `test` `perf` `design`.
 
 ```
 feat(auth): thêm đăng nhập bằng email

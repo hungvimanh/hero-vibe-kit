@@ -16,8 +16,9 @@
 | `docs/` | docs only | #2 |
 | `hotfix/` | urgent prod patch (off `main`) | #4 |
 | `spike/` | research/POC (throwaway, code not merged) | #8 |
+| `design/` | UI/UX design or redesign | #9 |
 
-Examples: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`.
+Examples: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`, `design/dashboard-refresh`.
 
 ## Merge/Pull Request
 - **At least 1 reviewer** approval required before merge.
@@ -27,7 +28,7 @@ Examples: `feat/user-login`, `fix/null-cart-total`, `change/discount-rounding`.
 - The MR description states **what + why**, links PRD/TDD for Standard/Full.
 
 ## Commits — Conventional Commits
-Format: `<type>(<scope>): <description>` — type matches the branch prefix: `feat` `fix` `refactor` `chore` `docs` `test` `perf`.
+Format: `<type>(<scope>): <description>` — type matches the branch prefix: `feat` `fix` `refactor` `chore` `docs` `test` `perf` `design`.
 
 ```
 feat(auth): add email login
