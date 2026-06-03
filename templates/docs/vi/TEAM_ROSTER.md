@@ -7,6 +7,7 @@ Giữ session, nói chuyện với User, điều phối sub-agent. Luân phiên 
 - **BA** — `brainstorming`: làm rõ yêu cầu, viết PRD, lấy sign-off (Gate 1).
 - **System Architect** — `gitnexus_exploring` + `gitnexus_impact`: thiết kế, viết TDD, chốt API contract + threat model, chia task (Gate 2).
 - **Scrum Master** — quản lý [ACTIVE_STATE.md](./ACTIVE_STATE.md), cập nhật CLAUDE.md, và dùng Serena cho semantic code navigation khi đã cấu hình.
+- **Design/UX lens** — `brainstorming` (+ visual companion) cho flow/wireframe; direction đã chốt cho phần visual; xem [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
 
 ## 2. Sub-agents (Dev / QA)
 Spawn qua `Agent` tool khi việc đủ lớn (Standard/Full path).
@@ -24,10 +25,11 @@ Spawn qua `Agent` tool khi việc đủ lớn (Standard/Full path).
 | **Code Reviewer** (`code-reviewer`) | code-review, simplify | Review diff: correctness, security, cleanliness |
 | **QA / Security** | security-review, systematic-debugging, verification-before-completion, verify | Phá code, tìm bug, đảm bảo execution flow nguyên vẹn |
 
-## 3. Design direction — CHỌN MỘT
-Repo có nhiều design skill (`design-taste-frontend`, `minimalist-ui`, `industrial-brutalist-ui`, `high-end-visual-design`, `gpt-taste`, `brandkit`…). **Chỉ chốt MỘT direction cho {{PROJECT_NAME}}** (quyết ở PRD/TDD đầu tiên), định nghĩa tokens/type scale/spacing một lần, rồi Frontend bám theo đó.
-- Design direction đã chốt: **`<TBD — điền khi có feature UI đầu tiên>`**
-- KHÔNG gọi nhiều design skill cùng lúc trong một feature → tránh UI mỗi nơi một kiểu.
+## 3. Design direction & profile
+Design standards, skill routing, và quy tắc "chỉ chốt một direction" nằm ở [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md). Chốt các mục này cho từng project (ở PRD/Design Brief đầu tiên):
+- Design profile cho {{PROJECT_NAME}}: **`<TBD — system-strict | branded-product | expressive>`**
+- Visual direction đã chọn: **`<TBD — fill when the first UI feature appears>`**
+> KHÔNG gọi nhiều design skill cùng lúc trong một feature → tránh UI mỗi nơi một kiểu.
 
 ## 4. Delegation rules
 1. **Không tự code phần lớn ở main thread** nếu việc lớn → delegate sub-agent.

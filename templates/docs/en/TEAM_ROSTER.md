@@ -7,6 +7,7 @@ Holds the session, talks to the user, orchestrates sub-agents. Rotates hats:
 - **BA** — `brainstorming`: clarify requirements, write the PRD, get sign-off (Gate 1).
 - **System Architect** — `gitnexus_exploring` + `gitnexus_impact`: design, write the TDD, lock the API contract + threat model, split tasks (Gate 2).
 - **Scrum Master** — manages [ACTIVE_STATE.md](./ACTIVE_STATE.md), updates CLAUDE.md, and uses Serena for semantic code navigation when configured.
+- **Design/UX lens** — `brainstorming` (+ visual companion) for flows/wireframes; the locked direction for visual; see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
 
 ## 2. Sub-agents (Dev / QA)
 Spawned via the `Agent` tool when the work is large enough (Standard/Full path).
@@ -24,10 +25,11 @@ Spawned via the `Agent` tool when the work is large enough (Standard/Full path).
 | **Code Reviewer** (`code-reviewer`) | code-review, simplify | Review diffs: correctness, security, cleanliness |
 | **QA / Security** | security-review, systematic-debugging, verification-before-completion, verify | Break the code, find bugs, ensure execution flows are intact |
 
-## 3. Design direction — PICK ONE
-There are many design skills (`design-taste-frontend`, `minimalist-ui`, `industrial-brutalist-ui`, `high-end-visual-design`, `gpt-taste`, `brandkit`…). **Pick exactly ONE direction for {{PROJECT_NAME}}** (decided in the first PRD/TDD), define tokens/type scale/spacing once, then Frontend follows it.
-- Chosen design direction: **`<TBD — fill when the first UI feature appears>`**
-- Do NOT invoke multiple design skills at once within one feature → avoids inconsistent UI.
+## 3. Design direction & profile
+Design standards, skill routing, and the "pick exactly one direction" rule live in [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md). Lock these per project (in the first PRD/Design Brief):
+- Design profile for {{PROJECT_NAME}}: **`<TBD — system-strict | branded-product | expressive>`**
+- Chosen visual direction: **`<TBD — fill when the first UI feature appears>`**
+> Do NOT invoke multiple design skills at once within one feature → avoids inconsistent UI.
 
 ## 4. Delegation rules
 1. **Don't write the bulk of the code in the main thread** if the work is large → delegate to sub-agents.
