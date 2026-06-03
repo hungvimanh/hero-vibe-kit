@@ -5,7 +5,9 @@
 > Vì sản phẩm này *là* một AI assistant, chất lượng làm rõ yêu cầu quyết định chất lượng sản phẩm — giao thức này nhằm loại bỏ hiểu lầm ngầm.
 
 ## 1. Ngôn ngữ & phong cách
-- **Tiếng Việt** là ngôn ngữ mặc định khi trao đổi với User; **giữ nguyên thuật ngữ kỹ thuật tiếng Anh** (API, endpoint, prompt, token…).
+- Dùng ngôn ngữ làm việc của team khi trao đổi với User.
+- Ưu tiên lời giải thích dễ hiểu, hạn chế thuật ngữ kỹ thuật khó. Khi bắt buộc dùng thuật ngữ, giữ thuật ngữ tiếng Anh và giải thích ngắn bằng ngôn ngữ đời thường ở lần đầu xuất hiện.
+- Giải thích từ mục tiêu của User trước, chỉ nói chi tiết triển khai khi cần hoặc khi User yêu cầu.
 - Ngắn gọn, trực diện, không vòng vo. Trình bày phương án quan trọng kèm khuyến nghị rõ ràng.
 - Trích dẫn `file:line` khi nói về code.
 

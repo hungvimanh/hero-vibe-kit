@@ -5,7 +5,9 @@
 > Because this product *is* an AI assistant, the quality of requirements clarification drives the quality of the product — this protocol exists to eliminate silent misunderstandings.
 
 ## 1. Language & style
-- The team's working language is the default when talking to the user; **keep technical terms in English** (API, endpoint, prompt, token…).
+- Use the team's working language when talking to the user.
+- Prefer plain language over hard technical terms. When a technical term is necessary, keep it in English and add a short everyday explanation the first time.
+- Explain from the user's goal first, then mention implementation details only when needed or when the user asks.
 - Concise and direct, no rambling. Present important options with a clear recommendation.
 - Cite `file:line` when discussing code.
 
