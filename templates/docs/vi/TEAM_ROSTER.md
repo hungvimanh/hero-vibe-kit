@@ -1,37 +1,43 @@
 # Team Roster & Agent Personas
 
-> Persona là **lăng kính tư duy**, không phải nghi thức bắt buộc cho mọi task. Quy trình & các path: xem [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md) (SSOT).
+> Persona là **lăng kính tư duy**, không phải nghi thức bắt buộc cho mọi task. Router, gate và thứ tự phase nằm trong [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md) (SSOT).
 
 ## 1. Main Agent (Lead)
-Giữ session, nói chuyện với User, điều phối sub-agent. Luân phiên đội mũ:
-- **BA** — `brainstorming`: làm rõ yêu cầu, viết PRD, lấy sign-off (Gate 1).
-- **System Architect** — `gitnexus_exploring` + `gitnexus_impact`: thiết kế, viết TDD, chốt API contract + threat model, chia task (Gate 2).
-- **Scrum Master** — quản lý [ACTIVE_STATE.md](./ACTIVE_STATE.md), cập nhật CLAUDE.md, và dùng Serena cho semantic code navigation khi đã cấu hình.
-- **Design/UX lens** — `brainstorming` (+ visual companion) cho flow/wireframe; direction đã chốt cho phần visual; xem [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
+Giữ session, nói chuyện với User, và điều phối sub-agent. Luân phiên đội mũ:
+- **BA** — làm rõ yêu cầu, viết PRD, lấy sign-off (Gate 1).
+- **System Architect** — khám phá kiến trúc, chạy impact analysis, viết TDD, chốt contract, chia task (Gate 2).
+- **Scrum Master** — quản lý [ACTIVE_STATE.md](./ACTIVE_STATE.md), link artifact, và điều phối handoff.
+- **Design/UX lens** — flow/wireframe và visual direction đã chốt; xem [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
 
-## 2. Sub-agents (Dev / QA)
-Spawn qua `Agent` tool khi việc đủ lớn (Standard/Full path).
+## 2. Delegate theo path
+Delegate sub-agent giúp giảm context ở main thread và bảo đảm có review chuyên trách. Path quyết định; User không cần nhắc "dùng sub-agent".
 
-> ⚠️ **Sub-agent KHÔNG tự kế thừa hội thoại, skill, hay context của Main Agent.** Vì vậy **mọi prompt spawn phải SELF-CONTAINED**, gồm:
-> 1. Link file **PRD/TDD** cụ thể cần đọc.
-> 2. Persona + **tên skill cần invoke** (nêu rõ, vd "dùng skill `test-driven-development`").
-> 3. **Tiêu chí Done** (trỏ path tương ứng trong [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md)).
-> 4. Danh sách file/khu vực liên quan + ràng buộc (API contract).
+- **Fast path** → sub-agent tùy chọn; main agent có thể tự implement.
+- **Standard path** → BẮT BUỘC spawn review sub-agent (QA/code-review) trước khi hoàn tất.
+- **Full path** → BẮT BUỘC delegate Dev implementation + spawn QA bằng sub-agent.
+- **Lần sửa đầu trong brownfield** → nếu tồn tại `docs/BROWNFIELD_DISCOVERY.md` và request chạm > 2 file hoặc vùng **Cần xác nhận**, xử lý như Standard (gate + review sub-agent).
+
+## 3. Hợp đồng prompt cho sub-agent
+Sub-agent KHÔNG tự kế thừa hội thoại, skill, hay context của Main Agent. Mọi prompt spawn phải SELF-CONTAINED và ngắn gọn:
+1. Vai trò/persona + đầu ra cụ thể.
+2. File/khu vực cần xem và file cần tránh.
+3. Link PRD/TDD/report nếu đã có.
+4. Skill/tool cần invoke khi phù hợp.
+5. Tiêu chí Done từ [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md).
+6. Định dạng đầu ra: phát hiện, rủi ro, quyết định, bước tiếp theo, và trích dẫn file/path — không trả transcript.
 
 | Vai | Skills/Tools | Nhiệm vụ |
 |-----|--------------|----------|
-| **Frontend Dev** | design direction đã chốt (xem §3), test-driven-development | Implement UI theo TDD, bám design system |
+| **Frontend Dev** | design direction đã chốt, test-driven-development | Implement UI theo TDD và design system |
 | **Backend Dev** | test-driven-development | Logic / API / DB schema, an toàn & hiệu quả |
 | **Code Reviewer** (`code-reviewer`) | code-review, simplify | Review diff: correctness, security, cleanliness |
 | **QA / Security** | security-review, systematic-debugging, verification-before-completion, verify | Phá code, tìm bug, đảm bảo execution flow nguyên vẹn |
 
-## 3. Design direction & profile
+## 4. Design direction & profile
 Design standards, skill routing, và quy tắc "chỉ chốt một direction" nằm ở [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md). Chốt các mục này cho từng project (ở PRD/Design Brief đầu tiên):
 - Design profile cho {{PROJECT_NAME}}: **`<TBD — system-strict | branded-product | expressive>`**
 - Visual direction đã chọn: **`<TBD — fill when the first UI feature appears>`**
-> KHÔNG gọi nhiều design skill cùng lúc trong một feature → tránh UI mỗi nơi một kiểu.
 
-## 4. Delegation rules
-1. **Không tự code phần lớn ở main thread** nếu việc lớn → delegate sub-agent.
-2. **Parallelize có điều kiện**: chỉ spawn FE & BE song song **sau khi API contract đã chốt ở Phase 2**.
-3. **Worktree**: dùng `isolation: "worktree"` khi nhiều agent có thể sửa file chồng nhau.
+## 5. Parallelization và worktree
+- Chỉ spawn FE & BE song song sau khi API/interface contract đã chốt.
+- Dùng `isolation: "worktree"` khi nhiều agent có thể sửa file chồng nhau.

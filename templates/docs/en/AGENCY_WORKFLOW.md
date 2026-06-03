@@ -16,6 +16,7 @@ The personas (BA / Architect / Developer / QA / Scrum Master) are **thinking len
 4. **Update [ACTIVE_STATE.md](./ACTIVE_STATE.md)** when starting / finishing a unit of work. It is the durable cross-session backlog (TaskCreate only lives within the current session).
 5. **Follow [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md) in every interaction** — especially when clarifying requirements: no silent assumptions, layered certainty, blocking/non-blocking question classification, close the loop on misunderstandings.
 6. **For old codebases, run brownfield discovery first** after install: `hero-vibe-kit init` → `hero-vibe-kit discover` → `hero-vibe-kit doctor`. Read [BROWNFIELD_DISCOVERY.md](./BROWNFIELD_DISCOVERY.md) before changing code.
+7. **Sub-agent delegation is path-triggered, not user-prompt-triggered.** If the selected path says to spawn Dev/QA/review sub-agents, do it even when the user did not explicitly ask for sub-agents.
 
 ---
 
@@ -38,7 +39,8 @@ When a request arrives, consult this table first to pick path, branch, required 
 ### Escalation rule
 A task on the **Fast path** that turns out to:
 - touch a symbol with many callers / `gitnexus_impact` returns **MEDIUM or higher**, OR
-- spread across **> 5 files**,
+- spread across **> 5 files**, OR
+- in a brownfield repo with `docs/BROWNFIELD_DISCOVERY.md`, touch **> 2 files** or areas marked **Needs confirmation**,
 
 → **stop and escalate to the Standard path**: open Plan Mode (gate), run and report impact analysis before continuing.
 
@@ -62,7 +64,7 @@ For changing existing feature logic & refactors.
 1. **Gate**: `EnterPlanMode` → investigate + run `gitnexus_impact` (upstream) → present a plan stating **blast radius + risk level** → `ExitPlanMode` and wait for approval.
 2. Warn the user if risk is **HIGH/CRITICAL** before continuing.
 3. Implement with TDD; for refactors keep tests unchanged.
-4. QA: spawn a review sub-agent (`code-review` + `security-review` if touching a sensitive surface) + `gitnexus_detect_changes`.
+4. QA: **MUST spawn** a review sub-agent (`code-review` + `security-review` if touching a sensitive surface) + `gitnexus_detect_changes`.
 5. MR against the "Standard" DoD.
 
 ### Full path (5-phase) — new features only
@@ -93,9 +95,9 @@ See §3.
 8. Output: **Technical Design Document (TDD)** under `docs/plans/` + task list, with report artifacts under `docs/reports/` as required by [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md).
 9. **GATE 2 (Plan Mode):** present the TDD **plus, for UI features, the design profile + chosen visual direction + key-screen mockups** → `ExitPlanMode` → wait for approval of the technical approach. (No separate design gate.)
 
-### Phase 3 — Implementation (lens: Developer, possibly a sub-agent)
+### Phase 3 — Implementation (lens: Developer sub-agent)
 1. Mark tasks `in_progress` (`TaskUpdate`) + update ACTIVE_STATE.
-2. Large work → **delegate to sub-agents** via the `Agent` tool. **Sub-agent prompts must be self-contained** (sub-agents do NOT inherit the conversation/skills): embed PRD/TDD links, name the skills to invoke, the Done criteria, and the relevant files. Details: [TEAM_ROSTER.md](./TEAM_ROSTER.md).
+2. **MUST delegate implementation work to Dev sub-agents** via the `Agent` tool unless the approved plan explicitly says the main agent will implement a tiny, localized task. **Sub-agent prompts must be self-contained** (sub-agents do NOT inherit the conversation/skills): embed PRD/TDD links, name the skills to invoke, the Done criteria, and the relevant files. Details: [TEAM_ROSTER.md](./TEAM_ROSTER.md).
 3. **Conditional parallelization:** only spawn FE & BE in parallel **after the API contract (Phase 2.5) is locked**. When multiple agents edit overlapping files → `isolation: "worktree"`.
 4. Developers apply `test-driven-development`.
 5. Frontend implements against the **locked design system** (tokens/components) from Phase 2; use `image-to-code` when implementing from approved visual references; produce embedded media per [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §6; do NOT introduce a new design direction mid-build.

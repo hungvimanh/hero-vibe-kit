@@ -17,29 +17,29 @@ npx hero-vibe-kit doctor
 ## AI phải làm gì sau `discover`
 
 1. Đọc `docs/BROWNFIELD_DISCOVERY.md` trước.
-2. Đọc mọi nguồn tài liệu được liệt kê trong đó, kể cả khi nằm ngoài `docs/`.
-3. Đọc config để nhận diện stack, entry point, lệnh chạy, yêu cầu environment và tín hiệu CI.
-4. Xem các khu vực code có khả năng quan trọng và lập bản đồ module chính, màn hình/route, API handler, data layer, tích hợp ngoài và test.
-5. Ghi nhận kết quả với nhãn độ chắc chắn:
+2. Bắt đầu từ phần tóm tắt và danh sách **Đọc tiếp**; không load toàn bộ doc/config đã phát hiện theo mặc định.
+3. Chỉ đọc doc/config/code cần cho task path đã chọn, rồi mở rộng context nếu bằng chứng chưa đủ.
+4. Ghi nhận kết quả với nhãn độ chắc chắn:
    - **Đã thấy** — quan sát trực tiếp trong file.
    - **Có khả năng** — suy ra từ tên/cấu trúc, chưa chứng minh.
    - **Cần xác nhận** — cần người xác nhận hoặc thiếu ngữ cảnh nghiệp vụ.
+5. Với các lần sửa code đầu tiên sau discovery, phân loại request theo router trong [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md). Nếu chạm > 2 file hoặc bất kỳ vùng **Cần xác nhận** nào, xử lý như Standard path: Plan Mode + impact analysis + review sub-agent, kể cả khi User không yêu cầu sub-agent.
 
-## Không được tự giả định
+## Kỷ luật context
 
 - Không mặc định tài liệu luôn nằm trong `docs/`.
 - Không kết luận thiếu docs nghĩa là thiếu hành vi.
 - Không kết luận vai trò thư mục chỉ từ tên trước khi đọc file.
 - Không nói một lệnh đã pass nếu chưa chạy.
+- Không dán trích đoạn source dài vào report; dùng file path, ghi chú bằng chứng ngắn, và link tới artifact.
 
 ## Output mong đợi sau lượt đọc đầu tiên của AI
 
-Sau khi đọc repo, cập nhật discovery report hoặc tạo report trong `docs/reports/` với:
+Cập nhật discovery report hoặc tạo report trong `docs/reports/` với cấu trúc tóm tắt trước:
 
-- mục đích project,
-- vai trò người dùng chính,
-- luồng quan trọng,
-- cấu trúc code,
-- lệnh kiểm chứng có thể dùng,
-- vùng rủi ro/chưa rõ,
-- câu hỏi còn mở cho người.
+1. **Tóm tắt** — mục đích project, luồng quan trọng, và kiến trúc có khả năng đúng trong 3–6 gạch đầu dòng.
+2. **Đọc tiếp** — file/doc/config ưu tiên, mỗi mục có một dòng lý do.
+3. **Bản đồ bằng chứng** — path quan trọng và đã thấy gì ở đó.
+4. **Lệnh kiểm chứng** — lệnh đã quan sát hoặc đã chứng minh, gắn nhãn rõ.
+5. **Rủi ro / chưa rõ** — vùng cần xác nhận trước khi sửa.
+6. **Câu hỏi còn mở** — chỉ hỏi những điểm chặn bước tiếp theo an toàn.

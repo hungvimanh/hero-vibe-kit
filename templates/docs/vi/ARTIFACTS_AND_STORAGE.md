@@ -64,6 +64,8 @@ docs/
 Chỉ tạo `specs/`, `plans/`, và `reports/` khi cần artifact đầu tiên thuộc loại đó.
 
 ## 3. Artifact theo từng path
+Đây chỉ là yêu cầu lưu trữ. Trình tự workflow và gate nằm trong [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md).
+
 
 | Path | Artifact bền vững bắt buộc |
 |---|---|

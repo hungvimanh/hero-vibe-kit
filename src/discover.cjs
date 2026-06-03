@@ -95,34 +95,40 @@ function contentEn(projectName, date, d, s) {
     '',
     `Generated: ${date}`,
     '',
-    section('1. What was found', [
+    section('1. Summary and read-next', [
+      '- This is a lightweight orientation map, not a final architecture report.',
+      '- Read only the files needed for the selected task path; expand context when evidence is insufficient.',
+      '- Do not paste long excerpts here — prefer paths, short evidence notes, and linked reports.', '',
+      '### Read next candidates', bullet(uniq([...s.docs.slice(0, 8), ...s.config.slice(0, 8)]), 'No docs/config candidates found — inspect the repository tree and likely code areas.'),
+    ].join('\n')),
+    section('2. What was found', [
       '### Existing docs and knowledge sources', bullet(s.docs, 'None found yet — ask the AI to inspect code/config first, then create missing docs.'), '',
       '### Likely code/app areas', bullet(s.codeDirs, 'No common top-level code folder found — inspect config files and repository tree.'), '',
       '### Tests', bullet(s.testDirs, 'No common test folder found — inspect package/build config before assuming tests are absent.'), '',
       '### Config/build/CI signals', bullet(uniq([...s.config, ...s.ci]), 'No common config/CI files found.'), '',
       '### Package script candidates', bullet(s.packageScripts, 'No package scripts found.'),
     ].join('\n')),
-    section('2. Status labels for the AI', [
+    section('3. Status labels for the AI', [
       '- **Found**: paths listed above exist in this repo.',
       '- **Likely**: folder names suggest their role, but the AI must read files before claiming behavior.',
       '- **Needs confirmation**: business purpose, user roles, deployment flow, and risky areas must be confirmed with the human if not documented.',
     ].join('\n')),
-    section('3. First reading checklist for the AI', [
-      '1. Read the docs/knowledge sources listed above, wherever they live.',
-      '2. Read config files to identify framework, commands, runtime, env requirements, and entry points.',
-      '3. Inspect likely code/app areas and map main modules, routes/screens, API handlers, data layer, and integrations.',
+    section('4. First reading checklist for the AI', [
+      '1. Read the summary/read-next list first; do not load every discovered file by default.',
+      '2. Read config files needed to identify framework, commands, runtime, env requirements, and entry points.',
+      '3. Inspect likely code/app areas only as needed for the selected task path.',
       '4. Inspect tests to learn expected behavior and safe verification commands.',
       '5. Write findings as evidence, not guesses: cite files and separate certainty levels.',
     ].join('\n')),
-    section('4. Open questions', [
+    section('5. Open questions', [
       '- What is the product/business goal of this project?',
       '- Who are the main users/admins/operators?',
       '- Which flows are most risky to break?',
       '- What command proves the app is healthy locally and in CI?',
       '- Are there docs outside the repository that should be linked as references?',
     ].join('\n')),
-    section('5. Assumptions register', '- `<TBD>`'),
-    section('6. Notes outside the managed block', 'Add human-written corrections below or above this managed block. Re-run `hero-vibe-kit discover` to refresh only the generated block.'),
+    section('6. Assumptions register', '- `<TBD>`'),
+    section('7. Notes outside the managed block', 'Add human-written corrections below or above this managed block. Re-run `hero-vibe-kit discover` to refresh only the generated block.'),
     `Brownfield signal: ${d.brownfield ? 'existing project/code detected' : 'no code detected by lightweight scan'}`,
   ].join('\n');
 }
@@ -133,34 +139,40 @@ function contentVi(projectName, date, d, s) {
     '',
     `Ngày tạo: ${date}`,
     '',
-    section('1. Những gì đã tìm thấy', [
+    section('1. Tóm tắt và đọc tiếp', [
+      '- Đây là bản đồ định hướng nhẹ, không phải báo cáo kiến trúc cuối cùng.',
+      '- Chỉ đọc file cần cho task path đã chọn; mở rộng context khi bằng chứng chưa đủ.',
+      '- Không dán trích đoạn dài ở đây — ưu tiên path, ghi chú bằng chứng ngắn, và report được link.', '',
+      '### Ứng viên đọc tiếp', bullet(uniq([...s.docs.slice(0, 8), ...s.config.slice(0, 8)]), 'Chưa thấy ứng viên docs/config — hãy xem cây thư mục repo và khu vực code có khả năng quan trọng.'),
+    ].join('\n')),
+    section('2. Những gì đã tìm thấy', [
       '### Tài liệu / nguồn hiểu biết hiện có', bullet(s.docs, 'Chưa thấy — hãy yêu cầu AI đọc code/config trước, rồi bổ sung docs còn thiếu.'), '',
       '### Khu vực code/app có khả năng quan trọng', bullet(s.codeDirs, 'Chưa thấy thư mục code phổ biến ở top-level — cần đọc config và cây thư mục repo.'), '',
       '### Test', bullet(s.testDirs, 'Chưa thấy thư mục test phổ biến — đọc config/build trước khi kết luận không có test.'), '',
       '### Tín hiệu config/build/CI', bullet(uniq([...s.config, ...s.ci]), 'Chưa thấy config/CI phổ biến.'), '',
       '### Lệnh package có thể dùng', bullet(s.packageScripts, 'Chưa thấy package scripts.'),
     ].join('\n')),
-    section('2. Nhãn trạng thái cho AI', [
+    section('3. Nhãn trạng thái cho AI', [
       '- **Đã thấy**: các path ở trên thật sự tồn tại trong repo.',
       '- **Có khả năng**: tên thư mục gợi ý vai trò, nhưng AI phải đọc file trước khi khẳng định hành vi.',
       '- **Cần xác nhận**: mục tiêu nghiệp vụ, vai trò người dùng, luồng deploy và vùng rủi ro phải hỏi người nếu docs chưa nói rõ.',
     ].join('\n')),
-    section('3. Checklist đọc lần đầu cho AI', [
-      '1. Đọc các tài liệu/nguồn hiểu biết đã liệt kê, dù chúng nằm ngoài `docs/`.',
-      '2. Đọc config để nhận diện framework, lệnh chạy, runtime, env và entry point.',
-      '3. Xem các khu vực code/app có khả năng quan trọng và lập bản đồ module, route/màn hình, API handler, data layer, tích hợp ngoài.',
+    section('4. Checklist đọc lần đầu cho AI', [
+      '1. Đọc phần tóm tắt/danh sách đọc tiếp trước; không load toàn bộ file đã phát hiện theo mặc định.',
+      '2. Chỉ đọc config cần để nhận diện framework, lệnh chạy, runtime, env và entry point.',
+      '3. Chỉ xem khu vực code/app cần cho task path đã chọn.',
       '4. Xem test để hiểu hành vi mong đợi và lệnh kiểm chứng an toàn.',
       '5. Ghi nhận bằng chứng, không đoán mò: trích file và tách rõ mức chắc chắn.',
     ].join('\n')),
-    section('4. Câu hỏi còn mở', [
+    section('5. Câu hỏi còn mở', [
       '- Mục tiêu sản phẩm/nghiệp vụ của project này là gì?',
       '- Người dùng/admin/operator chính là ai?',
       '- Luồng nào rủi ro nhất nếu bị hỏng?',
       '- Lệnh nào chứng minh app đang khỏe ở local và CI?',
       '- Có tài liệu ngoài repo nào cần link làm nguồn tham khảo không?',
     ].join('\n')),
-    section('5. Assumptions register', '- `<TBD>`'),
-    section('6. Ghi chú ngoài managed block', 'Thêm chỉnh sửa của con người ở trên hoặc dưới managed block này. Chạy lại `hero-vibe-kit discover` chỉ refresh phần generated block.'),
+    section('6. Assumptions register', '- `<TBD>`'),
+    section('7. Ghi chú ngoài managed block', 'Thêm chỉnh sửa của con người ở trên hoặc dưới managed block này. Chạy lại `hero-vibe-kit discover` chỉ refresh phần generated block.'),
     `Tín hiệu brownfield: ${d.brownfield ? 'đã phát hiện project/code có sẵn' : 'scan nhẹ chưa phát hiện code'}`,
   ].join('\n');
 }

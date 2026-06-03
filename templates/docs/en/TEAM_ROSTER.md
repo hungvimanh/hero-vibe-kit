@@ -1,37 +1,43 @@
 # Team Roster & Agent Personas
 
-> Personas are **thinking lenses**, not mandatory ceremony for every task. The process & paths: see [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md) (SSOT).
+> Personas are **thinking lenses**, not mandatory ceremony for every task. Routing, gates, and phase sequencing live in [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md) (SSOT).
 
 ## 1. Main Agent (Lead)
-Holds the session, talks to the user, orchestrates sub-agents. Rotates hats:
-- **BA** — `brainstorming`: clarify requirements, write the PRD, get sign-off (Gate 1).
-- **System Architect** — `gitnexus_exploring` + `gitnexus_impact`: design, write the TDD, lock the API contract + threat model, split tasks (Gate 2).
-- **Scrum Master** — manages [ACTIVE_STATE.md](./ACTIVE_STATE.md), updates CLAUDE.md, and uses Serena for semantic code navigation when configured.
-- **Design/UX lens** — `brainstorming` (+ visual companion) for flows/wireframes; the locked direction for visual; see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
+Holds the session, talks to the user, and orchestrates sub-agents. Rotates hats:
+- **BA** — clarify requirements, write the PRD, get sign-off (Gate 1).
+- **System Architect** — explore architecture, run impact analysis, write the TDD, lock contracts, split tasks (Gate 2).
+- **Scrum Master** — manages [ACTIVE_STATE.md](./ACTIVE_STATE.md), links artifacts, and coordinates handoff.
+- **Design/UX lens** — flows/wireframes and locked visual direction; see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md).
 
-## 2. Sub-agents (Dev / QA)
-Spawned via the `Agent` tool when the work is large enough (Standard/Full path).
+## 2. Path-triggered delegation
+Sub-agent delegation reduces main-thread context and enforces specialist review. The path decides; the user does not need to ask for sub-agents.
 
-> ⚠️ **Sub-agents do NOT inherit the Main Agent's conversation, skills, or context.** So **every spawn prompt must be SELF-CONTAINED**, including:
-> 1. Links to the specific **PRD/TDD** files to read.
-> 2. Persona + **the skill names to invoke** (be explicit, e.g. "use the `test-driven-development` skill").
-> 3. **Done criteria** (point to the matching path in [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md)).
-> 4. The list of relevant files/areas + constraints (API contract).
+- **Fast path** → sub-agents optional; main agent may implement directly.
+- **Standard path** → MUST spawn a review sub-agent (QA/code-review) before completion.
+- **Full path** → MUST delegate Dev implementation + spawn QA as sub-agents.
+- **Brownfield first change** → if `docs/BROWNFIELD_DISCOVERY.md` exists and the request touches > 2 files or **Needs confirmation** areas, treat as Standard (gate + review sub-agent).
+
+## 3. Sub-agent prompt contract
+Sub-agents do NOT inherit the Main Agent's conversation, skills, or context. Every spawn prompt must be SELF-CONTAINED and concise:
+1. Role/persona + specific deliverable.
+2. Files/areas to inspect and files to avoid.
+3. PRD/TDD/report links when they exist.
+4. Skills/tools to invoke, when relevant.
+5. Done criteria from [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md).
+6. Output format: findings, risks, decisions, next steps, and file/path citations — not transcripts.
 
 | Role | Skills/Tools | Job |
 |------|--------------|-----|
-| **Frontend Dev** | the locked design direction (see §3), test-driven-development | Implement the UI per the TDD, follow the design system |
+| **Frontend Dev** | locked design direction, test-driven-development | Implement UI per the TDD and design system |
 | **Backend Dev** | test-driven-development | Logic / API / DB schema, safe & efficient |
 | **Code Reviewer** (`code-reviewer`) | code-review, simplify | Review diffs: correctness, security, cleanliness |
 | **QA / Security** | security-review, systematic-debugging, verification-before-completion, verify | Break the code, find bugs, ensure execution flows are intact |
 
-## 3. Design direction & profile
+## 4. Design direction & profile
 Design standards, skill routing, and the "pick exactly one direction" rule live in [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md). Lock these per project (in the first PRD/Design Brief):
 - Design profile for {{PROJECT_NAME}}: **`<TBD — system-strict | branded-product | expressive>`**
 - Chosen visual direction: **`<TBD — fill when the first UI feature appears>`**
-> Do NOT invoke multiple design skills at once within one feature → avoids inconsistent UI.
 
-## 4. Delegation rules
-1. **Don't write the bulk of the code in the main thread** if the work is large → delegate to sub-agents.
-2. **Conditional parallelization**: only spawn FE & BE in parallel **after the API contract is locked in Phase 2**.
-3. **Worktrees**: use `isolation: "worktree"` when multiple agents may edit overlapping files.
+## 5. Parallelization and worktrees
+- Only spawn FE & BE in parallel after the API/interface contract is locked.
+- Use `isolation: "worktree"` when multiple agents may edit overlapping files.

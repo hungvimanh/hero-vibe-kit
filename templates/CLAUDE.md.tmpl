@@ -2,10 +2,16 @@
 
 > **READ BEFORE DOING ANYTHING:** [`docs/AGENCY_WORKFLOW.md`](docs/AGENCY_WORKFLOW.md) is the **single source of truth** for the {{PROJECT_NAME}} development process. Classify every request via the router table → pick a path (Read-only / Fast / Standard / Full). Don't run the heavy process for small tasks.
 
-Docs: [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md) · [ARTIFACTS_AND_STORAGE](docs/ARTIFACTS_AND_STORAGE.md) · [DEFINITION_OF_DONE](docs/DEFINITION_OF_DONE.md) · [BRANCHING](docs/BRANCHING.md) · [TEAM_ROSTER](docs/TEAM_ROSTER.md) · [ACTIVE_STATE](docs/ACTIVE_STATE.md) · [COMMUNICATION_PROTOCOL](docs/COMMUNICATION_PROTOCOL.md) · [INTERACTION_PATTERNS](docs/INTERACTION_PATTERNS.md) · [SECURITY_STANDARDS](docs/SECURITY_STANDARDS.md) · [PERFORMANCE_STANDARDS](docs/PERFORMANCE_STANDARDS.md) · [PRD_AI_FEATURE template](docs/templates/PRD_AI_FEATURE.md).
+### Context loading
+- **Always start with:** [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md) for routing, gates, sub-agents, and path-specific requirements.
+- **Resume / durable state:** read [ACTIVE_STATE](docs/ACTIVE_STATE.md) when resuming work or changing durable task state.
+- **Artifacts:** read [ARTIFACTS_AND_STORAGE](docs/ARTIFACTS_AND_STORAGE.md) only when creating/linking PRDs, plans, reports, design assets, or help content.
+- **Completion:** read [DEFINITION_OF_DONE](docs/DEFINITION_OF_DONE.md) before claiming done.
+- **Read on demand:** [BRANCHING](docs/BRANCHING.md), [TEAM_ROSTER](docs/TEAM_ROSTER.md), [COMMUNICATION_PROTOCOL](docs/COMMUNICATION_PROTOCOL.md), [SECURITY_STANDARDS](docs/SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS](docs/PERFORMANCE_STANDARDS.md), [DESIGN_STANDARDS](docs/DESIGN_STANDARDS.md), [BROWNFIELD_DISCOVERY](docs/BROWNFIELD_DISCOVERY.md), and templates under `docs/templates/` only when the selected path requires them.
 
-- **Workflow state & artifacts:** read `docs/ACTIVE_STATE.md` at the start of every session; store durable PRDs/plans/reports under the paths defined in `docs/ARTIFACTS_AND_STORAGE.md`.
+### Non-negotiables
 - **Gates:** when a path requires a Gate, use Plan Mode (`EnterPlanMode` → `ExitPlanMode`) for real sign-off — not a prose promise.
 - **Enforcement:** `git-guard` (PreToolUse) + `stop-reminder` (Stop) hooks are installed under `.claude/`. Don't bypass them.
-- **GitNexus (if installed):** impact analysis is **conditional** — skip on an empty repo; apply once real code exists (Standard/Full paths) or per the escalation rule. If the index is stale, run `npx gitnexus analyze`.
-- **Skills (if installed):** the workflow references process skills (brainstorming, writing-plans, test-driven-development, systematic-debugging, verification-before-completion, …). Invoke them via the `Skill` tool when relevant.
+- **GitNexus (if installed):** skip on empty repos; use impact/context analysis for Standard/Full code changes and stale-index checks per [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md).
+- **Skills (if installed):** invoke relevant process skills via the `Skill` tool; do not load unrelated skill/docs context.
+- **Sub-agent delegation is path-triggered, not user-prompt-triggered:** for Standard/Full paths and broad brownfield changes, use the `Agent` tool as required by [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md) / [TEAM_ROSTER](docs/TEAM_ROSTER.md). Do not wait for the user to explicitly ask for sub-agents.

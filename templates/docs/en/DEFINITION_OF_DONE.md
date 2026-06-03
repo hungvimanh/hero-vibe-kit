@@ -29,7 +29,7 @@ Stack not decided yet — fill these in the first PRD/TDD, then update this file
 - [ ] **Chore/Docs:** no runtime behavior change.
 - [ ] Conventional Commits; MR briefly describes *what + why*.
 - [ ] Ran `gitnexus_detect_changes` (when code exists) — scope as expected.
-- [ ] **Security (light):** no new secret committed (see [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (light):** no obvious regression / no new N+1 ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] Applicable light security/performance checks pass: no new secrets, no obvious regression / N+1 ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 
 ### Standard path (Change logic / Refactor)
 Includes all of Fast path, plus:
@@ -39,7 +39,7 @@ Includes all of Fast path, plus:
 - [ ] **Refactor:** the same test suite passes before & after (behavior unchanged); renames use `gitnexus_rename`, not manual find-replace.
 - [ ] **Change logic:** old regression tests still green + new tests for new behavior.
 - [ ] QA sub-agent reviewed (`code-review`); `security-review` if touching a sensitive surface.
-- [ ] **Security (Standard):** input validation for touched code + authz checks if touched ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (Standard):** before/after bench for hot paths; (AI) prompt caching preserved ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] Standard security/performance checks pass: input validation for touched boundaries, authz checks if touched, hot-path before/after bench, AI prompt caching preserved when relevant ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 - [ ] **If the change includes UI:** meets the "Design / UI work" checklist below.
 
 ### Full path (New feature)
@@ -49,20 +49,16 @@ Includes all of Standard path, plus:
 - [ ] Coverage ≥ `<COVERAGE_MIN>` for new code.
 - [ ] Meets all acceptance criteria in the PRD.
 - [ ] `security-review` ran, no unresolved new findings.
-- [ ] **Security standards (Full):** meets [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5; AI features checked against OWASP LLM Top 10 (§2) including abuse cases.
-- [ ] **Performance standards (Full):** meets the [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §1 budget; AI features meet the token/latency ceiling §2; load measurement exists for the main flow.
+- [ ] Full security standards pass; AI features include OWASP LLM Top 10 abuse cases ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md)).
+- [ ] Full performance standards pass; AI features meet token/latency ceilings and main-flow measurements exist ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 - [ ] **Handover:** CLAUDE.md updated with new architectural decisions (if any); 3-line retro recorded; optional Serena notes updated as pointers; task `completed` + ACTIVE_STATE updated.
 - [ ] **If the change includes UI:** meets the "Design / UI work" checklist below.
 
 ### Design / UI work (applies whenever the change includes UI — Standard/Full)
-- [ ] Design **profile** declared and followed ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §2).
-- [ ] Responsive at the declared breakpoints; **a11y AA baseline** (contrast, focus, keyboard, alt, landmarks).
-- [ ] **Tokens used** — no hardcoded design values; one locked direction.
-- [ ] All states implemented (empty/loading/error/success/partial).
-- [ ] Platform parity — shared token source for web+mobile (§5).
-- [ ] **Media assets** meet the asset-DoD when media is used (§6).
-- [ ] **In-product help/guide** entry exists, accurate, on a secondary surface; onboarding/contextual help per profile (§8).
-- [ ] **Visual QA** recorded (`reports/.../design-qa.md`, §7).
+- [ ] Design profile + one visual direction are locked and followed ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md)).
+- [ ] Visual QA checklist passes: responsive, a11y AA, no hardcoded design values, all states, shared token source for web+mobile, media asset DoD/budget when relevant.
+- [ ] In-product help/guide entry exists and is accurate when the change affects users.
+- [ ] Visual QA evidence recorded (`reports/.../design-qa.md`).
 
 ---
 

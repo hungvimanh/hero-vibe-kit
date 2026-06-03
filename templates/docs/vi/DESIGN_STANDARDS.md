@@ -7,7 +7,7 @@
 - **UI (bề mặt giải pháp):** thương hiệu, một hướng thị giác đã khóa, design token, hệ thống component.
 
 ## §2 Hồ sơ thiết kế (profile) — phù hợp với sản phẩm
-Chọn **một** profile cho mỗi dự án (quyết định trong PRD/TDD đầu tiên), ghi lại trong `docs/design/DESIGN_SYSTEM.md` và [TEAM_ROSTER.md](./TEAM_ROSTER.md) §3. Profile xác lập cân bằng *sáng tạo × kỷ luật* và những bước nào bắt buộc so với có thể bỏ qua.
+Chọn **một** profile cho mỗi dự án (quyết định trong PRD/TDD đầu tiên), ghi lại trong `docs/design/DESIGN_SYSTEM.md` và [TEAM_ROSTER.md](./TEAM_ROSTER.md) §4. Profile xác lập cân bằng *sáng tạo × kỷ luật* và những bước nào bắt buộc so với có thể bỏ qua.
 
 | Profile | Sản phẩm điển hình | Sáng tạo | Kỷ luật | Thương hiệu & media | Bước bắt buộc | Có thể bỏ qua |
 |---|---|---|---|---|---|---|

@@ -3,6 +3,15 @@
 All notable changes to hero-vibe-kit are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); versioning follows [SemVer](https://semver.org/).
 
+## [0.4.1] - 2026-06-03
+### Changed
+- Optimized installed Claude/agent instructions with just-in-time context loading so agents read path-specific docs only when needed.
+- Reduced duplicated workflow guidance across roster, DoD, artifact, active-state, and brownfield discovery docs while preserving Standard/Full gate and sub-agent requirements.
+- Made brownfield discovery output summary-first to avoid turning old-project scans into large context sinks.
+
+### Added
+- Tests for compact installed guidance, update refresh behavior, rendered placeholder cleanup, and EN/VI docs file-set parity.
+
 ## [0.4.0] - 2026-06-03
 ### Added
 - `discover` / `brownfield` command to scan old codebases and generate `docs/BROWNFIELD_DISCOVERY.md` without assuming docs live in `docs/`.

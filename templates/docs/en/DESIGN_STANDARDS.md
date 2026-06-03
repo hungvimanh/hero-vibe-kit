@@ -7,7 +7,7 @@
 - **UI (solution surface):** brand, one locked visual direction, design tokens, component system.
 
 ## §2 Design profiles — fit the product
-Pick **one** profile per project (decided in the first PRD/TDD), record it in `docs/design/DESIGN_SYSTEM.md` and [TEAM_ROSTER.md](./TEAM_ROSTER.md) §3. The profile sets the *creativity × discipline* balance and which steps are required vs skippable.
+Pick **one** profile per project (decided in the first PRD/TDD), record it in `docs/design/DESIGN_SYSTEM.md` and [TEAM_ROSTER.md](./TEAM_ROSTER.md) §4. The profile sets the *creativity × discipline* balance and which steps are required vs skippable.
 
 | Profile | Typical product | Creativity | Discipline | Brand & media | Required steps | Skippable |
 |---|---|---|---|---|---|---|

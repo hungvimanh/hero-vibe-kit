@@ -17,29 +17,29 @@ npx hero-vibe-kit doctor
 ## What the AI must do after `discover`
 
 1. Read `docs/BROWNFIELD_DISCOVERY.md` first.
-2. Read every documentation source listed there, even when it is outside `docs/`.
-3. Read config files to identify the stack, entry points, commands, environment requirements, and CI signals.
-4. Inspect likely code areas and map the main modules, screens/routes, API handlers, data layer, integrations, and tests.
-5. Record findings with certainty labels:
+2. Start with the summary and **Read next** list; do not load every discovered doc/config by default.
+3. Read only the docs/config/code needed for the selected task path, then expand context if evidence is insufficient.
+4. Record findings with certainty labels:
    - **Found** — directly observed in files.
    - **Likely** — inferred from names/structure, not yet proven.
    - **Needs confirmation** — requires the human or missing business context.
+5. For the first code changes after discovery, classify the request with the router in [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md). If it touches > 2 files or any **Needs confirmation** area, treat it as Standard path: Plan Mode + impact analysis + review sub-agent, even when the user did not ask for sub-agents.
 
-## What not to assume
+## Context discipline
 
 - Do not assume docs live in `docs/`.
 - Do not assume missing docs mean missing behavior.
 - Do not assume a folder name proves its role before reading files.
 - Do not claim a command passes until it has been run.
+- Do not paste long source excerpts into the report; use file paths, short evidence notes, and links to artifacts.
 
 ## Output expected from the first AI pass
 
-After reading the repo, update the discovery report or create a report under `docs/reports/` with:
+Update the discovery report or create a report under `docs/reports/` with a summary-first structure:
 
-- project purpose,
-- main user roles,
-- important flows,
-- code structure,
-- available verification commands,
-- risky/unknown areas,
-- open questions for the human.
+1. **Summary** — project purpose, important flows, and likely architecture in 3–6 bullets.
+2. **Read next** — prioritized files/docs/configs with one-line reasons.
+3. **Evidence map** — key paths and what was found there.
+4. **Verification commands** — commands observed or proven, clearly labeled.
+5. **Risks / unknowns** — areas needing confirmation before edits.
+6. **Open questions** — only questions that block safe next steps.

@@ -29,7 +29,7 @@ Stack chưa chốt — điền các giá trị sau ở PRD/TDD đầu tiên rồ
 - [ ] **Chore/Docs:** không thay đổi hành vi runtime.
 - [ ] Commit theo Conventional Commits; MR mô tả ngắn gọn *what + why*.
 - [ ] Đã chạy `gitnexus_detect_changes` (khi đã có code) — phạm vi đúng dự kiến.
-- [ ] **Security (nhẹ):** không commit secret mới (xem [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (nhẹ):** không gây hồi quy rõ rệt / không thêm N+1 ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] Đạt các kiểm tra security/performance nhẹ áp dụng: không commit secret mới, không gây hồi quy rõ rệt / N+1 ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 
 ### Standard path (Sửa logic / Refactor)
 Bao gồm toàn bộ Fast path, cộng thêm:
@@ -39,7 +39,7 @@ Bao gồm toàn bộ Fast path, cộng thêm:
 - [ ] **Refactor:** cùng bộ test pass trước & sau (hành vi không đổi); rename dùng `gitnexus_rename`, không find-replace tay.
 - [ ] **Sửa logic:** regression test cũ còn xanh + có test mới cho hành vi mới.
 - [ ] QA sub-agent đã review (`code-review`); `security-review` nếu chạm bề mặt nhạy cảm.
-- [ ] **Security (Standard):** input validation cho code chạm + kiểm quyền nếu chạm authz ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (Standard):** bench trước/sau cho hot-path; (AI) prompt caching còn nguyên ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] Đạt kiểm tra security/performance Standard: input validation cho boundary đã chạm, authz nếu chạm quyền, bench trước/sau cho hot-path, giữ prompt caching AI khi liên quan ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 - [ ] **Nếu thay đổi có UI:** đáp ứng checklist "Thiết kế / Công việc UI" bên dưới.
 
 ### Full path (Feature mới)
@@ -49,20 +49,16 @@ Bao gồm toàn bộ Standard path, cộng thêm:
 - [ ] Coverage ≥ `<COVERAGE_MIN>` cho code mới.
 - [ ] Đáp ứng toàn bộ acceptance criteria trong PRD.
 - [ ] `security-review` đã chạy, không có finding mới chưa xử lý.
-- [ ] **Security standards (Full):** đạt [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5; feature AI đã kiểm OWASP LLM Top 10 (§2) gồm ca lạm dụng.
-- [ ] **Performance standards (Full):** đạt budget [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §1; feature AI đạt token/latency ceiling §2; có số đo tải cho luồng chính.
+- [ ] Security standards mức Full pass; feature AI có ca lạm dụng OWASP LLM Top 10 ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md)).
+- [ ] Performance standards mức Full pass; feature AI đạt token/latency ceiling và có số đo luồng chính ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md)).
 - [ ] **Handover:** CLAUDE.md cập nhật quyết định kiến trúc mới (nếu có); retro 3 dòng đã ghi; ghi chú Serena tùy chọn cập nhật dạng con trỏ; task `completed` + ACTIVE_STATE cập nhật.
 - [ ] **Nếu thay đổi có UI:** đáp ứng checklist "Thiết kế / Công việc UI" bên dưới.
 
 ### Thiết kế / Công việc UI (áp dụng mỗi khi thay đổi có UI — Standard/Full)
-- [ ] Đã khai báo và tuân theo **profile** thiết kế ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §2).
-- [ ] Responsive ở các breakpoint đã khai báo; **a11y baseline AA** (tương phản, focus, bàn phím, alt, landmark).
-- [ ] **Dùng token** — không hardcode giá trị thiết kế; một hướng (direction) duy nhất đã chốt.
-- [ ] Đã triển khai mọi trạng thái (empty/loading/error/success/partial).
-- [ ] Đồng nhất nền tảng (platform parity) — nguồn token dùng chung cho web+mobile (§5).
-- [ ] **Tài nguyên media** đạt asset-DoD khi có dùng media (§6).
-- [ ] **Trợ giúp/hướng dẫn trong sản phẩm** có entry, chính xác, đặt ở bề mặt phụ; onboarding/contextual help theo profile (§8).
-- [ ] **Visual QA** đã được ghi lại (`reports/.../design-qa.md`, §7).
+- [ ] Design profile + một visual direction đã chốt và được tuân theo ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md)).
+- [ ] Visual QA checklist pass: responsive, a11y AA, không hardcode giá trị thiết kế, đầy đủ states, nguồn token chung cho web+mobile, asset DoD/budget khi liên quan.
+- [ ] Entry trợ giúp/hướng dẫn trong sản phẩm tồn tại và chính xác khi thay đổi ảnh hưởng user.
+- [ ] Bằng chứng Visual QA đã ghi lại (`reports/.../design-qa.md`).
 
 ---
 

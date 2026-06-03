@@ -64,6 +64,8 @@ docs/
 Create `specs/`, `plans/`, and `reports/` only when the first artifact of that type is needed.
 
 ## 3. Artifact rules by path
+These are storage requirements only. For workflow sequencing and gates, follow [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md).
+
 
 | Path | Required durable artifacts |
 |---|---|
