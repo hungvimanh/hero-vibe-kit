@@ -30,8 +30,9 @@ When a request arrives, consult this table first to pick path, branch, required 
 | 4 | **Hotfix (urgent prod)** | production incident needs an urgent patch | Fast (expedited) | No | `hotfix/` (off `main`) | minimal fix + test → fast MR → backport to the development branch | systematic-debugging, verify | incident patched + test; backported; logged for post-mortem |
 | 5 | **Change logic of an existing feature** | "change how X is computed", "add a condition to Y", "change behavior Z" | Standard | **YES** | `change/` | **impact analysis REQUIRED** → ensure/add regression tests → implement → QA review | `gitnexus_impact` (upstream), test-driven-development, code-review | impact reported; regression + new tests green; `detect_changes` scope correct |
 | 6 | **Refactor (NO behavior change)** | "split this module", "rename", "clean up" | Standard | **YES** | `refactor/` | tests GREEN before → impact analysis → change (use `gitnexus_rename`) → tests GREEN after (unchanged) | gitnexus_rename, gitnexus_impact, simplify | same test suite passes before & after; NO manual find-replace |
-| 7 | **New feature** | "build feature Z" | Full (5-phase) | **YES (2 gates: PRD + TDD)** | `feat/` | full §3 | brainstorming, writing-plans, test-driven-development, design system, code-review, security-review | full [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) |
+| 7 | **New feature** | "build feature Z" | Full (5-phase) | **YES (2 gates: PRD + TDD)** | `feat/` | full §3 — if the feature has UI, follow the design track ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md)) | brainstorming, writing-plans, test-driven-development, design system, code-review, security-review | full [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) |
 | 8 | **Spike / Research / POC** | "feasibility study", "try an approach" | Timeboxed | No (timebox instead of gate) | `spike/` (throwaway) | clear timebox → output a **recommendation doc**; **do NOT merge POC code** into main | deep-research, gitnexus_exploring | conclusion + recommendation doc; POC code stays out of main |
+| 9 | **UI/UX Design / Redesign** | "redesign this page", "design the screens for X", "improve the UI" | Standard | **YES** | `design/` | pick profile → UX (if new screens) → pick ONE direction → lock tokens/design system → produce media (if profile needs it) → implement (incl. in-product help) → Visual QA | see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) | Design DoD ([DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md)) |
 
 ### Escalation rule
 A task on the **Fast path** that turns out to:
@@ -77,30 +78,33 @@ See §3.
 2. Clarify: User Personas, Business Flows, Edge Cases, goals, acceptance criteria.
 3. **If it's an AI/assistant feature:** use the **[PRD_AI_FEATURE.md template](./templates/PRD_AI_FEATURE.md)** — it forces the AI-specific dimensions (behavior under ambiguity, guardrails/refusal, definition of "correct" + golden examples, eval strategy, fallback/HITL), and references [INTERACTION_PATTERNS.md](./INTERACTION_PATTERNS.md) for how the assistant talks to end-users.
 4. Output: **PRD / Scope Document** under `docs/specs/` per [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md), linked from ACTIVE_STATE — including a Decision Log + Assumptions Register.
-5. **GATE 1 (Plan Mode):** present the PRD → `ExitPlanMode` → wait for the user (Product Owner) to approve.
+5. **If the feature has UI:** capture the *design profile + screen inventory + primary flows + per-screen states + which help patterns apply* — see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §1–§2, §8 and the [DESIGN_BRIEF.md template](./templates/DESIGN_BRIEF.md).
+6. **GATE 1 (Plan Mode):** present the PRD → `ExitPlanMode` → wait for the user (Product Owner) to approve.
 
 ### Phase 2 — Architecture & Planning (lens: System Architect)
 1. `gitnexus_exploring` to understand the current architecture (skip if the relevant area is empty).
 2. `gitnexus_impact` for any change to existing code.
 3. **Lightweight threat modeling (shift-left):** list attack surface / sensitive data / permissions right here, per [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) — don't push it all to QA.
 4. **Set the performance budget:** decide target latency/throughput/token-cost per [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) (fill the `<TBD>`s).
-5. **Lock the API/interface contract** between components (FE↔BE, module↔module). *This is a prerequisite for parallelizing in Phase 3.*
-6. Trigger `writing-plans` to break down the work → create tasks with `TaskCreate` (session-scoped) + record in ACTIVE_STATE (durable).
-7. Output: **Technical Design Document (TDD)** under `docs/plans/` + task list, with report artifacts under `docs/reports/` as required by [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md).
-8. **GATE 2 (Plan Mode):** present the TDD → `ExitPlanMode` → wait for approval of the technical approach.
+5. **If the feature has UI:** pick the **design profile** and **lock ONE visual direction** (a single taste skill; optionally explore via the visual companion / `imagegen-*`). Define **design tokens / the design system as part of the contract** (tokens are the FE↔design contract, like the API contract). Plan media production (configured provider vs Claude subagent). See [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §2–§6.
+6. **Lock the API/interface contract** between components (FE↔BE, module↔module). *This is a prerequisite for parallelizing in Phase 3.*
+7. Trigger `writing-plans` to break down the work → create tasks with `TaskCreate` (session-scoped) + record in ACTIVE_STATE (durable).
+8. Output: **Technical Design Document (TDD)** under `docs/plans/` + task list, with report artifacts under `docs/reports/` as required by [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md).
+9. **GATE 2 (Plan Mode):** present the TDD **plus, for UI features, the design profile + chosen visual direction + key-screen mockups** → `ExitPlanMode` → wait for approval of the technical approach. (No separate design gate.)
 
 ### Phase 3 — Implementation (lens: Developer, possibly a sub-agent)
 1. Mark tasks `in_progress` (`TaskUpdate`) + update ACTIVE_STATE.
 2. Large work → **delegate to sub-agents** via the `Agent` tool. **Sub-agent prompts must be self-contained** (sub-agents do NOT inherit the conversation/skills): embed PRD/TDD links, name the skills to invoke, the Done criteria, and the relevant files. Details: [TEAM_ROSTER.md](./TEAM_ROSTER.md).
 3. **Conditional parallelization:** only spawn FE & BE in parallel **after the API contract (Phase 2.5) is locked**. When multiple agents edit overlapping files → `isolation: "worktree"`.
 4. Developers apply `test-driven-development`.
-5. Frontend follows **one** locked design direction (don't invoke multiple design skills at once — see TEAM_ROSTER §design).
+5. Frontend implements against the **locked design system** (tokens/components) from Phase 2; use `image-to-code` when implementing from approved visual references; produce embedded media per [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §6; do NOT introduce a new design direction mid-build.
 
 ### Phase 4 — Quality Assurance (lens: QA, sub-agent)
 1. Spawn a Code Reviewer / QA sub-agent (self-contained prompt).
 2. QA runs `verification-before-completion`, `security-review`, `systematic-debugging` as needed. Check against [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) + [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) (incl. OWASP LLM Top 10 for AI features, and performance budgets).
 3. `gitnexus_detect_changes` to confirm no unexpected execution flows broke.
 4. Must meet [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) (Full level) before merging.
+5. **Visual QA (UI features):** run the [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §7 checklist (incl. media weight) and verify the in-product help entry exists & is accurate (§8 sync rule); record in `reports/.../design-qa.md`.
 
 ### Phase 5 — Handover & Retro (lens: DevOps / Scrum Master)
 1. Trigger `finishing-a-development-branch` → open/merge the MR per [BRANCHING.md](./BRANCHING.md).
@@ -125,3 +129,4 @@ See §3.
 | [INTERACTION_PATTERNS.md](./INTERACTION_PATTERNS.md) | How the product (assistant) talks to end-users |
 | [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) | Security baseline + OWASP LLM Top 10 |
 | [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) | Performance budgets + AI standards (prompt caching…) |
+| [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) | UX↔UI, design profiles, skill routing, tokens, platform, media, visual QA, in-product help |
