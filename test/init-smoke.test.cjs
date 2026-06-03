@@ -18,7 +18,8 @@ test('init new project: files + no leftover placeholders + doctor passes', () =>
   for (const f of ['CLAUDE.md', 'AGENTS.md', '.claude/settings.json', '.claude/hooks/git-guard.cjs',
     '.hero-vibe-kit/config.json', 'docs/AGENCY_WORKFLOW.md', 'docs/ARTIFACTS_AND_STORAGE.md',
     'docs/SECURITY_STANDARDS.md', 'docs/PERFORMANCE_STANDARDS.md', 'docs/ACTIVE_STATE.md',
-    'docs/templates/PRD_AI_FEATURE.md']) {
+    'docs/DESIGN_STANDARDS.md', 'docs/templates/PRD_AI_FEATURE.md',
+    'docs/templates/DESIGN_BRIEF.md']) {
     assert.ok(fs.existsSync(path.join(dir, f)), 'missing: ' + f);
   }
   assert.ok(!fs.existsSync(path.join(dir, 'docs', 'en')), 'consumer docs should not include duplicate en tree');
