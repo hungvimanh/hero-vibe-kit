@@ -23,16 +23,34 @@
         { "name": "writing-skills", "source": "obra/superpowers" }
       ]
     },
-    "design": {
+    "brand": {
       "tier": "optional",
-      "description": "Design/UI skills. Pick ONE design direction per project (see TEAM_ROSTER §design). init asks which to install; it does NOT install the whole set.",
+      "description": "Brand/identity skill. Use once per product/brand.",
+      "skills": [
+        { "name": "brandkit", "source": "Leonxlnx/taste-skill" }
+      ]
+    },
+    "design-direction": {
+      "tier": "optional",
+      "description": "Visual-direction taste systems. Pick EXACTLY ONE per project (DESIGN_STANDARDS §3).",
       "pickOne": true,
       "skills": [
         { "name": "design-taste-frontend", "source": "Leonxlnx/taste-skill" },
         { "name": "minimalist-ui", "source": "Leonxlnx/taste-skill" },
         { "name": "industrial-brutalist-ui", "source": "Leonxlnx/taste-skill" },
         { "name": "high-end-visual-design", "source": "Leonxlnx/taste-skill" },
-        { "name": "brandkit", "source": "Leonxlnx/taste-skill" }
+        { "name": "gpt-taste", "source": "<TBD>" }
+      ]
+    },
+    "design-tools": {
+      "tier": "optional",
+      "description": "Complementary design tools — install as needed (not mutually exclusive).",
+      "pickOne": false,
+      "skills": [
+        { "name": "imagegen-frontend-web", "source": "<TBD>" },
+        { "name": "imagegen-frontend-mobile", "source": "<TBD>" },
+        { "name": "image-to-code", "source": "<TBD>" },
+        { "name": "redesign-existing-projects", "source": "<TBD>" }
       ]
     }
   }
