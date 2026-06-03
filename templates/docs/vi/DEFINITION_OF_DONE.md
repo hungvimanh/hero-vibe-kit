@@ -40,6 +40,7 @@ Bao gồm toàn bộ Fast path, cộng thêm:
 - [ ] **Sửa logic:** regression test cũ còn xanh + có test mới cho hành vi mới.
 - [ ] QA sub-agent đã review (`code-review`); `security-review` nếu chạm bề mặt nhạy cảm.
 - [ ] **Security (Standard):** input validation cho code chạm + kiểm quyền nếu chạm authz ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (Standard):** bench trước/sau cho hot-path; (AI) prompt caching còn nguyên ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] **Nếu thay đổi có UI:** đáp ứng checklist "Thiết kế / Công việc UI" bên dưới.
 
 ### Full path (Feature mới)
 Bao gồm toàn bộ Standard path, cộng thêm:
@@ -51,6 +52,17 @@ Bao gồm toàn bộ Standard path, cộng thêm:
 - [ ] **Security standards (Full):** đạt [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5; feature AI đã kiểm OWASP LLM Top 10 (§2) gồm ca lạm dụng.
 - [ ] **Performance standards (Full):** đạt budget [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §1; feature AI đạt token/latency ceiling §2; có số đo tải cho luồng chính.
 - [ ] **Handover:** CLAUDE.md cập nhật quyết định kiến trúc mới (nếu có); retro 3 dòng đã ghi; ghi chú Serena tùy chọn cập nhật dạng con trỏ; task `completed` + ACTIVE_STATE cập nhật.
+- [ ] **Nếu thay đổi có UI:** đáp ứng checklist "Thiết kế / Công việc UI" bên dưới.
+
+### Thiết kế / Công việc UI (áp dụng mỗi khi thay đổi có UI — Standard/Full)
+- [ ] Đã khai báo và tuân theo **profile** thiết kế ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §2).
+- [ ] Responsive ở các breakpoint đã khai báo; **a11y baseline AA** (tương phản, focus, bàn phím, alt, landmark).
+- [ ] **Dùng token** — không hardcode giá trị thiết kế; một hướng (direction) duy nhất đã chốt.
+- [ ] Đã triển khai mọi trạng thái (empty/loading/error/success/partial).
+- [ ] Đồng nhất nền tảng (platform parity) — nguồn token dùng chung cho web+mobile (§5).
+- [ ] **Tài nguyên media** đạt asset-DoD khi có dùng media (§6).
+- [ ] **Trợ giúp/hướng dẫn trong sản phẩm** có entry, chính xác, đặt ở bề mặt phụ; onboarding/contextual help theo profile (§8).
+- [ ] **Visual QA** đã được ghi lại (`reports/.../design-qa.md`, §7).
 
 ---
 

@@ -40,6 +40,7 @@ Includes all of Fast path, plus:
 - [ ] **Change logic:** old regression tests still green + new tests for new behavior.
 - [ ] QA sub-agent reviewed (`code-review`); `security-review` if touching a sensitive surface.
 - [ ] **Security (Standard):** input validation for touched code + authz checks if touched ([SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5). **Performance (Standard):** before/after bench for hot paths; (AI) prompt caching preserved ([PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §4).
+- [ ] **If the change includes UI:** meets the "Design / UI work" checklist below.
 
 ### Full path (New feature)
 Includes all of Standard path, plus:
@@ -51,6 +52,17 @@ Includes all of Standard path, plus:
 - [ ] **Security standards (Full):** meets [SECURITY_STANDARDS.md](./SECURITY_STANDARDS.md) §5; AI features checked against OWASP LLM Top 10 (§2) including abuse cases.
 - [ ] **Performance standards (Full):** meets the [PERFORMANCE_STANDARDS.md](./PERFORMANCE_STANDARDS.md) §1 budget; AI features meet the token/latency ceiling §2; load measurement exists for the main flow.
 - [ ] **Handover:** CLAUDE.md updated with new architectural decisions (if any); 3-line retro recorded; optional Serena notes updated as pointers; task `completed` + ACTIVE_STATE updated.
+- [ ] **If the change includes UI:** meets the "Design / UI work" checklist below.
+
+### Design / UI work (applies whenever the change includes UI — Standard/Full)
+- [ ] Design **profile** declared and followed ([DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §2).
+- [ ] Responsive at the declared breakpoints; **a11y AA baseline** (contrast, focus, keyboard, alt, landmarks).
+- [ ] **Tokens used** — no hardcoded design values; one locked direction.
+- [ ] All states implemented (empty/loading/error/success/partial).
+- [ ] Platform parity — shared token source for web+mobile (§5).
+- [ ] **Media assets** meet the asset-DoD when media is used (§6).
+- [ ] **In-product help/guide** entry exists, accurate, on a secondary surface; onboarding/contextual help per profile (§8).
+- [ ] **Visual QA** recorded (`reports/.../design-qa.md`, §7).
 
 ---
 
