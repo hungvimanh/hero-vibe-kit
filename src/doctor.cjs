@@ -61,7 +61,7 @@ async function doctor(opts) {
   log.title('Tools');
   ok(`node: ${process.version} (required)`);
   status('git', which('git'), 'recommended');
-  status('superpowers skills (skills-lock.json)', exists(path.join(target, 'skills-lock.json')), 'recommended');
+  status('core skills (.claude/skills)', exists(path.join(target, '.claude', 'skills')), 'recommended');
   status('GitNexus index (.gitnexus)', exists(path.join(target, '.gitnexus')), 'optional');
   status('Serena (.serena)', exists(path.join(target, '.serena')), 'optional');
 

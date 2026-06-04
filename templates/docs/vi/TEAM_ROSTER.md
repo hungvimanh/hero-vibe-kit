@@ -14,8 +14,13 @@ Delegate sub-agent giúp giảm context ở main thread và bảo đảm có rev
 
 - **Fast path** → sub-agent tùy chọn; main agent có thể tự implement.
 - **Standard path** → BẮT BUỘC spawn review sub-agent (QA/code-review) trước khi hoàn tất.
-- **Full path** → BẮT BUỘC delegate Dev implementation + spawn QA bằng sub-agent.
+- **Full path** → BẮT BUỘC spawn QA/review sub-agent trước khi hoàn tất; **delegate Dev implementation là TÙY CHỌN** — chỉ dùng khi thực sự có lợi (nhánh song song độc lập hoặc để cô lập context).
 - **Lần sửa đầu trong brownfield** → nếu tồn tại `docs/BROWNFIELD_DISCOVERY.md` và request chạm > 2 file hoặc vùng **Cần xác nhận**, xử lý như Standard (gate + review sub-agent).
+
+### Khi nào KHÔNG nên dùng sub-agent
+- Task nhỏ/khu trú mà việc spawn một sub-agent tốn hơn lợi ích thu được.
+- Khi main agent đã nắm đủ context cần thiết — sub-agent dùng để *thu thập* context, không phải để làm việc mà bạn đã làm trực tiếp được.
+- Không bao giờ giao phần implementation cho sub-agent mà thiếu prompt self-contained — nó không có context của project.
 
 ## 3. Hợp đồng prompt cho sub-agent
 Sub-agent KHÔNG tự kế thừa hội thoại, skill, hay context của Main Agent. Mọi prompt spawn phải SELF-CONTAINED và ngắn gọn:

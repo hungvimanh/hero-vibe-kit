@@ -22,7 +22,8 @@
 ## 5. Định hướng thị giác (DESIGN_STANDARDS §3)
 - Skill định hướng đã chọn (CHỌN MỘT): `<TBD>`
 - Ràng buộc thương hiệu / giọng điệu: `<TBD>`
-- Tham khảo / nguồn cảm hứng: `<TBD>`
+- Tham khảo / nguồn cảm hứng (BẮT BUỘC — DESIGN_STANDARDS §10): dán link + nêu tên sản phẩm (Dribbble/Mobbin/Behance), và ghi rõ bạn muốn gì từ mỗi cái — `<TBD>`
+- Mạch chuyện thiết kế (chỉ expressive): câu chuyện một dòng mà UI nên kể — `<TBD>`
 
 ## 6. Token (DESIGN_STANDARDS §4)
 - Quyết định về màu / thang chữ / khoảng cách / bo góc / đổ bóng / chuyển động: `<TBD>`

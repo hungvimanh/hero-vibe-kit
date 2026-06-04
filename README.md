@@ -76,11 +76,11 @@ Full details in `docs/AGENCY_WORKFLOW.md` (the single source of truth).
 
 ## Integrations (optional — reference & auto-install)
 
-hero-vibe-kit **does not redistribute** third-party tools. `init` offers to set them up from their original sources and degrades gracefully if they're missing.
+Core process skills are **bundled** (a curated MIT-licensed copy of `obra/superpowers`, attribution in `templates/skills/NOTICE`). Other third-party tools are **not redistributed**: `init` offers to set them up from their original sources and degrades gracefully if they're missing.
 
 | Tool | What it is | What init does | Tier |
 |------|-----------|----------------|------|
-| **superpowers** | process skills (brainstorming, TDD, debugging…) from `obra/superpowers` | offers `npx skills add obra/superpowers` | recommended |
+| **core skills** | process skills (brainstorming, TDD, debugging…) vendored from `obra/superpowers` (MIT) | bundled — installs into `.claude/skills/` (no CLI needed) | recommended |
 | **taste-skill** | UI/design skills from `Leonxlnx/taste-skill` | offers to install; pick ONE direction | optional |
 | **GitNexus** | code-intelligence CLI/MCP | offers `npx gitnexus analyze` | optional |
 | **Serena** | semantic code-intelligence MCP | detects existing `.serena/` setup and can seed lightweight pointer notes | optional |
@@ -113,9 +113,11 @@ Remove `docs/` framework files, the `.claude/hooks/*` + the hooks block in `sett
 
 ## License & attribution
 
-MIT (see [LICENSE](./LICENSE)). hero-vibe-kit references but does not redistribute
-[obra/superpowers](https://github.com/obra/superpowers) and [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill);
-they are installed from source via the `skills` CLI under their own licenses.
+MIT (see [LICENSE](./LICENSE)). hero-vibe-kit vendors a curated, lightly trimmed copy
+of the core process skills from [obra/superpowers](https://github.com/obra/superpowers)
+(MIT) under `templates/skills/` — attribution in `templates/skills/NOTICE`. Design/UI
+skills from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) are **not**
+redistributed; they are installed from source via the `skills` CLI under their own license.
 
 ---
 
@@ -165,7 +167,7 @@ Như sơ đồ ở phần English: `docs/` (AGENCY_WORKFLOW là single source of
 
 ## Tích hợp (tùy chọn — reference & auto-install)
 
-hero-vibe-kit **không redistribute** tool bên thứ ba. `init` mời cài từ nguồn gốc và degrade nếu thiếu: **superpowers** (`npx skills add obra/superpowers`, khuyến nghị), **taste-skill** (tùy chọn, chọn 1 hướng), **GitNexus** (`npx gitnexus analyze`, tùy chọn), **Serena** (semantic code-intelligence MCP; pointer notes chỉ là phụ, tùy chọn). **Bắt buộc:** Node ≥ 18 + Claude Code.
+Skill xử lý quy trình lõi được **đóng gói sẵn** (bản copy có chọn lọc, giấy phép MIT từ `obra/superpowers`; attribution ở `templates/skills/NOTICE`) và init cài thẳng vào `.claude/skills/` (không cần `skills` CLI). Các tool bên thứ ba khác **không redistribute** — `init` mời cài từ nguồn gốc và degrade nếu thiếu: **taste-skill** (UI/design, tùy chọn, chọn 1 hướng), **GitNexus** (`npx gitnexus analyze`, tùy chọn), **Serena** (semantic code-intelligence MCP; pointer notes chỉ là phụ, tùy chọn). **Bắt buộc:** Node ≥ 18 + Claude Code.
 
 ## Lệnh & cập nhật
 

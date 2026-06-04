@@ -74,3 +74,11 @@ Mọi sản phẩm có UI đều phải có một bề mặt trợ giúp trong s
 
 ## §9 Tạo phẩm (artifact)
 Các tạo phẩm thiết kế và nơi lưu trữ chúng được định nghĩa trong [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md): đặc tả UX (trong PRD), `docs/design/DESIGN_SYSTEM.md`, `docs/design/assets/`, `docs/help/`, và báo cáo QA thị giác.
+
+## §10 Ưu tiên tham chiếu (tránh "AI-slop")
+- Giao diện AI trông chung chung chủ yếu vì không được cung cấp tham chiếu thật. Hãy thu thập tham chiếu **trước khi** sinh thiết kế.
+- Thu thập 3–5 tham chiếu thật (Dribbble, Mobbin, Behance, Muzli); dán/đính link và **nêu tên sản phẩm** trong Design Brief. Ghi rõ bạn muốn gì từ mỗi cái (bố cục, kiểu chữ, màu, chuyển động).
+- Sinh nhiều biến thể rồi so sánh; sau đó khóa đúng một hướng (xem quy tắc token/khóa ở §4).
+- Tránh mặc định của LLM: gradient tím kiểu AI, hero canh giữa trên nền lưới tối, ba thẻ tính năng bằng nhau, glassmorphism chung chung, Inter + slate-900 ở khắp nơi.
+- **Design MCP tùy chọn** (tôn trọng giấy phép, không đóng gói kèm): một browser MCP (Chrome/Playwright) để chụp tham chiếu và kiểm chứng UI đã dựng qua ảnh chụp màn hình; một Figma MCP để biến thiết kế Figma có sẵn thành code. Không phụ thuộc nhà cung cấp, giống như tạo media (§6).
+- **Lớp kể chuyện tùy chọn** (profile expressive): trao cho trang một mạch chuyện — scroll-story, parallax, hé lộ theo trình tự. Ghi lại ý đồ ngắn gọn trong `docs/design/design-story.md`; giữ hiệu ứng tinh tế và nằm trong ngân sách hiệu năng (§7).

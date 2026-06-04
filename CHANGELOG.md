@@ -3,6 +3,19 @@
 All notable changes to hero-vibe-kit are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); versioning follows [SemVer](https://semver.org/).
 
+## [0.5.0] - 2026-06-03
+### Added
+- Vendored core process skills under `templates/skills/` (a curated, lightly trimmed MIT copy of `obra/superpowers`, with `NOTICE` attribution). `init`/`update` install them into a consumer's `.claude/skills/` — no `skills` CLI or network needed.
+- Design docs: a concise **references-first (avoid AI-slop)** section (gather real references from Dribbble/Mobbin/Behance/Muzli, generate variations, avoid LLM defaults), an optional design-MCP note (browser/Figma), and an optional storytelling layer; `DESIGN_BRIEF.md` now requires named references.
+- Tests for vendored skills, install/refresh into `.claude/skills/`, and the recalibrated sub-agent wording.
+
+### Changed
+- **Sub-agent policy recalibrated** (per the "context-collector" model): required review/QA stays path-triggered, but **delegating implementation is now optional** — the main agent implements with full context by default and delegates Dev work only when it genuinely helps. "Not every task needs a sub-agent." Mirrored across AGENCY_WORKFLOW, TEAM_ROSTER, CLAUDE.md/AGENTS.md templates, and the Serena delegation memo.
+- `init`/`update` no longer run `npx skills add obra/superpowers`; core skills are bundled. `doctor` now checks `.claude/skills/` instead of `skills-lock.json`. Manifest `process` group marked `vendored`/`bundled` with MIT attribution.
+
+### Removed
+- The `writing-skills` meta skill from the installed set (consumers don't author skills).
+
 ## [0.4.1] - 2026-06-03
 ### Changed
 - Optimized installed Claude/agent instructions with just-in-time context loading so agents read path-specific docs only when needed.

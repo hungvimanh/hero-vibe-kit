@@ -12,4 +12,4 @@ This repository **is** the hero-vibe-kit framework — not a consumer project. (
 - **Bilingual parity** — any change in `templates/docs/en/*` must be mirrored in `templates/docs/vi/*`.
 - **Placeholders**: `{{...}}` are rendered at init; `<TBD>` are for the end user to fill.
 - Never instruct users to hand-edit inside `<!-- hero-vibe-kit:start/end -->` managed regions.
-- Do not redistribute third-party skills/tools — reference them in `skills.manifest.json`.
+- **Vendored skills**: only the curated MIT-licensed core process skills live under `templates/skills/` (with `NOTICE` attribution); they ship in the package and install into a consumer's `.claude/skills/`. Reference everything else (design/taste, GitNexus, Serena) in `skills.manifest.json` — do not redistribute non-permissive or unattributed third-party skills/tools.

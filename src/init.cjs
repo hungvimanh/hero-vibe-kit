@@ -73,6 +73,10 @@ async function init(opts) {
   mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
   log.ok('Hooks   : git-guard + stop-reminder installed; settings.json merged');
 
+  // ---- 3b. vendored core skills (native .claude/skills, no `skills` CLI needed) ----
+  const sk = require('./skills.cjs').installSkills(pkgRoot, target);
+  log.ok(`Skills  : ${sk.skills} core skill(s) → .claude/skills/ (bundled)`);
+
   // ---- 4. config ----
   writeJSON(path.join(target, '.hero-vibe-kit', 'config.json'), cfg);
   log.ok('Config  : .hero-vibe-kit/config.json');
@@ -81,7 +85,7 @@ async function init(opts) {
   if (!flags['skip-integrations']) {
     await require('./integrations.cjs').run({ target, cfg, detect: d, ask, pkgRoot });
   } else {
-    log.warn('Skipped integrations (skills / gitnexus / serena).');
+    log.warn('Skipped integrations (design skills / gitnexus / serena). Core skills are bundled regardless.');
   }
 
   ask.close();

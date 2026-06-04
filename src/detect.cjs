@@ -31,6 +31,7 @@ function detect(target) {
     existingActiveState: exists(path.join(target, 'docs', 'ACTIVE_STATE.md')),
     existingConfig: exists(path.join(target, '.hero-vibe-kit', 'config.json')),
     hasSkillsLock: exists(path.join(target, 'skills-lock.json')),
+    hasVendoredSkills: exists(path.join(target, '.claude', 'skills')),
     hasSerena: exists(path.join(target, '.serena')),
     hasGitnexus: exists(path.join(target, '.gitnexus')),
     hasCode: findCode(target, 0),

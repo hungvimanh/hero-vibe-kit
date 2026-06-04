@@ -22,7 +22,8 @@
 ## 5. Visual direction (DESIGN_STANDARDS §3)
 - Chosen direction skill (PICK ONE): `<TBD>`
 - Brand / voice constraints: `<TBD>`
-- References / inspiration: `<TBD>`
+- References / inspiration (REQUIRED — DESIGN_STANDARDS §10): paste links + name the products (Dribbble/Mobbin/Behance), and note what you want from each — `<TBD>`
+- Design story (expressive only): one-line narrative the UI should tell — `<TBD>`
 
 ## 6. Tokens (DESIGN_STANDARDS §4)
 - Color / type scale / spacing / radius / shadow / motion decisions: `<TBD>`

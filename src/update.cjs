@@ -51,6 +51,10 @@ async function update(opts) {
   mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
   log.ok('Hooks + settings.json refreshed');
 
+  // Refresh vendored core skills (framework-managed; user-added skills untouched)
+  const sk = require('./skills.cjs').installSkills(pkgRoot, target);
+  log.ok(`Skills refreshed: ${sk.skills} core skill(s)`);
+
   const newVer = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8')).version;
   cfg.version = newVer;
   writeJSON(path.join(target, '.hero-vibe-kit', 'config.json'), cfg);

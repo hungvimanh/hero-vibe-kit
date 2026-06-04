@@ -4,9 +4,10 @@ node_modules/
 # Tool caches / generated indexes (not part of the framework distribution)
 .gitnexus/
 
-# Skills are installed per-project via the `skills` CLI (reference & auto-install),
-# NOT redistributed by hero-vibe-kit (license: they belong to obra/superpowers,
-# Leonxlnx/taste-skill, GitNexus — keep them out of this repo):
+# Core process skills are VENDORED (tracked) under templates/skills/ (MIT, from
+# obra/superpowers; attribution in templates/skills/NOTICE) and installed into a
+# consumer's .claude/skills/ by init/update. The dogfood copies below are NOT part
+# of the distribution — design/taste skills still belong to their upstream repos:
 .agents/
 .claude/skills/
 

@@ -36,9 +36,13 @@ const SERENA_MEMOS = {
     'docs/SECURITY_STANDARDS.md, docs/PERFORMANCE_STANDARDS.md.\n',
   'delegation_rules.md':
     'Sub-agent delegation rules (canonical): **docs/TEAM_ROSTER.md**.\n\n' +
-    'Summary: large work (Standard/Full path) → the Main Agent delegates via the Agent tool. Sub-agents do NOT inherit the ' +
-    'conversation/skills/context → prompts must be SELF-CONTAINED (PRD/TDD links, skills to invoke, Done criteria, relevant files). ' +
-    'Parallelize FE/BE only after the API contract is locked in Phase 2; use isolation: "worktree" for overlapping edits.\n',
+    'Summary: sub-agents are best as context-collectors (research/exploration) and reviewers (QA/code-review). ' +
+    'Required review/QA is path-triggered (Standard/Full), not user-prompt-triggered — do it even if unasked. ' +
+    'Delegating implementation is OPTIONAL: the main agent implements with full context by default, and delegates ' +
+    'Dev work only when it genuinely helps (independent parallel tracks, or to isolate context). Not every task needs a sub-agent. ' +
+    'Sub-agents do NOT inherit the conversation/skills/context → any delegated prompt must be SELF-CONTAINED ' +
+    '(PRD/TDD links, skills to invoke, Done criteria, relevant files). Parallelize FE/BE only after the API contract ' +
+    'is locked in Phase 2; use isolation: "worktree" for overlapping edits.\n',
 };
 
 async function run(ctx) {
@@ -48,21 +52,10 @@ async function run(ctx) {
 
   log.title('Integrations (optional — Enter to accept default)');
 
-  // ---- Skills (process — recommended) ----
-  const procSources = uniqueSources(manifest.groups && manifest.groups.process);
-  if (procSources.length && await ask.yesno(`Install recommended process skills via the \`skills\` CLI? (${procSources.join(', ')})`, true)) {
-    let ok = true;
-    for (const src of procSources) {
-      log.step(`npx skills add ${src}`);
-      if (!runCmd('npx', ['--yes', 'skills', 'add', src, '--yes'], target)) ok = false;
-    }
-    cfg.integrations.skills = ok ? 'installed' : 'partial';
-    if (!ok) log.warn('Some skills did not install. Install manually: ' + procSources.map((s) => `npx skills add ${s}`).join(' ; '));
-    else log.ok('Process skills installed.');
-  } else {
-    cfg.integrations.skills = 'skipped';
-    log.warn('Skills skipped. Later: ' + procSources.map((s) => `npx skills add ${s}`).join(' ; '));
-  }
+  // ---- Skills (process core) ----
+  // Core process skills are now VENDORED and installed by init/update into
+  // .claude/skills/ (no `skills` CLI needed). Nothing to do here.
+  cfg.integrations.skills = 'bundled';
 
   // ---- Skills (design — optional, grouped) ----
   const designGroups = ['brand', 'design-direction', 'design-tools'];

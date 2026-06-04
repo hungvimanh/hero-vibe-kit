@@ -16,7 +16,7 @@ Persona (BA / Architect / Developer / QA / Scrum Master) là **lăng kính tư d
 4. **Cập nhật [ACTIVE_STATE.md](./ACTIVE_STATE.md)** khi bắt đầu / kết thúc một đơn vị công việc. Đây là backlog bền vững xuyên session (TaskCreate chỉ sống trong session hiện tại).
 5. **Tuân [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md) trong mọi tương tác** — đặc biệt khi làm rõ yêu cầu: no silent assumptions, phân tầng độ chắc chắn, phân loại câu hỏi blocking/non-blocking, đóng vòng khi hiểu sai.
 6. **Với codebase cũ, chạy brownfield discovery trước** sau khi cài: `hero-vibe-kit init` → `hero-vibe-kit discover` → `hero-vibe-kit doctor`. Đọc [BROWNFIELD_DISCOVERY.md](./BROWNFIELD_DISCOVERY.md) trước khi sửa code.
-7. **Delegate sub-agent theo path, không theo việc User có nhắc hay không.** Nếu path đã chọn yêu cầu spawn Dev/QA/review sub-agent thì phải làm, kể cả khi User không nói rõ "dùng sub-agent".
+7. **Delegate sub-agent theo path, không theo prompt của User** đối với phần *review/QA* mà path yêu cầu — cứ làm kể cả khi User không nhắc. Sub-agent mạnh nhất ở research/exploration và review; **delegate phần implementation là tùy chọn** — chỉ dùng khi thực sự có lợi (nhánh song song độc lập, hoặc để cô lập context). Không phải task nào cũng cần sub-agent.
 
 ---
 
@@ -95,9 +95,9 @@ Xem §3.
 8. Output: **Technical Design Document (TDD)** trong `docs/plans/` + Task list, kèm report artifact trong `docs/reports/` theo [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md).
 9. **GATE 2 (Plan Mode):** trình TDD **kèm theo, với feature có UI, design profile + visual direction đã chọn + mockup các màn hình chính** → `ExitPlanMode` → chờ User duyệt cách tiếp cận kỹ thuật. (Không có gate design riêng.)
 
-### Phase 3 — Implementation (lăng kính: Developer sub-agent)
+### Phase 3 — Implementation (lăng kính: Developer)
 1. Cập nhật task `in_progress` (`TaskUpdate`) + ACTIVE_STATE.
-2. **BẮT BUỘC delegate phần implementation cho Dev sub-agent** qua `Agent` tool, trừ khi plan đã duyệt nói rõ main agent sẽ tự làm một task rất nhỏ, khu trú. **Prompt sub-agent phải self-contained** (sub-agent KHÔNG tự kế thừa hội thoại/skill): nhúng link PRD/TDD, nêu rõ skill cần invoke, tiêu chí Done, file liên quan. Chi tiết: [TEAM_ROSTER.md](./TEAM_ROSTER.md).
+2. **Mặc định main agent tự implement với full project context.** Chỉ delegate cho Dev sub-agent khi thực sự có lợi — ví dụ nhánh song song độc lập, hoặc để cô lập một context lớn. Sub-agent KHÔNG tự kế thừa hội thoại/skill, nên mọi prompt delegate phải self-contained (link PRD/TDD, skill cần invoke, tiêu chí Done, file liên quan). Chi tiết: [TEAM_ROSTER.md](./TEAM_ROSTER.md).
 3. **Parallelize CÓ ĐIỀU KIỆN:** chỉ spawn FE & BE song song **sau khi API contract (Phase 2.5) đã chốt**. Khi nhiều agent sửa file chồng nhau → `isolation: "worktree"`.
 4. Developer áp dụng `test-driven-development`.
 5. Frontend implement dựa trên **design system đã chốt** (tokens/components) từ Phase 2; dùng `image-to-code` khi implement từ các visual reference đã duyệt; tạo media nhúng theo [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) §6; KHÔNG đưa design direction mới vào giữa chừng khi đang build.

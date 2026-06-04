@@ -34,9 +34,14 @@ test('init new project: files + no leftover placeholders + doctor passes', () =>
     '.hero-vibe-kit/config.json', 'docs/AGENCY_WORKFLOW.md', 'docs/ARTIFACTS_AND_STORAGE.md',
     'docs/SECURITY_STANDARDS.md', 'docs/PERFORMANCE_STANDARDS.md', 'docs/ACTIVE_STATE.md',
     'docs/DESIGN_STANDARDS.md', 'docs/BROWNFIELD_DISCOVERY.md', 'docs/templates/PRD_AI_FEATURE.md',
-    'docs/templates/DESIGN_BRIEF.md']) {
+    'docs/templates/DESIGN_BRIEF.md',
+    '.claude/skills/NOTICE', '.claude/skills/brainstorming/SKILL.md',
+    '.claude/skills/test-driven-development/SKILL.md', '.claude/skills/requesting-code-review/SKILL.md']) {
     assert.ok(fs.existsSync(path.join(dir, f)), 'missing: ' + f);
   }
+  // vendored skills carry MIT attribution; excluded meta skill is not shipped
+  assert.match(fs.readFileSync(path.join(dir, '.claude/skills/NOTICE'), 'utf8'), /obra\/superpowers/);
+  assert.ok(!fs.existsSync(path.join(dir, '.claude/skills/writing-skills')), 'writing-skills excluded from vendored set');
   assert.ok(!fs.existsSync(path.join(dir, 'docs', 'en')), 'consumer docs should not include duplicate en tree');
   assert.ok(!fs.existsSync(path.join(dir, 'docs', 'vi')), 'consumer docs should not include duplicate vi tree');
   const claude = fs.readFileSync(path.join(dir, 'CLAUDE.md'), 'utf8');
@@ -64,6 +69,11 @@ test('init new project: files + no leftover placeholders + doctor passes', () =>
   const roster = fs.readFileSync(path.join(dir, 'docs', 'TEAM_ROSTER.md'), 'utf8');
   assert.match(roster, /Standard path.*MUST spawn a review sub-agent/);
   assert.match(roster, /Brownfield first change/);
+  // subagent policy recalibrated: review/QA required, implementation delegation optional
+  assert.match(roster, /When NOT to use a sub-agent/i);
+  assert.match(roster, /OPTIONAL/);
+  assert.doesNotMatch(roster, /MUST delegate.*implementation/i);
+  assert.doesNotMatch(workflow, /MUST delegate.*implementation/i);
 
   const settings = JSON.parse(fs.readFileSync(path.join(dir, '.claude', 'settings.json'), 'utf8'));
   assert.ok(JSON.stringify(settings.hooks).includes('git-guard.cjs'));
@@ -105,9 +115,13 @@ test('brownfield: preserves existing CLAUDE.md and ACTIVE_STATE; idempotent', ()
     replaceManagedBlock(fs.readFileSync(path.join(dir, 'AGENTS.md'), 'utf8') + '\nUSER AGENTS FOOTER\n', 'STALE AGENTS MANAGED GUIDANCE')
   );
   fs.writeFileSync(path.join(dir, 'docs', 'ACTIVE_STATE.md'), 'CUSTOM STATE AFTER INIT\n');
+  // corrupt a framework-managed vendored skill; update must refresh it
+  const skillFile = path.join(dir, '.claude', 'skills', 'brainstorming', 'SKILL.md');
+  fs.writeFileSync(skillFile, 'CORRUPTED\n');
 
   const upd = cli(['update', '--dir', dir]);
   assert.strictEqual(upd.status, 0, upd.stderr);
+  assert.doesNotMatch(fs.readFileSync(skillFile, 'utf8'), /^CORRUPTED/, 'update should refresh vendored skill');
 
   claude = fs.readFileSync(path.join(dir, 'CLAUDE.md'), 'utf8');
   assert.match(claude, /PRESERVE ME/);

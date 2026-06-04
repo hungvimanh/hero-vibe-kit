@@ -74,3 +74,11 @@ Every product with a UI ships an in-product help surface on a **secondary** surf
 
 ## §9 Artifacts
 Design artifacts and their storage are defined in [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md): UX spec (in the PRD), `docs/design/DESIGN_SYSTEM.md`, `docs/design/assets/`, `docs/help/`, and the Visual QA report.
+
+## §10 References-first (avoid AI-slop)
+- AI interfaces look generic mainly because no real references were given. Gather references **before** generating.
+- Collect 3–5 real references (Dribbble, Mobbin, Behance, Muzli); paste/link them and **name the products** in the Design Brief. Note what specifically you want from each (layout, type, color, motion).
+- Generate multiple variations and compare; then lock exactly one direction (see §4 token/lock rules).
+- Avoid LLM defaults: AI-purple gradients, centered hero over dark mesh, three equal feature cards, generic glassmorphism, Inter + slate-900 everywhere.
+- **Optional design MCP** (license-respecting, not bundled): a browser MCP (Chrome/Playwright) to capture references and validate the built UI via screenshots; a Figma MCP to turn an existing Figma design into code. Provider-agnostic, like media generation (§6).
+- **Optional storytelling layer** (expressive profile): give the page a narrative — scroll-story, parallax, sequenced reveals. Record the intent briefly in `docs/design/design-story.md`; keep effects tasteful and within the performance budget (§7).

@@ -14,8 +14,13 @@ Sub-agent delegation reduces main-thread context and enforces specialist review.
 
 - **Fast path** → sub-agents optional; main agent may implement directly.
 - **Standard path** → MUST spawn a review sub-agent (QA/code-review) before completion.
-- **Full path** → MUST delegate Dev implementation + spawn QA as sub-agents.
+- **Full path** → MUST spawn a QA/review sub-agent before completion; **delegating Dev implementation is OPTIONAL** — use it only when it genuinely helps (independent parallel tracks or to isolate context).
 - **Brownfield first change** → if `docs/BROWNFIELD_DISCOVERY.md` exists and the request touches > 2 files or **Needs confirmation** areas, treat as Standard (gate + review sub-agent).
+
+### When NOT to use a sub-agent
+- Small/localized tasks where spinning one up costs more than it saves.
+- When the main agent already holds the needed context — sub-agents are for *collecting* context, not for work you can already do directly.
+- Never hand implementation to a sub-agent without a self-contained prompt — it has no project context.
 
 ## 3. Sub-agent prompt contract
 Sub-agents do NOT inherit the Main Agent's conversation, skills, or context. Every spawn prompt must be SELF-CONTAINED and concise:
