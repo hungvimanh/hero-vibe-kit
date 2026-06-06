@@ -14,6 +14,7 @@
 | Performance review | `docs/reports/YYYY-MM-DD-<slug>/performance.md` | Budget, số đo, regression, token/cost checks | Bắt buộc khi có performance budget hoặc sửa hot path. |
 | QA / verification | `docs/reports/YYYY-MM-DD-<slug>/qa.md` | Lệnh test, kiểm tra thủ công, gap còn biết trước | Bắt buộc trước khi claim done ở Standard/Full. |
 | Retro / handover | `docs/reports/YYYY-MM-DD-<slug>/retro.md` | Cái gì tốt, cái gì vướng, một cải tiến | Bắt buộc cho Full path; tùy chọn path khác. |
+| Resume packet | `docs/reports/YYYY-MM-DD-<slug>/resume.md` | State để compact/restart session | Tạo hoặc cập nhật trước phase handoff, review lớn, final verification, hoặc khi khôi phục context pressure. |
 | Task tracking trong session | `TaskCreate` / `TaskList` | Checklist thực thi của session hiện tại | Không bền vững; sau restart tạo lại từ `ACTIVE_STATE.md` + artifact đã link. |
 | Semantic code understanding | Serena MCP | Symbol lookup, references, implementations, diagnostics, semantic edits | Không phải lớp storage chính. |
 | Ghi chú Serena tùy chọn | `.serena/memories/project/*.md` | Pointer nhẹ trỏ về docs trong repo | Không bao giờ duplicate process, PRD, plan, hoặc report canonical ở đây. |
@@ -50,6 +51,7 @@ docs/
 
   reports/
     YYYY-MM-DD-feature-name/
+      resume.md
       impact.md
       security.md
       performance.md
@@ -71,8 +73,8 @@ Chỉ tạo `specs/`, `plans/`, và `reports/` khi cần artifact đầu tiên t
 |---|---|
 | Read-only | Không. Trả lời kèm trích dẫn `file:line`; không tạo docs trừ khi User yêu cầu. |
 | Fast | Chỉ cập nhật `ACTIVE_STATE.md` nếu task là việc đang kéo dài. Bugfix cần có bằng chứng test trong MR/PR; chỉ tạo `reports/.../qa.md` khi hữu ích. |
-| Standard | `ACTIVE_STATE.md`, `plans/*.md`, `reports/.../impact.md`, và `reports/.../qa.md`. Thêm security/performance report nếu bề mặt chạm tới yêu cầu. |
-| Full | `ACTIVE_STATE.md`, `specs/*.md`, `plans/*.md`, `reports/.../impact.md`, `security.md`, `performance.md`, `qa.md`, và `retro.md`. |
+| Standard | `ACTIVE_STATE.md`, `plans/*.md`, `reports/.../impact.md`, và `reports/.../qa.md`. Thêm `reports/.../resume.md` cho việc kéo dài, phase handoff, hoặc context pressure. Thêm security/performance report nếu bề mặt chạm tới yêu cầu. |
+| Full | `ACTIVE_STATE.md`, `specs/*.md`, `plans/*.md`, `reports/.../resume.md`, `impact.md`, `security.md`, `performance.md`, `qa.md`, và `retro.md`. |
 | Spike | `docs/reports/YYYY-MM-DD-<slug>/recommendation.md`; không merge code POC vứt đi vào main. |
 | Design (router #9) | `docs/design/DESIGN_SYSTEM.md` (khi có việc UI đầu tiên), `docs/help/<area>.md`, `reports/.../design-qa.md`. Media nguồn ở `docs/design/assets/`. |
 
@@ -82,6 +84,7 @@ Chỉ tạo `specs/`, `plans/`, và `reports/` khi cần artifact đầu tiên t
 - Dùng cùng `<slug>` cho specs, plans, và reports của cùng một work item.
 - Link artifact từ dòng tương ứng trong `ACTIVE_STATE.md`.
 - Report ghi evidence và quyết định, không copy đoạn code dài.
+- Resume packet ghi state restart ngắn gọn, không duplicate specs, plans, diff, log, hoặc transcript. Xem [CONTEXT_BUDGET.md](./CONTEXT_BUDGET.md).
 
 ## 5. Cái gì là authoritative
 

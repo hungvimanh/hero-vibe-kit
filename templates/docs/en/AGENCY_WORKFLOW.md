@@ -36,6 +36,45 @@ When a request arrives, consult this table first to pick path, branch, required 
 | 8 | **Spike / Research / POC** | "feasibility study", "try an approach" | Timeboxed | No (timebox instead of gate) | `spike/` (throwaway) | clear timebox → output a **recommendation doc**; **do NOT merge POC code** into main | deep-research, gitnexus_exploring | conclusion + recommendation doc; POC code stays out of main |
 | 9 | **UI/UX Design / Redesign** | "redesign this page", "design the screens for X", "improve the UI" | Standard | **YES** | `design/` | pick profile → UX (if new screens) → pick ONE direction → lock tokens/design system → produce media (if profile needs it) → implement (incl. in-product help) → Visual QA | see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) | Design DoD ([DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md)) |
 
+### Self-Prompting Router
+
+Treat the router as the controller for the next prompt, not just as reference material. For every user request, the Main Agent must:
+
+1. classify the task using the table above,
+2. select the workflow path,
+3. identify required gates, verification steps, and Done criteria,
+4. identify which lenses or sub-agents are required by the path,
+5. generate the next internal prompt or handoff prompt from [HANDOFF_TEMPLATES.md](./HANDOFF_TEMPLATES.md) when a handoff is needed,
+6. continue only when the current gate or Done criteria allow the workflow to advance.
+
+Use this loop throughout the work:
+
+```text
+User intent
+  → classify task
+  → select workflow path
+  → identify required lenses/agents
+  → prepare context and prompt contract
+  → act directly or delegate
+  → verify output
+  → update state/artifacts
+  → choose the next prompt
+```
+
+Self-prompting does **not** mean spawning more agents by default. It means the framework decides the next valid prompt from task type, path state, and Done criteria.
+
+### Context Budget Protocol
+
+The Main Agent is a workflow controller, not a transcript warehouse. Before broad exploration, implementation, QA/review, final verification, or any phase handoff:
+
+1. checkpoint durable state in [ACTIVE_STATE.md](./ACTIVE_STATE.md), the current plan/spec, or a resume packet,
+2. avoid reading or dumping full files unless a bounded excerpt is necessary,
+3. delegate broad reading/review when it improves focus or protects the main context,
+4. summarize tool and sub-agent outputs instead of carrying raw logs or transcripts,
+5. run `/compact` or start a fresh session from artifact links when context pressure is high.
+
+Detailed rules, compact prompts, session-restart prompts, and API 400 recovery steps live in [CONTEXT_BUDGET.md](./CONTEXT_BUDGET.md).
+
 ### Escalation rule
 A task on the **Fast path** that turns out to:
 - touch a symbol with many callers / `gitnexus_impact` returns **MEDIUM or higher**, OR
@@ -50,6 +89,7 @@ A task on the **Fast path** that turns out to:
 
 ### Read-only
 Answer questions, read/explain code. No branch, no gate, no commit. Prefer `gitnexus_query`/`gitnexus_context` over blind grep. Always cite `file:line`.
+Delegate only for broad exploration that would exceed a few targeted searches; otherwise answer directly.
 
 ### Fast path
 For small, low-risk work (chore/docs/localized bugfix/hotfix).
@@ -59,6 +99,8 @@ For small, low-risk work (chore/docs/localized bugfix/hotfix).
 4. Open an MR against the "Fast" DoD in [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md).
 > No plan sign-off needed. But if you hit the escalation rule → move to Standard.
 
+Delegate implementation only when it saves meaningful context or time; review is optional unless the escalation rule fires.
+
 ### Standard path
 For changing existing feature logic & refactors.
 1. **Gate**: `EnterPlanMode` → investigate + run `gitnexus_impact` (upstream) → present a plan stating **blast radius + risk level** → `ExitPlanMode` and wait for approval.
@@ -67,8 +109,11 @@ For changing existing feature logic & refactors.
 4. QA: **MUST spawn** a review sub-agent (`code-review` + `security-review` if touching a sensitive surface) + `gitnexus_detect_changes`.
 5. MR against the "Standard" DoD.
 
+Implementation delegation is optional, but the review sub-agent is mandatory before completion. Use [HANDOFF_TEMPLATES.md](./HANDOFF_TEMPLATES.md) for reviewer prompts.
+
 ### Full path (5-phase) — new features only
 See §3.
+Use BA and Architect lenses for the gates; delegate implementation only for independent tracks or context isolation; QA/review remains mandatory.
 
 ---
 
@@ -118,13 +163,39 @@ See §3.
 
 ---
 
-## 4. Related documents
+## 4. Next-prompt decision table
+
+After each step, choose the next prompt/action from workflow state:
+
+| Current state | Next prompt/action |
+|---|---|
+| Request unclear | Ask one clarifying question using [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md). |
+| Task classified as Q&A | Answer read-only with cited evidence. |
+| Task classified as chore/docs/config | Use Fast path and verify relevant docs/build checks. |
+| Localized bugfix | Trigger `systematic-debugging` and write a repro test before fixing. |
+| Existing behavior change | Enter Standard path, run impact analysis, prepare the plan gate. |
+| Refactor | Enter Standard path, run impact analysis, preserve behavior, avoid manual rename. |
+| New feature idea | Generate the BA Discovery Prompt and produce the PRD/scope artifact. |
+| PRD approved | Generate the Architect Planning Prompt and produce the technical plan. |
+| Plan approved | Generate a bounded implementer prompt or act directly when delegation is not useful. |
+| Implementation done | Generate spec compliance and code quality review prompts. |
+| Sensitive surface touched | Generate the QA / Security Reviewer Prompt. |
+| Review failed | Generate a focused fix prompt using reviewer findings. |
+| Verification passed | Generate the Handover / Retro Prompt and update state/artifacts. |
+| Context pressure high | Write/update the resume packet, run `/compact` if staying in-session, or start a fresh session from artifact links. |
+| Unexpected risk discovered | Stop, report the risk, and request the required gate or user decision. |
+
+---
+
+## 5. Related documents
 | File | Content |
 |------|---------|
 | [TASK router §1](#1-task-classification--workflow-router) | Pick a path by task type |
 | [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) | Measurable completion criteria (per path) |
 | [BRANCHING.md](./BRANCHING.md) | Branching model, branch naming, Conventional Commits |
 | [TEAM_ROSTER.md](./TEAM_ROSTER.md) | Personas + sub-agent delegation rules + design direction |
+| [HANDOFF_TEMPLATES.md](./HANDOFF_TEMPLATES.md) | Reusable prompt contracts for BA, Architect, Implementer, reviewers, brownfield discovery, and handover |
+| [CONTEXT_BUDGET.md](./CONTEXT_BUDGET.md) | Context pressure rules, compact/session restart prompts, resume packet format, and API 400 recovery |
 | [ACTIVE_STATE.md](./ACTIVE_STATE.md) | Pipeline state + resume protocol |
 | [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md) | Output artifacts, docs/specs/plans/reports layout, storage rules |
 | [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md) | Human↔AI communication protocol (requirements clarification) |

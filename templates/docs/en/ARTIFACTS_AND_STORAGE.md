@@ -14,6 +14,7 @@
 | Performance review | `docs/reports/YYYY-MM-DD-<slug>/performance.md` | Budget, measurements, regressions, token/cost checks | Required when performance budget exists or hot path changes. |
 | QA / verification | `docs/reports/YYYY-MM-DD-<slug>/qa.md` | Test commands, manual checks, known gaps | Required before claiming done on Standard/Full. |
 | Retro / handover | `docs/reports/YYYY-MM-DD-<slug>/retro.md` | What went well, pain points, one improvement | Required for Full path; optional otherwise. |
+| Resume packet | `docs/reports/YYYY-MM-DD-<slug>/resume.md` | Compact/session restart state | Create or update before phase handoff, major review, final verification, or context-pressure recovery. |
 | Session task tracking | `TaskCreate` / `TaskList` | Current-session execution checklist | Not durable; recreate from `ACTIVE_STATE.md` + linked artifacts after restart. |
 | Semantic code understanding | Serena MCP | Symbol lookup, references, implementations, diagnostics, semantic edits | Not the primary storage layer. |
 | Optional Serena notes | `.serena/memories/project/*.md` | Lightweight pointers back to repo docs | Never duplicate canonical process, PRD, plans, or reports here. |
@@ -50,6 +51,7 @@ docs/
 
   reports/
     YYYY-MM-DD-feature-name/
+      resume.md
       impact.md
       security.md
       performance.md
@@ -71,8 +73,8 @@ These are storage requirements only. For workflow sequencing and gates, follow [
 |---|---|
 | Read-only | None. Answer with `file:line` citations; do not create docs unless the user asks. |
 | Fast | Update `ACTIVE_STATE.md` only if the task represents ongoing work. Bugfixes should include test evidence in the MR/PR; create `reports/.../qa.md` only when useful. |
-| Standard | `ACTIVE_STATE.md`, `plans/*.md`, `reports/.../impact.md`, and `reports/.../qa.md`. Add security/performance reports when the touched surface requires them. |
-| Full | `ACTIVE_STATE.md`, `specs/*.md`, `plans/*.md`, `reports/.../impact.md`, `security.md`, `performance.md`, `qa.md`, and `retro.md`. |
+| Standard | `ACTIVE_STATE.md`, `plans/*.md`, `reports/.../impact.md`, and `reports/.../qa.md`. Add `reports/.../resume.md` for long-running work, phase handoff, or context pressure. Add security/performance reports when the touched surface requires them. |
+| Full | `ACTIVE_STATE.md`, `specs/*.md`, `plans/*.md`, `reports/.../resume.md`, `impact.md`, `security.md`, `performance.md`, `qa.md`, and `retro.md`. |
 | Spike | `docs/reports/YYYY-MM-DD-<slug>/recommendation.md`; do not merge throwaway POC code into main. |
 | Design (router #9) | `docs/design/DESIGN_SYSTEM.md` (when first UI work), `docs/help/<area>.md`, `reports/.../design-qa.md`. Media source in `docs/design/assets/`. |
 
@@ -82,6 +84,7 @@ These are storage requirements only. For workflow sequencing and gates, follow [
 - Use the same `<slug>` across specs, plans, and reports for the same work item.
 - Link artifacts from the row in `ACTIVE_STATE.md`.
 - Reports should record evidence and decisions, not duplicate long code excerpts.
+- Resume packets should record concise restart state, not duplicate specs, plans, diffs, logs, or transcripts. See [CONTEXT_BUDGET.md](./CONTEXT_BUDGET.md).
 
 ## 5. What is authoritative
 

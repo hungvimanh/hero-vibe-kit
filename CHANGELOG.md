@@ -3,6 +3,17 @@
 All notable changes to hero-vibe-kit are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); versioning follows [SemVer](https://semver.org/).
 
+## [0.6.0] - 2026-06-06
+### Added
+- Process-first self-prompting workflow guidance so the Main Agent classifies task type, selects the workflow path, generates bounded handoff prompts, verifies gates, updates artifacts, and chooses the next prompt from workflow state.
+- Bilingual `HANDOFF_TEMPLATES.md` prompt contracts for BA discovery, architect planning, implementer, reviewers, brownfield discovery, and handover/retro.
+- Bilingual `CONTEXT_BUDGET.md` protocol with no-dump rules, mandatory checkpoint triggers, resume packet format, `/compact` prompt, fresh-session prompt, sub-agent output limits, tool-output hygiene, and API 400 recovery.
+
+### Changed
+- Reframed `TEAM_ROSTER.md` as a conditional role/lens library with context-budget rules for the Main Agent and bounded sub-agent outputs.
+- Updated `AGENCY_WORKFLOW.md` to include the Self-Prompting Router, next-prompt decision table, and Context Budget Protocol.
+- Updated `ARTIFACTS_AND_STORAGE.md` to define `reports/.../resume.md` as the compact/session-restart artifact for long-running work, handoffs, final verification, and context-pressure recovery.
+
 ## [0.5.0] - 2026-06-03
 ### Added
 - Vendored core process skills under `templates/skills/` (a curated, lightly trimmed MIT copy of `obra/superpowers`, with `NOTICE` attribution). `init`/`update` install them into a consumer's `.claude/skills/` — no `skills` CLI or network needed.
