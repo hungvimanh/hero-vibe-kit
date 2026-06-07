@@ -6,8 +6,9 @@ Minimum non-negotiables:
 1. Classify the request via the router before acting; don't run heavy workflow for small tasks.
 2. Use Plan Mode for paths with Gates before editing.
 3. Read only the docs needed for the selected path; avoid loading unrelated context.
-4. Do not bypass hooks, checks, or verification.
-5. Use GitNexus for Standard/Full impact/context analysis when available.
-6. **Sub-agent delegation is path-triggered, not user-prompt-triggered** for required review/QA (Standard/Full + broad brownfield) — don't wait to be asked. Delegating implementation is optional; sub-agents shine at research and review, and not every task needs one. See [TEAM_ROSTER](docs/TEAM_ROSTER.md).
-7. Sub-agent model/effort selection follows [TEAM_ROSTER](docs/TEAM_ROSTER.md); do not hardcode model IDs elsewhere.
-8. Keep outputs concise: findings, decisions, risks, next steps.
+4. Framework instructions, skills, rules, and templates are English-only; respond to the user in the same language they use in chat unless they request another language.
+5. Do not bypass hooks, checks, or verification.
+6. Use GitNexus for Standard/Full impact/context analysis when available.
+7. **Sub-agent delegation is path-triggered, not user-prompt-triggered** for required review/QA (Standard/Full + broad brownfield) — don't wait to be asked. Delegating implementation is optional; sub-agents shine at research and review, and not every task needs one. See [TEAM_ROSTER](docs/TEAM_ROSTER.md).
+8. Sub-agent model/effort selection follows [TEAM_ROSTER](docs/TEAM_ROSTER.md); do not hardcode model IDs elsewhere.
+9. Keep outputs concise: findings, decisions, risks, next steps.

@@ -36,7 +36,6 @@ Commands:
 Flags:
   --dir <path>          Target project dir (default: current dir)
   --preset <name>       solo | small-team | enterprise
-  --lang <en|vi>        Docs language (default: en)
   --name <name>         Project name (default: dir name)
   --yes                 Non-interactive; accept defaults
   --skip-integrations   Skip skills / gitnexus / serena prompts`);
@@ -47,6 +46,10 @@ async function main() {
   const target = flags.dir ? path.resolve(String(flags.dir)) : process.cwd();
   const opts = { pkgRoot: PKG_ROOT, target, flags };
   const version = () => console.log(require('../package.json').version);
+
+  if (Object.prototype.hasOwnProperty.call(flags, 'lang')) {
+    console.error('Warning: --lang was removed. hero-vibe-kit templates are English-only.');
+  }
 
   if (flags.version || flags.v) { version(); return; }
 

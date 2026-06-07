@@ -54,11 +54,11 @@ your-project/
     settings.json    # hooks merged into your existing settings (not clobbered)
     hooks/           # git-guard.cjs, stop-reminder.cjs
   .hero-vibe-kit/
-    config.json      # your choices (team size, branching, language, integrations)
+    config.json      # your choices (team size, branching, integrations)
 ```
 
 - **New project**: scaffolds everything.
-- **Language selection**: `--lang en|vi` renders exactly one active docs set into `docs/`; agents read `docs/AGENCY_WORKFLOW.md`, not duplicate `docs/en` + `docs/vi` trees.
+- **English-only framework docs**: `init` renders one active docs set into `docs/`. Agents still reply in the user's chat language unless asked otherwise.
 - **Brownfield**: never overwrites your `CLAUDE.md`/`AGENTS.md`/`settings.json` — it inserts a marked managed block and deep-merges hooks. Your `docs/ACTIVE_STATE.md` is never overwritten. Re-running is idempotent; touched files are backed up to `*.bak`.
 
 ## The task router (heart of it)
@@ -100,7 +100,7 @@ Core process skills are **bundled** (a curated MIT-licensed copy of `obra/superp
 | `doctor` | Validate hooks, settings.json, doc links, tool presence |
 | `version` | Print version |
 
-Flags: `--dir <path>` · `--preset solo|small-team|enterprise` · `--lang en|vi` · `--name <name>` · `--yes` · `--skip-integrations`.
+Flags: `--dir <path>` · `--preset solo|small-team|enterprise` · `--name <name>` · `--yes` · `--skip-integrations`.
 
 ## Update & customize
 
@@ -156,7 +156,7 @@ npx hero-vibe-kit doctor
 Không tương tác / CI:
 
 ```bash
-npx hero-vibe-kit init --yes --preset small-team --lang vi --skip-integrations
+npx hero-vibe-kit init --yes --preset small-team --skip-integrations
 ```
 
 ## init cài gì
@@ -164,7 +164,7 @@ npx hero-vibe-kit init --yes --preset small-team --lang vi --skip-integrations
 Như sơ đồ ở phần English: `docs/` (AGENCY_WORKFLOW là single source of truth, ARTIFACTS_AND_STORAGE quy định output/storage + các chuẩn), `CLAUDE.md`/`AGENTS.md` (chèn **block có marker**, giữ nguyên nội dung của bạn), `.claude/` (hook + settings deep-merge), `.hero-vibe-kit/config.json`.
 
 - **Project mới**: scaffold đầy đủ.
-- **Chọn ngôn ngữ**: `--lang en|vi` chỉ render một bộ docs active vào `docs/`; agent đọc `docs/AGENCY_WORKFLOW.md`, không load trùng cây `docs/en` + `docs/vi`.
+- **Framework docs English-only**: `init` render một bộ docs active vào `docs/`; agent vẫn trả lời theo ngôn ngữ chat của user trừ khi user yêu cầu khác.
 - **Brownfield**: KHÔNG đè `CLAUDE.md`/`AGENTS.md`/`settings.json` — chỉ chèn block + merge hook. `docs/ACTIVE_STATE.md` không bị ghi đè. Chạy lại idempotent; file bị đụng được sao lưu `*.bak`.
 
 ## Tích hợp (tùy chọn — reference & auto-install)

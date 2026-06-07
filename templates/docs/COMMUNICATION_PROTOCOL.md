@@ -4,6 +4,10 @@
 >
 > Because this product *is* an AI assistant, the quality of requirements clarification drives the quality of the product — this protocol exists to eliminate silent misunderstandings.
 
+## Language policy
+
+Framework instructions, skills, rules, and templates are English-only. The assistant responds to the user in the same language the user uses in chat unless the user requests another language. Do not translate the framework docs at runtime; explain the relevant guidance conversationally when needed.
+
 ## 1. Language & style
 - Use the team's working language when talking to the user.
 - Prefer plain language over hard technical terms. When a technical term is necessary, keep it in English and add a short everyday explanation the first time.

@@ -29,14 +29,12 @@ async function init(opts) {
     log.ok(`Preset : ${flags.preset}`);
   }
   cfg.projectName = flags.name || cfg.projectName || (auto ? path.basename(target) : await ask.text('Project name', path.basename(target)));
-  cfg.lang = flags.lang || cfg.lang || (auto ? 'en' : await ask.choice('Docs language:', ['en', 'vi'], 0));
   if (!cfg.teamSize) cfg.teamSize = auto ? 'small-team' : await ask.choice('Team size:', ['solo', 'small-team', 'enterprise'], 1);
   if (!cfg.branchingModel) cfg.branchingModel = auto ? 'github-flow' : await ask.choice('Branching model:', ['github-flow', 'gitlab-flow', 'trunk'], 0);
   if (!cfg.enforceLevel) cfg.enforceLevel = 'mixed';
+  delete cfg.lang;
   cfg.version = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8')).version;
   cfg.brownfield = d.brownfield;
-
-  if (cfg.lang !== 'en' && cfg.lang !== 'vi') { log.err(`Unsupported lang: ${cfg.lang} (use en|vi)`); ask.close(); process.exit(1); }
 
   const vars = {
     PROJECT_NAME: cfg.projectName,
@@ -46,7 +44,7 @@ async function init(opts) {
   };
 
   // ---- 1. docs ----
-  const srcDocs = path.join(templates, 'docs', cfg.lang);
+  const srcDocs = path.join(templates, 'docs');
   let docCount = 0, keptActiveState = false;
   for (const f of renderTree(srcDocs, vars)) {
     const dest = path.join(target, 'docs', f.rel);
@@ -57,7 +55,7 @@ async function init(opts) {
     fs.writeFileSync(dest, f.content);
     docCount++;
   }
-  log.ok(`Docs    : ${docCount} file(s) [${cfg.lang}]` + (keptActiveState ? ' · kept existing ACTIVE_STATE.md' : ''));
+  log.ok(`Docs    : ${docCount} file(s)` + (keptActiveState ? ' · kept existing ACTIVE_STATE.md' : ''));
 
   // ---- 2. CLAUDE.md / AGENTS.md managed block ----
   const claudeInner = renderString(fs.readFileSync(path.join(templates, 'CLAUDE.md.tmpl'), 'utf8'), vars);

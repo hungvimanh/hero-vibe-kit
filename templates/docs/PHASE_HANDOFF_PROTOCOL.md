@@ -1656,23 +1656,22 @@ The protocol above is generic. The following applies when integrating it into `h
 
 Recommended framework changes:
 
-1. Keep the full protocol as a reference document at `templates/docs/{en,vi}/PHASE_HANDOFF_PROTOCOL.md` or link to this reference.
+1. Keep the full protocol as a reference document at `templates/docs/PHASE_HANDOFF_PROTOCOL.md` or link to this reference.
 2. Do **not** copy the full protocol into `CONTEXT_BUDGET.md` or `AGENCY_WORKFLOW.md`.
-3. Add only a short operational version to `templates/docs/en/CONTEXT_BUDGET.md` and `templates/docs/vi/CONTEXT_BUDGET.md`.
-4. Add only phase-boundary and mode-selection rules to `templates/docs/en/AGENCY_WORKFLOW.md` and `templates/docs/vi/AGENCY_WORKFLOW.md`.
-5. Add phase-specific handoff prompts to `templates/docs/en/HANDOFF_TEMPLATES.md` and `templates/docs/vi/HANDOFF_TEMPLATES.md`.
+3. Add only a short operational version to `templates/docs/CONTEXT_BUDGET.md`.
+4. Add only phase-boundary and mode-selection rules to `templates/docs/AGENCY_WORKFLOW.md`.
+5. Add phase-specific handoff prompts to `templates/docs/HANDOFF_TEMPLATES.md`.
 6. Optionally add a curated `templates/skills/phase-handoff/` skill if licensing and attribution rules allow it.
-7. Update tests to verify bilingual document links and template references.
+7. Update tests to verify document links and template references.
 
-Bilingual parity checks should verify:
+English-only template checks should verify:
 
-- every EN doc link has a corresponding VI doc link,
-- every heading added to EN has a corresponding heading in VI,
-- handoff template names match across languages,
-- skill references are identical across EN/VI docs,
-- protocol-specific acceptance criteria appear in both languages.
+- the single `templates/docs/` tree has no broken links,
+- handoff template names stay wired into the workflow,
+- skill references remain valid,
+- protocol-specific acceptance criteria remain present.
 
-Because this framework requires bilingual parity, any template-doc change under `templates/docs/en/` must be mirrored under `templates/docs/vi/`.
+Because this framework uses English-only templates, any template-doc change is made once under `templates/docs/`.
 
 ---
 

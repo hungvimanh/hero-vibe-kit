@@ -23,7 +23,7 @@ test('discover creates a brownfield report for code with docs outside docs', () 
   fs.writeFileSync(path.join(dir, '.github', 'copilot-instructions.md'), '# Instructions\n');
   fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { test: 'node --test', build: 'tsc' } }, null, 2));
 
-  const r = cli(['discover', '--dir', dir, '--lang', 'en', '--name', 'LegacyApp']);
+  const r = cli(['discover', '--dir', dir, '--name', 'LegacyApp']);
   assert.strictEqual(r.status, 0, r.stderr);
 
   const reportPath = path.join(dir, 'docs', 'BROWNFIELD_DISCOVERY.md');
@@ -38,16 +38,20 @@ test('discover creates a brownfield report for code with docs outside docs', () 
   assert.match(report, /npm run test/);
 });
 
-test('brownfield alias supports Vietnamese report and is idempotent', () => {
+test('brownfield alias creates English report and is idempotent even when --lang is passed', () => {
   const dir = mkdir();
   fs.mkdirSync(path.join(dir, 'app'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'app', 'main.js'), 'console.log(1);\n');
 
-  assert.strictEqual(cli(['brownfield', '--dir', dir, '--lang', 'vi']).status, 0);
-  assert.strictEqual(cli(['brownfield', '--dir', dir, '--lang', 'vi']).status, 0);
+  const first = cli(['brownfield', '--dir', dir, '--lang', 'vi']);
+  assert.strictEqual(first.status, 0, first.stderr);
+  assert.match(first.stderr, /--lang was removed/);
+  const second = cli(['brownfield', '--dir', dir, '--lang', 'vi']);
+  assert.strictEqual(second.status, 0, second.stderr);
 
   const report = fs.readFileSync(path.join(dir, 'docs', 'BROWNFIELD_DISCOVERY.md'), 'utf8');
-  assert.match(report, /Những gì đã tìm thấy/);
+  assert.match(report, /What was found/);
+  assert.doesNotMatch(report, /Những gì đã tìm thấy/);
   assert.match(report, /app\//);
   assert.strictEqual((report.match(/hero-vibe-kit:start/g) || []).length, 1, 'managed block not duplicated');
 });

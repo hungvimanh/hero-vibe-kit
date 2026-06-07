@@ -24,7 +24,7 @@ async function update(opts) {
   };
 
   // Re-render managed docs; NEVER touch ACTIVE_STATE (working state).
-  const srcDocs = path.join(templates, 'docs', cfg.lang);
+  const srcDocs = path.join(templates, 'docs');
   let n = 0;
   for (const f of renderTree(srcDocs, vars)) {
     if (path.basename(f.rel) === 'ACTIVE_STATE.md') continue;
@@ -57,6 +57,7 @@ async function update(opts) {
 
   const newVer = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8')).version;
   cfg.version = newVer;
+  delete cfg.lang;
   writeJSON(path.join(target, '.hero-vibe-kit', 'config.json'), cfg);
   log.ok(`Now at v${newVer}`);
 }

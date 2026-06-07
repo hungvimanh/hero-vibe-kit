@@ -4,6 +4,9 @@ All notable changes to hero-vibe-kit are documented here. Format based on
 [Keep a Changelog](https://keepachangelog.com/); versioning follows [SemVer](https://semver.org/).
 
 ## [1.0.0] - 2026-06-07
+### Breaking
+- Removed Vietnamese framework template support. `templates/docs` is now English-only, `--lang` is deprecated/ignored with a warning, and agents are instructed to respond in the user's chat language.
+
 ### Added
 - Added bilingual Phase Handoff Protocol reference docs and wired them into the installed workflow documentation.
 - Added artifact-first phase-boundary guidance for Tiny, Small, Standard, and Full modes, including bounded canonical handoffs, `resume.md` pointers, sanity checks, evidence freshness, and final-claim verification rules.

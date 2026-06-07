@@ -23,7 +23,7 @@ async function doctor(opts) {
 
   // config
   const cfg = readJSON(path.join(target, '.hero-vibe-kit', 'config.json'), null);
-  if (cfg) ok(`config: v${cfg.version} · ${cfg.projectName} · lang=${cfg.lang} · ${cfg.brownfield ? 'brownfield' : 'new'}`);
+  if (cfg) ok(`config: v${cfg.version} · ${cfg.projectName} · ${cfg.brownfield ? 'brownfield' : 'new'}`);
   else er('config missing (.hero-vibe-kit/config.json) — run `hero-vibe-kit init`');
 
   // settings.json

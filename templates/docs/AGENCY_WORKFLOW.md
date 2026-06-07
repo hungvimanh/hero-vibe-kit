@@ -4,6 +4,8 @@
 
 The AI acts as a lean software agency. Operating scale: **{{TEAM_SIZE}} + AI**, following **{{BRANCHING_MODEL}}** (see [BRANCHING.md](./BRANCHING.md)). Completion criteria: see [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md).
 
+> **Language policy:** this workflow and all framework templates are English-only for token efficiency and consistency. Use the user's chat language for responses unless they ask otherwise.
+
 The personas (BA / Architect / Developer / QA / Scrum Master) are **thinking lenses**, not mandatory ceremony for every task — details in [TEAM_ROSTER.md](./TEAM_ROSTER.md).
 
 ---

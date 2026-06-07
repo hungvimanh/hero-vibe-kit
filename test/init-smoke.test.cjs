@@ -27,7 +27,7 @@ function replaceManagedBlock(text, replacement) {
 
 test('init new project: files + no leftover placeholders + doctor passes', () => {
   const dir = mkdir();
-  const r = cli(['init', '--dir', dir, '--yes', '--skip-integrations', '--name', 'SmokeApp', '--lang', 'en']);
+  const r = cli(['init', '--dir', dir, '--yes', '--skip-integrations', '--name', 'SmokeApp']);
   assert.strictEqual(r.status, 0, r.stderr);
 
   for (const f of ['CLAUDE.md', 'AGENTS.md', '.claude/settings.json', '.claude/hooks/git-guard.cjs',
@@ -91,6 +91,9 @@ test('init new project: files + no leftover placeholders + doctor passes', () =>
 
   const settings = JSON.parse(fs.readFileSync(path.join(dir, '.claude', 'settings.json'), 'utf8'));
   assert.ok(JSON.stringify(settings.hooks).includes('git-guard.cjs'));
+  const config = JSON.parse(fs.readFileSync(path.join(dir, '.hero-vibe-kit', 'config.json'), 'utf8'));
+  assert.strictEqual(config.projectName, 'SmokeApp');
+  assert.ok(!Object.prototype.hasOwnProperty.call(config, 'lang'), 'new config should not include lang');
 
   const doc = cli(['doctor', '--dir', dir]);
   assert.strictEqual(doc.status, 0, 'doctor should pass: ' + doc.stdout + doc.stderr);
