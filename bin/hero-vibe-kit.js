@@ -29,7 +29,7 @@ Commands:
   update    Re-render managed regions, preserving your edits
   discover  Scan a brownfield project and create an AI discovery report
   brownfield Alias for discover
-  doctor    Validate the install (hooks, settings.json, doc links, tools)
+  doctor    Validate the install (hooks, settings.json, session state, doc links, tools)
   version   Print the version
   help      Show this help
 
@@ -43,6 +43,7 @@ Flags:
   --ide <target>        IDE target: claude-code | cursor | both (required with --yes)
   --yes                 Non-interactive; accept defaults
   --skip-integrations   Skip skills / gitnexus / serena prompts
+  --strict              (doctor only) treat warnings as failures — for CI use
 
 Assistance profile, project surface, verification level, and IDE target tune the installed workflow guidance.`);
 }
