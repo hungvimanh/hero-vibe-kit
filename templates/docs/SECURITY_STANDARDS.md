@@ -22,8 +22,9 @@
 - **Guardrails & refusal**: a policy for refusing forbidden content (PRD §5); resist abuse/jailbreaks.
 - **Model/plugin supply chain**: only use models/MCP/plugins from trusted sources; record versions.
 
-## 3. Process security (partly enforced by hooks)
+## 3. Process security (enforced by hooks)
 - `main` is protected; changes land via MR ([BRANCHING.md](./BRANCHING.md)). The `git-guard` hook blocks force-push, `commit --no-verify`, `reset --hard`.
+- The `workflow-check` hook gates `git commit` on Standard/Full paths behind a session checkpoint — ensures every commit is preceded by a phase-handoff artifact. Override with `HVK_SKIP_STATE_GATE=1` only for deliberate out-of-band commits.
 - Don't bypass hooks/CI "to go faster".
 
 ## 4. Automated tools (optional — degrade if absent)

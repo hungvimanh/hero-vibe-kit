@@ -74,6 +74,12 @@ Includes all of Standard path, plus:
 
 ---
 
+## CI integration (optional)
+
+`hero-vibe-kit doctor --strict` returns exit 1 if any compliance check fails (missing session, drift detected, workflow-check hook not wired). It is safe to add to CI for Standard/Full paths; tool-presence warnings (GitNexus, Serena absent) are always soft and never trigger strict failure.
+
+---
+
 ## Invariants (all paths)
 1. **Never claim "done/passing" without running a verification command** — evidence before assertions (`verification-before-completion`).
 2. **Tests must actually test behavior**, not empty/fully-mocked tests just to pass.
