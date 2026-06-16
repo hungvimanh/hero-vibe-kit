@@ -5,6 +5,40 @@ All notable changes to hero-vibe-kit are documented here. Format based on
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-06-16
+### Breaking
+- Requires `--ide` with `--yes` on `init` (no change since 1.2.0, but the harness relies on IDE target being set).
+
+### Added
+- **Harness engineering** — observable compliance layer via `session.json`, extended `doctor --strict`, and the `workflow-check` commit gate.
+  - `.hero-vibe-kit/session.json` seeded at `init`/`update`; written by `phase-handoff` at every real phase boundary. Stores path, phase, gate status, review budget, resume path, next action, and loop counters.
+  - `session.schema.json` ships in the package template for consumers to reference.
+  - `src/workflow-state.cjs` — zero-dependency session state module (`defaultSession`, `validateSession`, `readSession`, `writeSession`).
+  - `src/handoff-validate.cjs` — validates YAML frontmatter and required body sections in phase-handoff artifacts; used by `doctor` for drift detection. Legacy handoffs (no frontmatter) warn only.
+  - `doctor --strict` — escalates compliance warnings (missing session, drift, bloat, hook not wired) to failures for CI use. Tool-presence warnings (GitNexus, Serena) remain soft.
+  - `doctor` Workflow compliance section: session schema validation, ACTIVE_STATE.md line-count bloat check (>150 lines warns), latest handoff artifact validation, drift detection (session.phase vs handoff toPhase), gate/approval consistency.
+  - `workflow-check.cjs` hook (PreToolUse) — path-aware commit gate. For Standard/Full paths, blocks `git commit` unless staged changes include a session checkpoint (session update, ACTIVE_STATE update, or report artifact). Lean paths (read-only, fast, tiny, small) are always exempt. Fail-safe: any parse error, missing session, or git error exits 0. Override: `HVK_SKIP_STATE_GATE=1`.
+  - `workflow-check.cjs` wired in `.claude/settings.json`, `.cursor/hooks.json`, and installed by `init`/`update` to `.claude/hooks/` and `.cursor/hooks/`.
+
+- **Loop engineering** — deterministic phase/session loops via a strengthened `phase-handoff` skill.
+  - Added Router Integration table mapping AGENCY_WORKFLOW states to skill invocations.
+  - Added loop termination with `maxRetries: 2` and `retryCount` tracking; escalates to user when limit reached.
+  - Added fast-path section for Tiny/Small work (bounded inline, no canonical file required).
+  - Added Session Read/Write section: must checkpoint session.json at every Standard/Full boundary; write artifact first, session last.
+  - Added YAML frontmatter schema for canonical handoffs (`hvkHandoffVersion`, `workItem`, `mode`, `fromPhase`, `toPhase`, `status`, `approval`, `reportSlug`).
+  - Added Archive Rule: completed work moves to `docs/reports/`; ACTIVE_STATE row replaced with a one-line link.
+  - Resume fast-path documented in `CLAUDE.md`, `AGENTS.md`, `CURSOR-RULE.mdc`, `ACTIVE_STATE.md`, `CONTEXT_BUDGET.md`: read `session.json` first (~200 tokens) → `resumePath` → latest handoff only if needed. Read `ACTIVE_STATE.md` only to switch work items or when session is blank/stale.
+  - `AGENCY_WORKFLOW.md` Self-Prompting Router: Rule 7 — invoke `phase-handoff` at every real phase boundary.
+  - `HANDOFF_TEMPLATES.md`: optional YAML frontmatter section with complete schema.
+  - `PHASE_HANDOFF_PROTOCOL.md`: renamed future recommendation → installed skill; session checkpoint as step 8.
+  - `ARTIFACTS_AND_STORAGE.md`: added `session.json` row (derived from artifacts — not authoritative).
+  - `skills/using-superpowers`, `skills/executing-plans`, `skills/subagent-driven-development`: `phase-handoff` integration notes.
+
+### Changed
+- `DEFINITION_OF_DONE.md`: added CI integration note for `doctor --strict`.
+- `SECURITY_STANDARDS.md`: added `workflow-check` hook alongside `git-guard` in process-security section.
+- README: added "Harness & loop (v2.0)" section; updated feature list, hooks list, and commands table.
+
 ## [1.2.0] - 2026-06-15
 ### Added
 - Added first-class **Cursor** support alongside Claude Code: `init`/`update` now install `.cursor/rules/hero-vibe-kit.mdc`, `.cursor/hooks.json`, shared enforcement hooks, and selected process skills under `.cursor/skills/`.

@@ -1,6 +1,6 @@
 # hero-vibe-kit
 
-> An adaptive, AI-assisted software-development workflow for **Claude Code** and **Cursor** — profile-aware routing, real approval gates, pragmatic verification, enforcement hooks, selected process skills, and security/performance standards for new and brownfield projects.
+> An adaptive, AI-assisted software-development workflow for **Claude Code** and **Cursor** — profile-aware routing, real approval gates, pragmatic verification, harness & loop enforcement, selected process skills, and security/performance standards for new and brownfield projects.
 
 ## What it is
 
@@ -12,7 +12,8 @@
 - **Task router** — classify each request (Q&A, chore, bugfix, hotfix, change, refactor, feature, spike, UI/UX) and use the smallest path that fits.
 - **Real gates** — approval gates use Claude Code Plan Mode, not prose promises.
 - **Adaptive sub-agents** — sub-agents and reviews are escalation tools. Normal Coding Assistant work stays lean; high-risk, broad, or sensitive work gets targeted review.
-- **Enforcement hooks** — `git-guard` blocks unsafe git operations; `stop-reminder` nudges state updates when work changes.
+- **Enforcement hooks** — `git-guard` blocks unsafe git operations; `stop-reminder` nudges state updates; `workflow-check` gates commits on Standard/Full paths behind a session checkpoint.
+- **Loop engineering** — `phase-handoff` skill checkpoints `session.json` at every real phase boundary; `doctor --strict` escalates compliance gaps to CI failures.
 - **Selected bundled skills** — `init` installs only the vendored process skills needed for the active profile/surface/verification.
 - **Standards** — Definition of Done, branching model, communication protocol, artifact storage, security, performance, and AI-feature templates.
 
@@ -53,15 +54,16 @@ your-project/
                      # later specs/, plans/, reports/ as needed
   .claude/
     settings.json    # hooks merged into existing settings, not clobbered
-    hooks/           # git-guard.cjs, stop-reminder.cjs
+    hooks/           # git-guard.cjs, stop-reminder.cjs, workflow-check.cjs
     skills/          # selected bundled process skills for the active profile/surface
   .cursor/
     hooks.json       # beforeShellExecution + stop hooks for Cursor
-    hooks/           # git-guard.cjs, stop-reminder.cjs (shared logic)
+    hooks/           # git-guard.cjs, stop-reminder.cjs, workflow-check.cjs (shared logic)
     rules/           # hero-vibe-kit.mdc always-on workflow rule
     skills/          # same selected bundled process skills as .claude/skills/
   .hero-vibe-kit/
     config.json      # preset, branching, profile, surface, verification, integrations
+    session.json     # live workflow pointer: path/phase/gates/resumePath (written by phase-handoff)
 ```
 
 - **New project:** scaffolds the workflow from scratch.
@@ -147,6 +149,33 @@ Core process skills are bundled under `templates/skills/` as a curated MIT-licen
 
 Full details live in `docs/AGENCY_WORKFLOW.md`, the single source of truth for routing, gates, phase handoff, and review budgets.
 
+## Harness & loop (v2.0)
+
+v2.0.0 adds an observable compliance layer: session state, loop-safe phase handoff, and commit enforcement.
+
+### Session state
+
+`phase-handoff` writes `.hero-vibe-kit/session.json` at every real phase boundary. It contains the current path, phase, gate status, review budget, resume path, and next action. Resume read order (≈200 tokens):
+
+1. `.hero-vibe-kit/session.json` — get `workItem` / `phase` / `resumePath` / `nextAction`
+2. the file `resumePath` names — one focused resume artifact
+3. the latest handoff only if the resume artifact is insufficient
+
+Read `ACTIVE_STATE.md` only when switching work items or when the session is blank/stale.
+
+### Commit gate
+
+`workflow-check.cjs` (PreToolUse hook) blocks `git commit` on Standard/Full paths unless the staged changes include a state checkpoint (session update, ACTIVE_STATE update, or a report artifact). Lean paths (read-only, fast, tiny, small) are always exempt. Override: `HVK_SKIP_STATE_GATE=1`.
+
+### Doctor compliance
+
+```bash
+npx hero-vibe-kit doctor          # reports session validity, drift, bloat
+npx hero-vibe-kit doctor --strict # exit 1 on any compliance failure (CI-safe)
+```
+
+`--strict` escalates compliance warnings to failures. Tool-presence warnings (GitNexus, Serena absent) are always soft and never cause strict failure.
+
 ## Optional integrations
 
 | Tool | What it is | What init does | Tier |
@@ -166,7 +195,7 @@ Required: Node.js 18+ and Claude Code **or** Cursor. Everything else is optional
 | `update` | Re-render managed regions while preserving user edits and working files. |
 | `discover` | Scan a brownfield codebase and create `docs/BROWNFIELD_DISCOVERY.md`. |
 | `brownfield` | Alias for `discover`. |
-| `doctor` | Validate hooks, settings, doc links, and tool presence. |
+| `doctor` | Validate hooks, settings, session state, doc links, and tool presence. `--strict` for CI. |
 | `version` | Print the package version. |
 
 Flags:
@@ -181,6 +210,7 @@ Flags:
 --name <name>
 --yes
 --skip-integrations
+--strict      (doctor only) treat compliance warnings as failures — for CI use
 ```
 
 ## Update and customize

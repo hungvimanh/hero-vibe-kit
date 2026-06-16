@@ -5,7 +5,8 @@ Thanks for helping improve hero-vibe-kit! It eats its own dog food — contribut
 ## Repo layout
 ```
 bin/        CLI entry (hero-vibe-kit.js)
-src/        CLI logic (detect, config, render, merge, init, update, doctor, integrations, links)
+src/        CLI logic (detect, config, render, merge, init, update, doctor, integrations, links,
+            workflow-state, handoff-validate)
 templates/  what gets installed into a consumer project
   docs/      English-only framework docs (including ARTIFACTS_AND_STORAGE)
   common/.claude/ hooks + settings.json (Claude Code)
@@ -14,7 +15,8 @@ templates/  what gets installed into a consumer project
   skills/         VENDORED core process skills (MIT, from obra/superpowers) + NOTICE
   CLAUDE.md.tmpl AGENTS.md.tmpl
 presets/    solo | small-team | enterprise
-test/       node:test suites (hooks, links, init-smoke, manifest, skills-vendor)
+test/       node:test suites (hooks, workflow-check, handoff-validate, doctor-workflow,
+            workflow-state, links, init-smoke, manifest, skills-vendor)
 skills.manifest.json  vendored core (process) + referenced design/taste skills
 ```
 
@@ -28,8 +30,10 @@ skills.manifest.json  vendored core (process) + referenced design/taste skills
 
 ## Before opening a PR
 ```bash
-npm test          # hooks self-tests + link integrity + init/brownfield smoke
+npm test          # hooks + handoff-validate + doctor-workflow + workflow-state + link integrity + init/brownfield smoke
 node bin/hero-vibe-kit.js init --dir /tmp/x --yes --ide claude-code && node bin/hero-vibe-kit.js doctor --dir /tmp/x
+# For CI: add --strict to catch compliance gaps
+node bin/hero-vibe-kit.js doctor --dir /tmp/x --strict
 ```
 - Add a `CHANGELOG.md` entry under *Unreleased*.
 - Keep PRs scoped (see the task router); use Conventional Commits.
