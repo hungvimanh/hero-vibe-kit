@@ -6,7 +6,11 @@ Routing and gates live in [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md). Role behav
 
 ## 1. Purpose
 
-## 1.1 Artifact-first phase boundaries
+## 1.1 Loop boundaries and session checkpoints
+
+At every real phase boundary (Standard or Full), the Main Agent must invoke the `phase-handoff` skill. The skill writes the canonical handoff artifact, updates `resume.md`, and checkpoints `.hero-vibe-kit/session.json`. A fresh session then reads `session.json` first (~200 tokens) → the `resumePath` it names → the latest handoff only if needed. This three-step read order avoids rereading all of `ACTIVE_STATE.md` and keeps resume token cost minimal. Full protocol in [PHASE_HANDOFF_PROTOCOL.md](./PHASE_HANDOFF_PROTOCOL.md).
+
+## 1.2 Artifact-first phase boundaries
 
 The invariant is:
 

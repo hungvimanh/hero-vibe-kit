@@ -1579,11 +1579,11 @@ A short operational doc should include only:
 
 ---
 
-## Future `phase-handoff` skill recommendation
+## Installed `phase-handoff` skill
 
-A future `phase-handoff` skill should be small and deterministic.
+The `phase-handoff` skill is installed by `hero-vibe-kit init/update` under `.claude/skills/phase-handoff/SKILL.md` (and mirrored to `.cursor/skills/`). Invoke it at every real phase boundary.
 
-It should do only this:
+The skill does only this:
 
 1. identify mode, current phase, and next phase,
 2. select the right phase-specific template,
@@ -1592,31 +1592,19 @@ It should do only this:
 5. write or update the canonical handoff,
 6. archive the previous canonical version when updating,
 7. update `resume.md`,
-8. output the short next-phase prompt,
-9. recommend `/compact` or fresh session based on context pressure.
+8. checkpoint `.hero-vibe-kit/session.json` (phase, resumePath, nextAction, lastCheckpoint),
+9. output the short next-phase prompt,
+10. recommend `/compact` or fresh session based on context pressure.
 
-It should not:
+It does not:
 
 - implement code,
 - run broad exploration,
-- paste logs,
-- paste diffs,
+- paste logs or diffs,
 - rewrite the entire plan,
 - duplicate every artifact into the handoff.
 
-Suggested skill name:
-
-```text
-phase-handoff
-```
-
-Alternative names:
-
-```text
-checkpoint-and-handoff
-context-boundary
-handoff-before-next-phase
-```
+For optional YAML frontmatter on canonical handoffs (enables `doctor` drift detection), see [HANDOFF_TEMPLATES.md](./HANDOFF_TEMPLATES.md) § Optional YAML frontmatter.
 
 ---
 

@@ -41,6 +41,16 @@ When a request arrives, consult this table first to pick path, branch, required 
 | 8 | **Spike / Research / POC** | "feasibility study", "try an approach" | Timeboxed | No (timebox instead of gate) | `spike/` (throwaway) | clear timebox → output a **recommendation doc**; **do NOT merge POC code** into main | deep-research, gitnexus_exploring | conclusion + recommendation doc; POC code stays out of main |
 | 9 | **UI/UX Design / Redesign** | "redesign this page", "design the screens for X", "improve the UI" | Standard | **YES** | `design/` | pick profile → UX (if new screens) → pick ONE direction → lock tokens/design system → produce media (if profile needs it) → implement (incl. in-product help) → Visual QA | see [DESIGN_STANDARDS.md](./DESIGN_STANDARDS.md) | Design DoD ([DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md)) |
 
+### Harness & loop enforcement (overview)
+
+v2.0.0 adds an observable compliance layer on top of the router. Three mechanics work together:
+
+- **Session state** (`.hero-vibe-kit/session.json`) — a small JSON file the `phase-handoff` skill writes at every real phase boundary. It stores the current path, phase, gate status, review budget, resume path, and next action. The fresh-session read order is: `session.json` first (~200 tokens) → `resumePath` it names → latest handoff only if needed. Do **not** read all of `ACTIVE_STATE.md` just to locate current work.
+- **`doctor` compliance** — `hero-vibe-kit doctor` reports session validity, drift between session and handoff artifacts, and ACTIVE_STATE bloat. Use `doctor --strict` in CI for a fail-on-warn run.
+- **`workflow-check` hook** — a path-aware commit gate wired as a `PreToolUse` hook. For Standard/Full paths it blocks `git commit` unless the change includes a state checkpoint (session update, ACTIVE_STATE update, or a report artifact). Read-only/Fast/Tiny paths are exempt. `HVK_SKIP_STATE_GATE=1` is the emergency override. Legacy projects without a valid `session.json` get a fail-safe exit 0.
+
+Full storage layout for `session.json`: [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md).
+
 ### Self-Prompting Router
 
 Treat the router as the controller for the next prompt, not just as reference material. For every user request, the Main Agent must:
@@ -51,6 +61,7 @@ Treat the router as the controller for the next prompt, not just as reference ma
 4. identify which lenses or sub-agents, if any, are justified by risk, scope, and context cost,
 5. generate the next internal prompt or handoff prompt from [HANDOFF_TEMPLATES.md](./HANDOFF_TEMPLATES.md) when a handoff is needed,
 6. continue only when the current gate or Done criteria allow the workflow to advance.
+7. **At every real phase boundary — invoke the `phase-handoff` skill** to write the handoff artifact, update `resume.md`, and checkpoint `session.json`.
 
 Use this loop throughout the work:
 
@@ -62,7 +73,7 @@ User intent
   → prepare context and prompt contract
   → act directly or delegate
   → verify output
-  → update state/artifacts
+  → update state/artifacts (phase-handoff at real boundaries)
   → choose the next prompt
 ```
 
@@ -225,23 +236,23 @@ Use BA and Architect lenses for the gates; delegate implementation only for inde
 
 After each step, choose the next prompt/action from workflow state:
 
-| Current state | Next prompt/action |
-|---|---|
-| Request unclear | Ask one clarifying question using [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md). |
-| Task classified as Q&A | Answer read-only with cited evidence. |
-| Task classified as chore/docs/config | Use Fast path and verify relevant docs/build checks. |
-| Localized bugfix | Trigger `systematic-debugging` and write a repro test before fixing. |
-| Existing behavior change | Enter Standard path, run impact analysis, prepare the plan gate. |
-| Refactor | Enter Standard path, run impact analysis, preserve behavior, avoid manual rename. |
-| New feature idea | Generate the BA Discovery Prompt and produce the PRD/scope artifact. |
-| PRD approved | Generate the Architect Planning Prompt and produce the technical plan. |
-| Plan approved | Generate a bounded implementer prompt or act directly when delegation is not useful. |
-| Implementation done | Select the smallest review budget that fits risk; often targeted verification is enough. |
-| Sensitive surface touched | Generate a targeted Security Reviewer Prompt for the touched sensitive surface. |
-| Review failed | Generate a focused fix prompt using reviewer findings; re-review only the fix or disputed finding unless scope expanded. |
-| Verification passed | Generate the Handover / Retro Prompt and update state/artifacts. |
-| Context pressure high | Write/update the resume packet, run `/compact` if staying in-session, or start a fresh session from artifact links. |
-| Unexpected risk discovered | Stop, report the risk, and request the required gate or user decision. |
+| Current state | Next prompt/action | Loop action |
+|---|---|---|
+| Request unclear | Ask one clarifying question using [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md). | — |
+| Task classified as Q&A | Answer read-only with cited evidence. | — |
+| Task classified as chore/docs/config | Use Fast path and verify relevant docs/build checks. | Update `ACTIVE_STATE.md` when done. |
+| Localized bugfix | Trigger `systematic-debugging` and write a repro test before fixing. | Update `ACTIVE_STATE.md` when done. |
+| Existing behavior change | Enter Standard path, run impact analysis, prepare the plan gate. | Write session `path: standard` when starting. |
+| Refactor | Enter Standard path, run impact analysis, preserve behavior, avoid manual rename. | Write session `path: standard` when starting. |
+| New feature idea | Generate the BA Discovery Prompt and produce the PRD/scope artifact. | Write session `path: full`, `phase: discovery`. |
+| PRD approved | Generate the Architect Planning Prompt and produce the technical plan. | Invoke `phase-handoff`; write session `phase: planning`, `gates.prd.status: approved`. |
+| Plan approved | Generate a bounded implementer prompt or act directly when delegation is not useful. | Invoke `phase-handoff`; write session `phase: implementation`, `gates.plan.status: approved`. |
+| Implementation done | Select the smallest review budget that fits risk; often targeted verification is enough. | Invoke `phase-handoff`; write session `phase: review`, `resumePath`, `nextAction`. |
+| Sensitive surface touched | Generate a targeted Security Reviewer Prompt for the touched sensitive surface. | — |
+| Review failed | Generate a focused fix prompt using reviewer findings; re-review only the fix or disputed finding unless scope expanded. | Increment `session.loop.retryCount`; if `>= maxRetries`, escalate to user. |
+| Verification passed | Generate the Handover / Retro Prompt and update state/artifacts. | Invoke `phase-handoff`; write session `phase: delivery`. |
+| Context pressure high | Write/update the resume packet, run `/compact` if staying in-session, or start a fresh session from artifact links. | Invoke `phase-handoff` checkpoint; advance `lastCheckpoint`. |
+| Unexpected risk discovered | Stop, report the risk, and request the required gate or user decision. | Invoke `phase-handoff` to record state; write `nextAction` before stopping. |
 
 ---
 

@@ -177,6 +177,10 @@ Task: Add auth-sensitive fullstack feature with API contract changes.
 - Re-review only the fix or the disputed finding, not the entire change, unless the fix expanded scope.
 - Push back on incorrect findings with evidence.
 
+## Phase Boundary
+
+When all independent implementation streams complete and integration review is warranted, invoke `phase-handoff` to capture the integration state before moving to QA or handover. This is optional for single-stream low-risk work but required for Standard/Full paths with multiple independent tracks.
+
 ## Integration
 
 Useful companion skills:
@@ -185,6 +189,7 @@ Useful companion skills:
 - **superpowers:verification-before-completion** - Ensures final claims match evidence.
 - **superpowers:using-git-worktrees** - Use when parallel agents may conflict or the user requests isolation.
 - **superpowers:finishing-a-development-branch** - Use when finishing branch/MR work.
+- **phase-handoff** - Invoke at the implementation → review boundary after all streams complete.
 
 Subagents may use **superpowers:test-driven-development** when the selected workflow requires tests-first development or the task is a bugfix/behavior change.
 

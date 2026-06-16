@@ -42,7 +42,29 @@ Next action:
 Artifact/log paths:
 ```
 
-## 1.1 Phase-boundary artifact templates
+## 1.1 Optional YAML frontmatter for canonical handoffs
+
+Add this block at the top of any canonical handoff under `docs/reports/<slug>/handoffs/` to enable machine-readable validation by `hero-vibe-kit doctor`:
+
+```yaml
+---
+hvkHandoffVersion: 1
+workItem: <slug-of-the-work-item>
+mode: tiny | small | standard | full
+fromPhase: discovery | planning | implementation | review | delivery
+toPhase: discovery | planning | implementation | review | delivery
+status: green | yellow | red
+approval: draft | approved | auto-approved | blocked
+reportSlug: YYYY-MM-DD-<slug>
+---
+```
+
+Rules:
+- All fields are required when the frontmatter block is present.
+- Legacy handoffs without frontmatter emit warnings only — they remain valid.
+- The validator (`handoff-validate`) checks required keys and consistency with `session.json` when both exist.
+
+## 1.2 Phase-boundary artifact templates
 
 Use these operational templates when one workflow phase hands off to the next. Canonical handoff artifacts live under `docs/reports/YYYY-MM-DD-<slug>/handoffs/`. Keep `resume.md` short: it should point to the current phase report, active handoff file, latest gate decision, and next action instead of duplicating the report.
 

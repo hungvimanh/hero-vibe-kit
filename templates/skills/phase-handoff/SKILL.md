@@ -42,6 +42,87 @@ Only hand off at a real boundary:
 - Required approval, evidence, or blocker state has changed.
 - Continuing without a reset would hide assumptions or stale context.
 
+## Router Integration
+
+The Self-Prompting Router in `AGENCY_WORKFLOW.md` drives when to invoke this skill. Map router states to skill actions:
+
+| Router state | Loop action |
+| --- | --- |
+| PRD approved | Invoke `phase-handoff` (discovery → planning boundary); write session `phase: planning` |
+| Plan approved | Invoke `phase-handoff` (planning → implementation boundary); write session `phase: implementation` |
+| Implementation done | Invoke `phase-handoff` (implementation → review boundary); write session `phase: review` |
+| Review passed | Invoke `phase-handoff` (review → delivery boundary); write session `phase: delivery` |
+| Context pressure high | Invoke `phase-handoff` (in-phase checkpoint); advance `lastCheckpoint` |
+| Blocker / unexpected risk | Invoke `phase-handoff` to record state; set session `phase` and `nextAction` before stopping |
+
+At any real phase boundary, the Main Agent **must** invoke `phase-handoff` before starting the next phase. Self-prompting does not carry state forward through chat history — only the artifact and session pointer do.
+
+## Loop Termination
+
+For review/fix loops, the skill tracks retry attempts via the session `loop` counter:
+
+- `loop.retryCount` increments each time the same phase re-enters after a failed review.
+- `loop.maxRetries` defaults to `2`.
+- When `loop.retryCount >= loop.maxRetries`: stop, escalate to the user, and record the blocker in session `nextAction`.
+
+Always reset `loop.retryCount` to `0` when a phase succeeds and transitions forward.
+
+## Fast Path (Tiny/Small)
+
+For Tiny or Small mode:
+- Inline bounded output is sufficient — no canonical file under `docs/reports/` required.
+- Do not create a report folder unless context pressure, evidence, or a real handoff requires it.
+- Do update `ACTIVE_STATE.md` when the task unit completes.
+- Session state update is optional for Tiny; recommended for Small if the work spans sessions.
+
+## Session Read/Write
+
+At every real boundary (Standard or Full), the skill **must** update `.hero-vibe-kit/session.json`:
+
+**Minimum required fields at each boundary:**
+- `phase` — the current phase (e.g., `"implementation"`)
+- `resumePath` — path to the latest `resume.md` (the fresh-session entry point)
+- `nextAction` — the first concrete action for the next phase
+- `lastCheckpoint` — ISO timestamp of this update
+
+**Also update when relevant:**
+- `workItem` — the slug or identifier of the current work item
+- `path` — `read-only` | `fast` | `standard` | `full` | `timeboxed`
+- `mode` — `tiny` | `small` | `standard` | `full`
+- `reviewBudget` — `none` | `single-combined-review` | `targeted-specialist-review` | `full-multi-stage-review`
+- `reportSlug` — the `docs/reports/YYYY-MM-DD-<slug>` directory name
+- `canonicalHandoff` — path to the latest handoff artifact
+- `gates.prd.status` and `gates.plan.status` when a gate is approved or blocked
+- `loop.retryCount` on review failures
+
+**Write order at a boundary:**
+1. Write supporting artifacts first (logs, reviews).
+2. Write the canonical handoff artifact.
+3. Update `resume.md` as a short pointer.
+4. Write `session.json` last — only after the artifacts are durable.
+
+**Source-of-truth rule:** handoff artifacts and `ACTIVE_STATE.md` are authoritative. `session.json` is a derived convenience pointer. On any conflict between session and artifacts, trust the artifacts and flag the session as stale (set `nextAction` to `"verify session vs handoff — potential drift"`).
+
+**Advancing `lastCheckpoint` also satisfies the `workflow-check` commit gate for Standard/Full paths** — so updating the session is the cheapest way to unblock a commit.
+
+## Gate Status Updates
+
+When a PRD or plan gate is approved:
+- Set `gates.prd.status: "approved"` and `gates.prd.evidence: "<approval source>"` when the PRD gate passes.
+- Set `gates.plan.status: "approved"` and `gates.plan.evidence: "<approval source>"` when the plan gate passes.
+- Set `gates.*.status: "blocked"` when a gate is blocked with a reason in `nextAction`.
+- For Fast/Read-only paths: leave `gates.*.required: false` and `gates.*.status: "not-applicable"`.
+
+## Archive Rule
+
+When a work item completes:
+1. Move all durable detail to `docs/reports/<slug>/`.
+2. Replace the item's row in `ACTIVE_STATE.md` with a one-line link: `- [slug](docs/reports/<slug>/resume.md) — completed YYYY-MM-DD`.
+3. Keep `ACTIVE_STATE.md` as a short index (active rows only).
+4. Reset session to a blank default for the next work item.
+
+Do not let `ACTIVE_STATE.md` grow as an append log — that defeats its purpose as a short cross-session index.
+
 ## Required Inputs
 
 Capture only what the next phase needs:
@@ -64,7 +145,7 @@ Capture only what the next phase needs:
 
 ## Base Handoff Shape
 
-Use this shape for Standard or Full mode:
+Use this shape for Standard or Full mode. See also optional YAML frontmatter in [HANDOFF_TEMPLATES.md](../../docs/HANDOFF_TEMPLATES.md).
 
 ```markdown
 # Phase Handoff
@@ -153,3 +234,5 @@ Always output artifact paths and the next-phase prompt. Do not include full logs
 - Handing off in the middle of one unresolved thought.
 - Pasting entire logs instead of naming the evidence and key result.
 - Leaving the next phase to infer the first action.
+- Forgetting to update `session.json` at a Standard/Full boundary (blocks the commit gate).
+- Updating session before the handoff artifact is written (write artifact first, session last).

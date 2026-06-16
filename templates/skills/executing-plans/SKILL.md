@@ -29,6 +29,8 @@ For each task:
 3. Run verifications as specified
 4. Mark as completed
 
+After completing a task group (a set of related tasks that form a logical unit), checkpoint durable state: update `ACTIVE_STATE.md` or, at a real phase boundary on Standard/Full paths, invoke `phase-handoff`. Do **not** invoke `phase-handoff` for trivial same-task continuations or minor follow-up edits within the same phase.
+
 ### Step 3: Complete Development
 
 After all tasks complete and verified:
