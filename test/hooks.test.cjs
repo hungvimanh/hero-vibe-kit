@@ -86,3 +86,110 @@ test('workflow-check: HVK_SKIP_STATE_GATE=1 override exits 0', () => {
 test('workflow-check: cursor non-commit exits 0', () => {
   assert.strictEqual(run(WC, wcCursor('git status', process.cwd())).code, 0);
 });
+
+const EG = path.join(__dirname, '..', 'templates', 'common', '.claude', 'hooks', 'edit-gate.cjs');
+const edit = (filePath, cwd) => ({ tool_name: 'Edit', tool_input: { file_path: filePath }, cwd });
+const write = (filePath, cwd) => ({ tool_name: 'Write', tool_input: { file_path: filePath }, cwd });
+
+function egDir(session) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hvk-eg-'));
+  fs.mkdirSync(path.join(dir, '.hero-vibe-kit'), { recursive: true });
+  if (session) fs.writeFileSync(path.join(dir, '.hero-vibe-kit', 'session.json'), JSON.stringify(session));
+  return dir;
+}
+
+const stdSession = (phase, planStatus, planRequired = true) => ({
+  schemaVersion: 1, path: 'standard', mode: 'standard', phase,
+  gates: { plan: { required: planRequired, status: planStatus } },
+});
+
+// Fail-open cases
+test('edit-gate: no session.json exits 0', () => {
+  const dir = egDir(null);
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: lean path exits 0', () => {
+  const dir = egDir({ schemaVersion: 1, path: 'fast', mode: null, phase: 'planning' });
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: tiny mode exits 0', () => {
+  const dir = egDir({ schemaVersion: 1, path: null, mode: 'tiny', phase: 'planning' });
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: non-Edit/Write tool exits 0', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  const r = run(EG, { tool_name: 'Bash', tool_input: { command: 'ls' }, cwd: dir });
+  assert.strictEqual(r.code, 0);
+});
+
+// Safe file whitelist
+test('edit-gate: docs/ file always allowed', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'docs/README.md'), dir)).code, 0);
+});
+test('edit-gate: .json file always allowed', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'package.json'), dir)).code, 0);
+});
+test('edit-gate: .config.ts file always allowed', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'vite.config.ts'), dir)).code, 0);
+});
+test('edit-gate: .hero-vibe-kit/ file always allowed', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  assert.strictEqual(run(EG, edit(path.join(dir, '.hero-vibe-kit/session.json'), dir)).code, 0);
+});
+
+// Blocking cases
+test('edit-gate: planning phase blocks src/ edit', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  const r = run(EG, edit(path.join(dir, 'src/foo.js'), dir));
+  assert.strictEqual(r.code, 2);
+  assert.match(r.err, /⛔/);
+});
+test('edit-gate: discovery phase blocks src/ edit', () => {
+  const dir = egDir(stdSession('discovery', 'pending'));
+  const r = run(EG, edit(path.join(dir, 'src/foo.js'), dir));
+  assert.strictEqual(r.code, 2);
+});
+test('edit-gate: null phase + required plan gate blocks', () => {
+  const dir = egDir(stdSession(null, 'pending', true));
+  const r = run(EG, edit(path.join(dir, 'src/foo.js'), dir));
+  assert.strictEqual(r.code, 2);
+});
+test('edit-gate: null phase + plan not required allows', () => {
+  const dir = egDir(stdSession(null, 'pending', false));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: plan gate pending blocks', () => {
+  const dir = egDir(stdSession('implementation', 'pending'));
+  const r = run(EG, edit(path.join(dir, 'src/foo.js'), dir));
+  assert.strictEqual(r.code, 2);
+});
+
+// Allowed cases
+test('edit-gate: implementation phase + approved gate allows', () => {
+  const dir = egDir(stdSession('implementation', 'approved'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: review phase + approved gate allows', () => {
+  const dir = egDir(stdSession('review', 'approved'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: delivery phase + approved gate allows', () => {
+  const dir = egDir(stdSession('delivery', 'approved'));
+  assert.strictEqual(run(EG, edit(path.join(dir, 'src/foo.js'), dir)).code, 0);
+});
+test('edit-gate: Write tool also blocked on planning phase', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  assert.strictEqual(run(EG, write(path.join(dir, 'src/foo.js'), dir)).code, 2);
+});
+test('edit-gate: HVK_SKIP_EDIT_GATE=1 overrides block', () => {
+  const dir = egDir(stdSession('planning', 'pending'));
+  const r = spawnSync('node', [EG], {
+    input: JSON.stringify(edit(path.join(dir, 'src/foo.js'), dir)),
+    encoding: 'utf8',
+    env: { ...process.env, HVK_SKIP_EDIT_GATE: '1' },
+  });
+  assert.strictEqual(r.status, 0);
+});
