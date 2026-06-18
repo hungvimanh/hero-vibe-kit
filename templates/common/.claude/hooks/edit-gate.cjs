@@ -9,7 +9,7 @@
  *   2. phase = null AND gates.plan.required = true
  *   3. gates.plan.required = true AND gates.plan.status ≠ approved
  *
- * Lean paths (read-only, fast, null) → always exit 0.
+ * Non-standard/full paths → always exit 0.
  * Safe file paths → always exit 0.
  * HVK_SKIP_EDIT_GATE=1 → emergency override.
  * Any read/parse error → fail-safe exit 0.
@@ -19,8 +19,6 @@ const path = require('path');
 
 const SAFE_PREFIXES = ['docs/', 'i18n/', 'tests/', '__tests__/', '.hero-vibe-kit/'];
 const SAFE_PATTERNS = [/\.config\.[^/]+$/, /\.json$/];
-const LEAN_PATHS = ['read-only', 'fast', null, undefined];
-const LEAN_MODES = ['tiny', 'small', null, undefined];
 const BLOCKING_PHASES = ['planning', 'discovery'];
 
 let raw = '';
@@ -41,8 +39,6 @@ process.stdin.on('end', () => {
   let session;
   try { session = JSON.parse(fs.readFileSync(sessionPath, 'utf8')); } catch (_) { process.exit(0); }
   if (!session || typeof session !== 'object') process.exit(0);
-
-  if (LEAN_PATHS.includes(session.path) || LEAN_MODES.includes(session.mode)) process.exit(0);
 
   const gated = ['standard', 'full'];
   if (!gated.includes(session.path) && !gated.includes(session.mode)) process.exit(0);

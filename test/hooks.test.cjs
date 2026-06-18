@@ -184,6 +184,13 @@ test('edit-gate: Write tool also blocked on planning phase', () => {
   const dir = egDir(stdSession('planning', 'pending'));
   assert.strictEqual(run(EG, write(path.join(dir, 'src/foo.js'), dir)).code, 2);
 });
+test('edit-gate: standard path without mode field is still blocked', () => {
+  const dir = egDir({ schemaVersion: 1, path: 'standard', phase: 'planning',
+    gates: { plan: { required: true, status: 'pending' } } });
+  // No 'mode' key — mode is undefined
+  const r = run(EG, edit(path.join(dir, 'src/foo.js'), dir));
+  assert.strictEqual(r.code, 2);
+});
 test('edit-gate: HVK_SKIP_EDIT_GATE=1 overrides block', () => {
   const dir = egDir(stdSession('planning', 'pending'));
   const r = spawnSync('node', [EG], {
