@@ -284,3 +284,12 @@ test('session-bridge: silent on second call when flag exists', () => {
   assert.strictEqual(r.code, 0);
   assert.strictEqual(r.err, '');
 });
+
+test('stop-reminder: removes session-injected.flag if it exists', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hvk-sr-'));
+  fs.mkdirSync(path.join(dir, '.hero-vibe-kit'), { recursive: true });
+  const flagPath = path.join(dir, '.hero-vibe-kit', 'session-injected.flag');
+  fs.writeFileSync(flagPath, '');
+  run(STOP, { hook_event_name: 'Stop', stop_hook_active: false, cwd: dir });
+  assert.ok(!fs.existsSync(flagPath));
+});
