@@ -5,6 +5,16 @@ All notable changes to hero-vibe-kit are documented here. Format based on
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-19
+### Added
+- **Enforcement hooks** — hard enforcement gates that block Edit/Write tool calls before code is written without authorization. Converts advisory workflow from "Claude should follow" to "Claude must follow".
+  - `edit-gate.cjs` — new PreToolUse hook (matcher: Edit, Write). Blocks source file edits on `standard`/`full` paths when phase is `planning`/`discovery`, or plan gate is not `approved`. Fail-open on missing `session.json`. Emergency override: `HVK_SKIP_EDIT_GATE=1`.
+  - `session-bridge.cjs` — new PostToolUse hook. On the first tool call of each session, reads `session.json` and injects current work item, path, phase, plan gate, and next action into model context via stderr. Uses a flag file (`.hero-vibe-kit/session-injected.flag`) to fire only once per session; cleaned up by `stop-reminder` at session end.
+  - `workflow-check.cjs` — extended to intercept `git add` before commit: warns via stderr when non-checkpoint files are staged on a gated path and no checkpoint file is staged yet.
+  - `stop-reminder.cjs` — extended to clean up `session-injected.flag` at session end so `session-bridge` fires fresh on the next session.
+  - `settings.json` — added Edit, Write, and PostToolUse (`.*`) hook matchers alongside existing Bash/Stop hooks.
+- **Router table Enforcement column** (`AGENCY_WORKFLOW.md`) — distinguishes `hook` (hard block via PreToolUse, bypassable only with env override) from `convention` (soft, model discipline) for each workflow path.
+
 ## [2.0.0] - 2026-06-16
 ### Breaking
 - Requires `--ide` with `--yes` on `init` (no change since 1.2.0, but the harness relies on IDE target being set).
