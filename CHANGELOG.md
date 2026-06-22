@@ -8,6 +8,7 @@ All notable changes to hero-vibe-kit are documented here. Format based on
 ## [2.1.1] - 2026-06-22
 ### Fixed
 - **`--ide=value` syntax** — `parseArgs` in `bin/hero-vibe-kit.js` now handles `--flag=value` form. Previously, `--ide=claude-code` was parsed as key `"ide=claude-code"` instead of `"ide"`, causing `Invalid --ide: undefined` at init time.
+- **Interactive IDE prompt** — `collectProfileConfig` was using the return value of `ask.choice` (a string like `"claude-code"`) as an array index, producing `undefined`. Now assigns the return value directly.
 
 ## [2.1.0] - 2026-06-19
 ### Added

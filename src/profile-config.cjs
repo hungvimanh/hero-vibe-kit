@@ -133,8 +133,7 @@ async function collectProfileConfig(input, flags, ask, auto) {
     if (auto) {
       throw new Error('Non-interactive init requires --ide (claude-code | cursor | both).');
     }
-    const idx = await ask.choice('IDE target:', IDE_CHOICES, 0);
-    promptFlags.ide = IDE_CHOICES[idx];
+    promptFlags.ide = await ask.choice('IDE target:', IDE_CHOICES, 0);
   }
 
   return normalizeProfileConfig(collected, promptFlags, { requireExplicitIde: false });
