@@ -1,17 +1,17 @@
-# CLAUDE.md — hero-vibe-kit (framework repo)
+# CLAUDE.md — hero-mmt-kit (framework repo)
 
-This repository **is** the hero-vibe-kit framework — not a consumer project. (It dogfoods its own workflow.)
+This repository/branch **is** the hero-mmt-kit framework — not a consumer project. (It dogfoods its own workflow.) hero-mmt-kit is a hard fork of hero-vibe-kit: hero-vibe-kit is the AI-led agency workflow kit; hero-mmt-kit is the human-led, Claude-Code-only coding assistant kit. No shared migration path — don't cherry-pick between the two.
 
 - **Contributor guide:** [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Workflow template sources:** `templates/docs/AGENCY_WORKFLOW.md`; consumer projects receive English framework docs.
-- **CLI:** `bin/hero-vibe-kit.js` · logic in `src/` · what gets installed into a consumer lives in `templates/`
+- **Workflow skill sources:** `templates/skills/using-hero/SKILL.md` (overview) and the 6 operative `hero-*` skills; consumer projects receive the same skills installed into `.claude/skills/`.
+- **CLI:** `bin/hero-mmt-kit.js` · logic in `src/` · what gets installed into a consumer lives in `templates/`
 - **Tests:** `npm test` (hook self-tests + doc-link integrity + init/brownfield smoke)
 
 ## House rules
 - **Zero runtime dependencies** — CLI uses only Node built-ins.
 - **English-only templates** — framework instructions, skills, rules, and templates live in English. Assistants should reply in the user's chat language unless asked otherwise.
 - **Placeholders**: `{{...}}` are rendered at init; `<TBD>` are for the end user to fill.
-- Never instruct users to hand-edit inside `<!-- hero-vibe-kit:start/end -->` managed regions.
+- Never instruct users to hand-edit inside `<!-- hero-mmt-kit:start/end -->` managed regions.
 - **Vendored skills**: only the curated MIT-licensed core process skills live under `templates/skills/` (with `NOTICE` attribution); they ship in the package and install into a consumer's `.claude/skills/`. Reference everything else (design/taste, GitNexus, Serena) in `skills.manifest.json` — do not redistribute non-permissive or unattributed third-party skills/tools.
 
 <!-- gitnexus:start -->

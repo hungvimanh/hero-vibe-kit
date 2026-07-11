@@ -18,8 +18,8 @@ process.stdin.on('end', () => {
   try { payload = JSON.parse(raw || '{}'); } catch (_) { process.exit(0); }
 
   const cwd = (payload && payload.cwd) || process.cwd();
-  const flagPath = path.join(cwd, '.hero-vibe-kit', 'session-injected.flag');
-  const sessionPath = path.join(cwd, '.hero-vibe-kit', 'session.json');
+  const flagPath = path.join(cwd, '.hero-mmt-kit', 'session-injected.flag');
+  const sessionPath = path.join(cwd, '.hero-mmt-kit', 'session.json');
 
   if (fs.existsSync(flagPath)) process.exit(0);
 
@@ -27,15 +27,13 @@ process.stdin.on('end', () => {
   try { session = JSON.parse(fs.readFileSync(sessionPath, 'utf8')); } catch (_) { process.exit(0); }
   if (!session || typeof session !== 'object') process.exit(0);
 
-  const planStatus = (session.gates && session.gates.plan && session.gates.plan.status) || 'n/a';
   const sep = '─'.repeat(55);
   process.stderr.write([
     sep,
-    '[hero-vibe-kit] Session state (auto-injected)',
-    `  Work item : ${session.workItem ?? '(none)'}`,
-    `  Path      : ${session.path ?? '(not set)'} / Phase: ${session.phase ?? '(not set)'}`,
-    `  Plan gate : ${planStatus}`,
-    `  Next      : ${session.nextAction ?? '(none)'}`,
+    '[hero-mmt-kit] Session state (auto-injected)',
+    `  Current skill : ${session.currentSkill ?? '(none)'}`,
+    `  Resume path   : ${session.resumePath ?? '(not set)'}`,
+    `  Next action   : ${session.nextAction ?? '(none)'}`,
     sep,
   ].join('\n') + '\n');
 

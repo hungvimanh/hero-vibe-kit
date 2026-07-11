@@ -1,13 +1,13 @@
-# AGENTS.md — hero-vibe-kit (framework repo)
+# AGENTS.md — hero-mmt-kit (framework repo)
 
-This repository is the hero-vibe-kit framework itself. Any agent working here:
+This repository/branch is the hero-mmt-kit framework itself — a hard fork of hero-vibe-kit. hero-vibe-kit is the AI-led agency workflow kit; hero-mmt-kit is the human-led, Claude-Code-only coding assistant kit. No shared migration path — don't cherry-pick between the two. Any agent working here:
 
 - Read [CONTRIBUTING.md](CONTRIBUTING.md) and [CLAUDE.md](CLAUDE.md) first.
-- Workflow template sources live in `templates/docs/`; consumer projects receive English framework docs and agents reply in the user's chat language.
-- CLI entry: `bin/hero-vibe-kit.js`; logic in `src/`; installable content in `templates/`.
+- Workflow skill sources live in `templates/skills/using-hero/` and the `hero-*` skills; consumer projects receive the same skills installed into `.claude/skills/`.
+- CLI entry: `bin/hero-mmt-kit.js`; logic in `src/`; installable content in `templates/`.
 - Run `npm test` before proposing changes. Keep framework templates English-only. Zero runtime deps.
 
-> Note: the `<!-- hero-vibe-kit:start/end -->` managed-block convention and the `git-guard`/`stop-reminder`
+> Note: the `<!-- hero-mmt-kit:start/end -->` managed-block convention and the `git-guard`/`session-bridge`/`stop-reminder`
 > hooks are what this framework installs into *consumer* projects (see `templates/`).
 
 <!-- gitnexus:start -->

@@ -11,10 +11,10 @@ node_modules/
 .agents/
 .claude/skills/
 
-# hero-vibe-kit per-project runtime config (created by `init` in a consumer repo)
-.hero-vibe-kit/
+# hero-mmt-kit per-project runtime config (created by `init` in a consumer repo)
+.hero-mmt-kit/
 # but track the schema template that ships in the package
-!templates/.hero-vibe-kit/
+!templates/.hero-mmt-kit/
 
 # OS / editor
 .DS_Store

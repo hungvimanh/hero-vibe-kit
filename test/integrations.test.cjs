@@ -4,15 +4,14 @@ const assert = require('node:assert');
 
 const { installableSources, wantsDesignIntegration } = require('../src/integrations.cjs');
 
-test('wantsDesignIntegration installs design for vibecode regardless of surface', () => {
-  assert.strictEqual(wantsDesignIntegration({ assistanceProfile: 'vibecode', projectSurface: 'backend' }), true);
-  assert.strictEqual(wantsDesignIntegration({ assistanceProfile: 'vibecode', projectSurface: 'fullstack' }), true);
+test('wantsDesignIntegration reflects the taste skill opt-in', () => {
+  assert.strictEqual(wantsDesignIntegration({ installTasteSkill: true }), true);
+  assert.strictEqual(wantsDesignIntegration({ installTasteSkill: false }), false);
 });
 
-test('wantsDesignIntegration installs design for coding assistant frontend/fullstack only', () => {
-  assert.strictEqual(wantsDesignIntegration({ assistanceProfile: 'coding-assistant', projectSurface: 'backend' }), false);
-  assert.strictEqual(wantsDesignIntegration({ assistanceProfile: 'coding-assistant', projectSurface: 'frontend' }), true);
-  assert.strictEqual(wantsDesignIntegration({ assistanceProfile: 'coding-assistant', projectSurface: 'fullstack' }), true);
+test('wantsDesignIntegration defaults to false when unset', () => {
+  assert.strictEqual(wantsDesignIntegration({}), false);
+  assert.strictEqual(wantsDesignIntegration(null), false);
 });
 
 test('installableSources filters TBD sources and deduplicates install sources', () => {

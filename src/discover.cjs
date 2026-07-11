@@ -16,7 +16,7 @@ const CONFIG_FILES = new Set([
   '.github/workflows', '.gitlab-ci.yml', 'Makefile', 'turbo.json', 'nx.json', 'pyproject.toml', 'requirements.txt',
   'go.mod', 'Cargo.toml', 'pom.xml', 'build.gradle', 'settings.gradle'
 ]);
-const SKIP_DIRS = new Set(['.git', 'node_modules', '.hero-vibe-kit', '.claude', '.serena', '.gitnexus', 'dist', 'build', '.next', 'out', 'coverage', 'vendor']);
+const SKIP_DIRS = new Set(['.git', 'node_modules', '.hero-mmt-kit', '.claude', '.serena', '.gitnexus', 'dist', 'build', '.next', 'out', 'coverage', 'vendor']);
 
 function rel(target, p) { return path.relative(target, p).split(path.sep).join('/'); }
 function hasMarkdown(name) { return /\.mdx?$/i.test(name); }
@@ -128,14 +128,14 @@ function contentEn(date, d, s) {
       '- Are there docs outside the repository that should be linked as references?',
     ].join('\n')),
     section('6. Assumptions register', '- `<TBD>`'),
-    section('7. Notes outside the managed block', 'Add human-written corrections below or above this managed block. Re-run `hero-vibe-kit discover` to refresh only the generated block.'),
+    section('7. Notes outside the managed block', 'Add human-written corrections below or above this managed block. Re-run `hero-mmt-kit discover` to refresh only the generated block.'),
     `Brownfield signal: ${d.brownfield ? 'existing project/code detected' : 'no code detected by lightweight scan'}`,
   ].join('\n');
 }
 
 async function discover(opts) {
   const { target } = opts;
-  log.title('hero-vibe-kit · brownfield discovery');
+  log.title('hero-mmt-kit · brownfield discovery');
   log.step(`Target : ${target}`);
 
   const date = new Date().toISOString().slice(0, 10);
@@ -153,7 +153,7 @@ async function discover(opts) {
   log.title('Next steps');
   console.log('  1. Ask the AI to read docs/BROWNFIELD_DISCOVERY.md before changing code.');
   console.log('  2. Fill the open questions and assumptions after the first real discovery pass.');
-  console.log('  3. Run: npx hero-vibe-kit doctor');
+  console.log('  3. Run: npx hero-mmt-kit doctor');
 }
 
 module.exports = { discover, scan };

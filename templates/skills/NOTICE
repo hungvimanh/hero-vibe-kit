@@ -20,22 +20,32 @@ Vendored skills from obra/superpowers:
   subagent-driven-development, using-git-worktrees,
   finishing-a-development-branch, using-superpowers
 
-Framework-authored skills shipped by hero-vibe-kit:
-  phase-handoff, security-review
+Note on subagent-driven-development: this skill received a selective backport of
+newer upstream additions (durable progress ledger, task-brief/review-package
+scripts, explicit model-selection discipline, reviewer anti-pre-judging guidance)
+on top of hero-mmt-kit's own Review Budget tiering system, which upstream does not
+have. The backported additions remain obra/superpowers-origin content under MIT;
+Review Budget tiering is a hero-mmt-kit original design choice.
+
+Framework-authored skills shipped by hero-mmt-kit:
+  security-review, using-hero, hero-planning, hero-coding, hero-reviewing,
+  hero-unit-test, hero-security, hero-strict
 
 Design / visual-direction skills are NOT vendored — they are referenced in
 skills.manifest.json and installed from their original sources on demand.
 
-The concise-output skill is an original hero-vibe-kit rewrite inspired by the
+Concise reporting principles in the hero-* workflow skills are inspired by the
 compression-mode concept from:
 
   caveman — https://github.com/JuliusBrussee/caveman
   Copyright (c) Julius Brussee
   License: MIT
 
-No text was copied verbatim; only the underlying concept (compress output,
-preserve technical accuracy, revert to full clarity for safety-critical
-content) was adapted. Reproduced below per MIT attribution practice.
+hero-mmt-kit no longer ships concise-output as a standalone skill. Its idea
+(compress output, preserve technical accuracy, revert to full clarity for
+safety-critical content) is integrated directly into using-hero and the hero-*
+reporting guidance. No text was copied verbatim; only the underlying concept
+was adapted. Reproduced below per MIT attribution practice.
 
 ---------------------------------------------------------------------------
 MIT License

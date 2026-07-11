@@ -2,53 +2,28 @@
 const fs = require('fs');
 const path = require('path');
 
-const SESSION_FILE = path.join('.hero-vibe-kit', 'session.json');
-
-const VALID_PATH = ['read-only', 'fast', 'standard', 'full', 'timeboxed', null];
-const VALID_MODE = ['tiny', 'small', 'standard', 'full', null];
-const VALID_PHASE = ['discovery', 'planning', 'implementation', 'review', 'delivery', null];
-const VALID_REVIEW_BUDGET = ['none', 'single-combined-review', 'targeted-specialist-review', 'full-multi-stage-review', null];
-const VALID_GATE_STATUS = ['not-applicable', 'pending', 'approved', 'blocked'];
+const SESSION_FILE = path.join('.hero-mmt-kit', 'session.json');
 
 function defaultSession() {
   return {
     schemaVersion: 1,
-    workItem: null,
-    path: null,
-    mode: null,
-    phase: null,
-    reviewBudget: null,
-    gates: {
-      prd: { required: false, status: 'not-applicable', evidence: null },
-      plan: { required: false, status: 'not-applicable', evidence: null },
-    },
-    reportSlug: null,
-    canonicalHandoff: null,
+    currentSkill: null,
+    lastCheckpoint: null,
     resumePath: null,
     nextAction: null,
-    lastCheckpoint: null,
-    loop: {
-      retryCount: 0,
-      maxRetries: 2,
-      lastAction: null,
-    },
+    updatedAt: null,
   };
 }
+
+const STRING_OR_NULL_FIELDS = ['currentSkill', 'lastCheckpoint', 'resumePath', 'nextAction', 'updatedAt'];
 
 function validateSession(obj) {
   const errors = [];
   if (!obj || typeof obj !== 'object') { errors.push('session must be an object'); return { ok: false, errors }; }
   if (obj.schemaVersion !== 1) errors.push(`schemaVersion must be 1, got ${obj.schemaVersion}`);
-  if (!VALID_PATH.includes(obj.path)) errors.push(`path must be one of ${VALID_PATH.filter(Boolean).join('|')} or null, got "${obj.path}"`);
-  if (!VALID_MODE.includes(obj.mode)) errors.push(`mode must be one of ${VALID_MODE.filter(Boolean).join('|')} or null, got "${obj.mode}"`);
-  if (!VALID_PHASE.includes(obj.phase)) errors.push(`phase must be one of ${VALID_PHASE.filter(Boolean).join('|')} or null, got "${obj.phase}"`);
-  if (!VALID_REVIEW_BUDGET.includes(obj.reviewBudget)) errors.push(`reviewBudget must be one of ${VALID_REVIEW_BUDGET.filter(Boolean).join('|')} or null, got "${obj.reviewBudget}"`);
-  if (obj.gates && typeof obj.gates === 'object') {
-    for (const key of ['prd', 'plan']) {
-      const g = obj.gates[key];
-      if (g && !VALID_GATE_STATUS.includes(g.status)) {
-        errors.push(`gates.${key}.status must be one of ${VALID_GATE_STATUS.join('|')}, got "${g.status}"`);
-      }
+  for (const key of STRING_OR_NULL_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== null && typeof obj[key] !== 'string') {
+      errors.push(`${key} must be a string or null, got "${obj[key]}"`);
     }
   }
   return { ok: errors.length === 0, errors };

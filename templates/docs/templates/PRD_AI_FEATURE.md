@@ -1,8 +1,8 @@
 # PRD — <AI feature name>
 
-> A PRD template **specifically for AI/assistant features**. Purpose: force the dimensions that deterministic software usually misses. Fill everything in; for unknowns write `ASSUMPTION:` or `<TBD>` (don't leave silent blanks). Follow [COMMUNICATION_PROTOCOL.md](../COMMUNICATION_PROTOCOL.md).
+> A PRD template **specifically for AI/assistant features**. Purpose: force the dimensions that deterministic software usually misses. Fill everything in; for unknowns write `ASSUMPTION:` or `<TBD>` (don't leave silent blanks). No silent assumptions — clarify with the human instead.
 >
-> Copy this file to `docs/specs/YYYY-MM-DD-<feature>.md` when starting Phase 1.
+> Copy this file to `docs/specs/YYYY-MM-DD-<feature>.md` when starting `hero-planning` for an AI feature.
 
 **Status:** Draft | In Review | Approved
 **Date:** YYYY-MM-DD · **Product Owner:** · **Path (router):** Full / Standard
@@ -50,7 +50,7 @@
 - **Automated eval set** run on the golden set (scored by the §6 rubric) — this is the AI feature's "tests".
 - **Prompt regression:** when changing prompt/model → re-run the eval, compare before/after scores.
 - Pass threshold: `<TBD>` (e.g. average rubric score ≥ X, no safety case failing).
-- Relation to DoD: add to [DEFINITION_OF_DONE.md](../DEFINITION_OF_DONE.md) for AI features.
+- Relation to Definition of Done: the eval set is part of `hero-unit-test`'s coverage for AI features.
 
 ## 8. Fallback & Human-in-the-loop  ⭐
 > Reference [INTERACTION_PATTERNS.md](../INTERACTION_PATTERNS.md) P4 (Error & Graceful Degradation), P6 (Handoff to Human), P7 (Conversation Repair).
@@ -74,7 +74,7 @@
 - [ ] §5 guardrails tested (including abuse cases)
 
 ## 12. API / Interface contract (for parallelization)
-> Must be locked before spawning FE & BE in parallel (see AGENCY_WORKFLOW Phase 2/3).
+> Must be locked before spawning FE & BE in parallel — see `hero-planning`.
 
 ## 13. Decision Log
 | Date | Question/Issue | Decision | Decided by | Rationale |

@@ -4,17 +4,16 @@ const path = require('path');
 const { log, exists, backup, readJSON, writeJSON, ensureDir } = require('./util.cjs');
 const { renderTree, renderString } = require('./render.cjs');
 const { mergeManagedBlock, mergeSettings } = require('./merge.cjs');
-const { normalizeProfileConfig, buildProfileVars, skillDestinations } = require('./profile-config.cjs');
-const { refreshCursor } = require('./cursor.cjs');
+const { normalizeProfileConfig } = require('./profile-config.cjs');
 const { defaultSession } = require('./workflow-state.cjs');
 
 async function update(opts) {
   const { pkgRoot, target, flags } = opts;
   const templates = path.join(pkgRoot, 'templates');
-  log.title('hero-vibe-kit · update');
+  log.title('hero-mmt-kit · update');
 
-  let cfg = readJSON(path.join(target, '.hero-vibe-kit', 'config.json'), null);
-  if (!cfg) { log.err('Not initialized (.hero-vibe-kit/config.json missing). Run `hero-vibe-kit init`.'); process.exit(1); }
+  let cfg = readJSON(path.join(target, '.hero-mmt-kit', 'config.json'), null);
+  if (!cfg) { log.err('Not initialized (.hero-mmt-kit/config.json missing). Run `hero-mmt-kit init`.'); process.exit(1); }
   try {
     cfg = normalizeProfileConfig(cfg, flags || {});
   } catch (e) {
@@ -22,12 +21,9 @@ async function update(opts) {
     process.exit(1);
   }
 
-  const vars = Object.assign({
-    DATE: new Date().toISOString().slice(0, 10),
-  }, buildProfileVars(cfg));
+  const vars = { DATE: new Date().toISOString().slice(0, 10) };
 
-  const ideTargets = cfg.ideTargets || [];
-  const skillDirs = skillDestinations(ideTargets);
+  const skillDirs = ['.claude/skills'];
 
   // Re-render managed docs; NEVER touch ACTIVE_STATE (working state).
   const srcDocs = path.join(templates, 'docs');
@@ -49,19 +45,12 @@ async function update(opts) {
   log.ok(`CLAUDE.md: ${mergeManagedBlock(path.join(target, 'CLAUDE.md'), claudeInner, 'Project')}`);
   log.ok(`AGENTS.md: ${mergeManagedBlock(path.join(target, 'AGENTS.md'), agentsInner, null)}`);
 
-  if (ideTargets.includes('claude-code')) {
-    ensureDir(path.join(target, '.claude', 'hooks'));
-    for (const h of ['git-guard.cjs', 'stop-reminder.cjs', 'workflow-check.cjs', 'edit-gate.cjs', 'session-bridge.cjs']) {
-      fs.copyFileSync(path.join(templates, 'common', '.claude', 'hooks', h), path.join(target, '.claude', 'hooks', h));
-    }
-    mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
-    log.ok('Claude Code hooks + settings.json refreshed');
+  ensureDir(path.join(target, '.claude', 'hooks'));
+  for (const h of ['git-guard.cjs', 'stop-reminder.cjs', 'session-bridge.cjs']) {
+    fs.copyFileSync(path.join(templates, 'common', '.claude', 'hooks', h), path.join(target, '.claude', 'hooks', h));
   }
-
-  if (ideTargets.includes('cursor')) {
-    refreshCursor(pkgRoot, target, vars);
-    log.ok('Cursor rule + hooks refreshed');
-  }
+  mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
+  log.ok('Claude Code hooks + settings.json refreshed');
 
   // Refresh bundled core skills (framework-managed; user-added skills untouched)
   const skills = require('./skills.cjs');
@@ -69,17 +58,17 @@ async function update(opts) {
   const sk = skills.installSkills(pkgRoot, target, { selectedSkills, destinations: skillDirs });
   log.ok(`Skills refreshed: ${sk.skills} bundled core skill(s) → ${skillDirs.join(', ') || '(none)'}`);
 
-  const sessionPath = path.join(target, '.hero-vibe-kit', 'session.json');
+  const sessionPath = path.join(target, '.hero-mmt-kit', 'session.json');
   if (!exists(sessionPath)) {
     ensureDir(path.dirname(sessionPath));
     writeJSON(sessionPath, defaultSession());
-    log.ok('Session : .hero-vibe-kit/session.json (seeded — was missing)');
+    log.ok('Session : .hero-mmt-kit/session.json (seeded — was missing)');
   }
 
   const newVer = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8')).version;
   cfg.version = newVer;
   delete cfg.lang;
-  writeJSON(path.join(target, '.hero-vibe-kit', 'config.json'), cfg);
+  writeJSON(path.join(target, '.hero-mmt-kit', 'config.json'), cfg);
   log.ok(`Now at v${newVer}`);
 }
 

@@ -5,8 +5,7 @@ const { log, ensureDir, exists, backup, writeJSON, makeAsker } = require('./util
 const { detect } = require('./detect.cjs');
 const { renderTree, renderString } = require('./render.cjs');
 const { mergeManagedBlock, mergeSettings } = require('./merge.cjs');
-const { collectProfileConfig, buildProfileVars, skillDestinations } = require('./profile-config.cjs');
-const { installCursor } = require('./cursor.cjs');
+const { collectProfileConfig } = require('./profile-config.cjs');
 const { defaultSession } = require('./workflow-state.cjs');
 
 async function init(opts) {
@@ -15,7 +14,7 @@ async function init(opts) {
   const auto = !!flags.yes;
   const ask = makeAsker(auto);
 
-  log.title('hero-vibe-kit · init');
+  log.title('hero-mmt-kit · init');
   const d = detect(target);
   log.step(`Target : ${target}`);
   log.step(`Mode   : ${d.brownfield ? 'brownfield (existing project)' : 'new project'}`);
@@ -29,7 +28,7 @@ async function init(opts) {
     log.ok(`Preset : ${flags.preset}`);
   }
   try {
-    cfg = await collectProfileConfig(cfg, flags, ask, auto);
+    cfg = await collectProfileConfig(cfg, flags, ask);
   } catch (e) {
     log.err(e.message);
     ask.close();
@@ -40,12 +39,9 @@ async function init(opts) {
   cfg.version = JSON.parse(fs.readFileSync(path.join(pkgRoot, 'package.json'), 'utf8')).version;
   cfg.brownfield = d.brownfield;
 
-  const vars = Object.assign({
-    DATE: new Date().toISOString().slice(0, 10),
-  }, buildProfileVars(cfg));
+  const vars = { DATE: new Date().toISOString().slice(0, 10) };
 
-  const ideTargets = cfg.ideTargets || [];
-  const skillDirs = skillDestinations(ideTargets);
+  const skillDirs = ['.claude/skills'];
 
   // ---- 1. docs ----
   const srcDocs = path.join(templates, 'docs');
@@ -68,42 +64,34 @@ async function init(opts) {
   log.ok(`AGENTS.md: ${mergeManagedBlock(path.join(target, 'AGENTS.md'), agentsInner, null)}`);
 
   // ---- 3. Claude Code hooks + settings ----
-  if (ideTargets.includes('claude-code')) {
-    ensureDir(path.join(target, '.claude', 'hooks'));
-    for (const h of ['git-guard.cjs', 'stop-reminder.cjs', 'workflow-check.cjs', 'edit-gate.cjs', 'session-bridge.cjs']) {
-      fs.copyFileSync(path.join(templates, 'common', '.claude', 'hooks', h), path.join(target, '.claude', 'hooks', h));
-    }
-    mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
-    log.ok('Claude  : git-guard + stop-reminder + workflow-check + edit-gate + session-bridge → .claude/hooks; settings.json merged');
+  ensureDir(path.join(target, '.claude', 'hooks'));
+  for (const h of ['git-guard.cjs', 'stop-reminder.cjs', 'session-bridge.cjs']) {
+    fs.copyFileSync(path.join(templates, 'common', '.claude', 'hooks', h), path.join(target, '.claude', 'hooks', h));
   }
+  mergeSettings(path.join(target, '.claude', 'settings.json'), path.join(templates, 'common', '.claude', 'settings.json'));
+  log.ok('Claude  : git-guard + stop-reminder + session-bridge → .claude/hooks; settings.json merged');
 
-  // ---- 3a. Cursor rules + hooks ----
-  if (ideTargets.includes('cursor')) {
-    installCursor(pkgRoot, target, vars);
-    log.ok('Cursor  : rule + git-guard + stop-reminder → .cursor/');
-  }
-
-  // ---- 3b. selected vendored core skills ----
+  // ---- 3a. selected vendored core skills ----
   const skills = require('./skills.cjs');
   const selectedSkills = skills.selectProcessSkills(cfg);
   const sk = skills.installSkills(pkgRoot, target, { selectedSkills, destinations: skillDirs });
   log.ok(`Skills  : ${sk.skills} bundled core skill(s) → ${skillDirs.join(', ') || '(none)'}`);
 
   // ---- 4. config + session state ----
-  writeJSON(path.join(target, '.hero-vibe-kit', 'config.json'), cfg);
-  log.ok('Config  : .hero-vibe-kit/config.json');
+  writeJSON(path.join(target, '.hero-mmt-kit', 'config.json'), cfg);
+  log.ok('Config  : .hero-mmt-kit/config.json');
 
-  const sessionPath = path.join(target, '.hero-vibe-kit', 'session.json');
+  const sessionPath = path.join(target, '.hero-mmt-kit', 'session.json');
   if (!exists(sessionPath)) {
     writeJSON(sessionPath, defaultSession());
-    log.ok('Session : .hero-vibe-kit/session.json (seeded)');
+    log.ok('Session : .hero-mmt-kit/session.json (seeded)');
   } else {
-    log.ok('Session : .hero-vibe-kit/session.json (preserved)');
+    log.ok('Session : .hero-mmt-kit/session.json (preserved)');
   }
 
-  const schemaSrc = path.join(pkgRoot, 'templates', '.hero-vibe-kit', 'session.schema.json');
+  const schemaSrc = path.join(pkgRoot, 'templates', '.hero-mmt-kit', 'session.schema.json');
   if (exists(schemaSrc)) {
-    const schemaDest = path.join(target, '.hero-vibe-kit', 'session.schema.json');
+    const schemaDest = path.join(target, '.hero-mmt-kit', 'session.schema.json');
     if (!exists(schemaDest)) fs.copyFileSync(schemaSrc, schemaDest);
   }
 
@@ -117,15 +105,10 @@ async function init(opts) {
   ask.close();
 
   log.title('Next steps');
-  console.log('  1. Review docs/AGENCY_WORKFLOW.md (single source of truth).');
-  if (ideTargets.includes('claude-code')) {
-    console.log('  2. Restart Claude Code (or run /hooks) to activate .claude hooks.');
-  }
-  if (ideTargets.includes('cursor')) {
-    console.log('  2. Restart Cursor (or reload hooks) to activate .cursor/hooks.json.');
-  }
-  console.log('  3. Fill <TBD> in DEFINITION_OF_DONE / SECURITY_STANDARDS / PERFORMANCE_STANDARDS when you pick a stack.');
-  console.log('  4. Run: npx hero-vibe-kit doctor');
+  console.log('  1. Invoke the using-hero skill for an overview of the hero-* workflow skills.');
+  console.log('  2. Restart Claude Code (or run /hooks) to activate .claude hooks.');
+  console.log('  3. Fill <TBD> in SECURITY_STANDARDS / PERFORMANCE_STANDARDS when you pick a stack.');
+  console.log('  4. Run: npx hero-mmt-kit doctor');
 }
 
 module.exports = { init };

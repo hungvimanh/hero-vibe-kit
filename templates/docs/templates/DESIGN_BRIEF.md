@@ -1,6 +1,6 @@
 # Design Brief — <FEATURE / PRODUCT NAME>
 
-> Fill the UX/UI dimensions before building UI. Pairs with the PRD. Standards: [../DESIGN_STANDARDS.md](../DESIGN_STANDARDS.md). Sequencing: [../AGENCY_WORKFLOW.md](../AGENCY_WORKFLOW.md).
+> Fill the UX/UI dimensions before building UI. Pairs with the PRD. Standards: [../DESIGN_STANDARDS.md](../DESIGN_STANDARDS.md). Sequencing: `hero-planning`.
 
 ## 1. Users & jobs
 - Target users / personas: `<TBD>`

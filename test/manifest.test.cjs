@@ -4,10 +4,10 @@ const assert = require('node:assert');
 const path = require('node:path');
 const manifest = require(path.join(__dirname, '..', 'skills.manifest.json'));
 
-test('manifest has process, communication-style, and the 3 design groups', () => {
+test('manifest has process and the 3 design groups', () => {
   const g = manifest.groups;
   assert.ok(g.process, 'process group present');
-  assert.ok(g['communication-style'], 'communication-style group present');
+  assert.ok(!g['communication-style'], 'communication-style group removed; concise principles live in hero-* skills');
   assert.ok(g.brand, 'brand group present');
   assert.ok(g['design-direction'], 'design-direction group present');
   assert.ok(g['design-tools'], 'design-tools group present');

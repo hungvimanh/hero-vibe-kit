@@ -47,7 +47,7 @@ digraph when_to_use {
 
 Pick the smallest review budget that fits the risk. Do not run multiple review passes unless each pass has a distinct purpose not already covered.
 
-Budget tiers and when to use each are defined canonically in `docs/ASSISTANCE_PROFILES.md` § Adaptive review budget. For each tier, this skill's review action is:
+Pick the budget from actual risk and uncertainty, not by default. For each tier, this skill's review action is:
 
 | Budget | Review action |
 |---|---|
@@ -58,12 +58,25 @@ Budget tiers and when to use each are defined canonically in `docs/ASSISTANCE_PR
 
 **Final review is conditional.** Run a final integration review only when there were multiple independent task streams, high-risk/core changes, or prior reviews were narrow. If one combined review already covered the entire change, do not review the same scope again.
 
+## Pre-Flight Plan Review
+
+Before dispatching Task 1, scan the whole plan once for internal contradictions or
+plan-mandated anti-patterns — a test step that asserts nothing, verbatim duplication
+the plan text itself demands, a later task that silently assumes an earlier task did
+something the earlier task's spec doesn't actually require. Batch **all** findings
+into a single question to the human before execution begins. Don't interrupt once per
+discovery mid-plan — that trains the human to expect drip-fed surprises instead of one
+clear go/no-go decision.
+
+If the plan is clean, proceed without comment.
+
 ## The Process
 
 ```dot
 digraph process {
     rankdir=TB;
 
+    "Pre-flight plan scan" [shape=box];
     "Read plan/task list once" [shape=box];
     "Create/refresh task list" [shape=box];
     "Select next task" [shape=box];
@@ -81,6 +94,7 @@ digraph process {
     "Optional final integration review" [shape=box];
     "Final report with verified/unverified scope" [shape=box];
 
+    "Pre-flight plan scan" -> "Read plan/task list once";
     "Read plan/task list once" -> "Create/refresh task list";
     "Create/refresh task list" -> "Select next task";
     "Select next task" -> "Should main agent implement directly?";
@@ -104,6 +118,26 @@ digraph process {
 }
 ```
 
+## Durable Progress
+
+A compacted or resumed session loses in-context memory of what's already done. A
+controller that lost its place has been observed re-dispatching entire completed task
+sequences — the single most expensive failure mode in this skill. Guard against it with
+a durable ledger, not just the ephemeral todo list:
+
+- At skill start, run `bash scripts/sdd-workspace.sh` to resolve `.hero-mmt-kit/sdd/`,
+  then check `.hero-mmt-kit/sdd/progress.md` if it exists. Tasks it lists as complete
+  are **not** re-dispatched — verify quickly if anything looks stale, but trust the
+  ledger over a fuzzy recollection of prior context.
+- When a task's review comes back clean, append one line before moving to the next
+  task:
+  ```
+  Task N: complete (commits <base7>..<head7>, review clean)
+  ```
+- The ledger lives in the self-ignoring `.hero-mmt-kit/sdd/` scratch dir (see Prompt
+  Templates below) — it never needs the user's own `.gitignore` touched and is not
+  meant to be committed.
+
 ## Model Selection
 
 Use the least powerful model that can safely handle the role.
@@ -115,6 +149,15 @@ Use the least powerful model that can safely handle the role.
 | Architecture, ambiguous synthesis, high-risk review | Main-agent tier / strongest available |
 
 Prefer one capable reviewer over several weak duplicate reviewers.
+
+**Turn count beats token price.** A cheap model that takes 2-3x more turns to finish
+multi-step implementation or review work often costs more overall in wall-clock time
+and context than a stronger model that finishes in fewer turns — optimize for total
+cost, not per-token price.
+
+**Always specify a model explicitly on every dispatch** (implementer and reviewer
+alike). An omitted `model:` field silently inherits the calling session's model —
+usually the most expensive tier available, not a deliberate choice.
 
 ## Handling Implementer Status
 
@@ -130,11 +173,36 @@ Implementer subagents report one of four statuses:
 
 Never force the same blocked prompt to retry unchanged.
 
+## Constructing Reviewer Prompts
+
+**Do not pre-judge findings for the reviewer.** Never instruct a reviewer to ignore or
+downgrade a specific issue before they've looked. If the prompt you're writing
+contains "do not flag," "don't treat X as a defect," "at most Minor," or "the plan
+chose" — stop: you are pre-judging, and you're removing the reviewer's only value,
+which is an independent check.
+
+**Handling ⚠️ Cannot verify from diff.** A reviewer may report this for a requirement
+that lives in unchanged code or spans multiple tasks — it doesn't block the rest of
+the review. But the **controller**, not the reviewer, must resolve each ⚠️ item (read
+the relevant file, run the relevant check) before marking the task complete. Don't
+treat ⚠️ as an automatic pass, and don't gate only on ❌ while leaving ⚠️ items open.
+
 ## Prompt Templates
 
-- `./implementer-prompt.md` - Dispatch implementer subagent.
+- `./implementer-prompt.md` - Dispatch implementer subagent. Build the task brief with
+  `bash scripts/task-brief.sh <plan-file> <N>` first — don't paste the full task text
+  or make the implementer read the whole plan.
 - `./spec-reviewer-prompt.md` - Use only for `full-multi-stage-review` or explicit acceptance/spec risk.
 - `./code-quality-reviewer-prompt.md` - Use for combined quality review, targeted quality review, or full review budgets.
+- `./scripts/sdd-workspace.sh` - Resolves/creates `.hero-mmt-kit/sdd/`, the
+  self-ignoring scratch dir for task briefs, review packages, and the progress ledger.
+- `./scripts/task-brief.sh PLAN_FILE N [OUTFILE]` - Extracts Task N's exact text into a
+  file the implementer reads directly.
+- `./scripts/review-package.sh BASE HEAD [OUTFILE]` - Builds one diff file (log +
+  diffstat + full diff) for a reviewer to read directly.
+
+Invoke scripts as `bash scripts/<name>.sh ...` (not `./scripts/<name>.sh`) — this
+doesn't depend on the executable bit surviving install/copy on every platform.
 
 ## Example: Pragmatic Coding Assistant
 
@@ -170,7 +238,12 @@ Task: Add auth-sensitive fullstack feature with API contract changes.
 **Never:**
 - Spawn subagents just because a skill exists.
 - Run spec review, quality review, and final review over the same scope without a distinct purpose for each.
-- Dispatch multiple implementation subagents that edit overlapping files without isolation.
+- Dispatch multiple implementation subagents in parallel for plan-execution work — even
+  on non-overlapping files, parallel implementers can't see each other's commits, and
+  conflicts compound silently instead of surfacing early. (This prohibition is specific
+  to implementer subagents in *this* skill, which mutate real code/git state in one
+  worktree. `dispatching-parallel-agents` still applies for independent, read-only
+  investigation — a different, ad-hoc use case.)
 - Make a subagent read the whole plan when you can provide the exact task and relevant links.
 - Ignore subagent questions or blockers.
 - Proceed with unresolved Critical findings.
@@ -181,10 +254,6 @@ Task: Add auth-sensitive fullstack feature with API contract changes.
 - Re-review only the fix or the disputed finding, not the entire change, unless the fix expanded scope.
 - Push back on incorrect findings with evidence.
 
-## Phase Boundary
-
-When all independent implementation streams complete and integration review is warranted, invoke `phase-handoff` to capture the integration state before moving to QA or handover. This is optional for single-stream low-risk work but required for Standard/Full paths with multiple independent tracks.
-
 ## Integration
 
 Useful companion skills:
@@ -193,7 +262,6 @@ Useful companion skills:
 - **superpowers:verification-before-completion** - Ensures final claims match evidence.
 - **superpowers:using-git-worktrees** - Use when parallel agents may conflict or the user requests isolation.
 - **superpowers:finishing-a-development-branch** - Use when finishing branch/MR work.
-- **phase-handoff** - Invoke at the implementation → review boundary after all streams complete.
 
 Subagents may use **superpowers:test-driven-development** when the selected workflow requires tests-first development or the task is a bugfix/behavior change.
 

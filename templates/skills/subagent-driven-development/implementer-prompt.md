@@ -5,12 +5,18 @@ Use this template when dispatching an implementer subagent.
 ```
 Task tool (general-purpose):
   description: "Implement Task N: [task name]"
+  model: [MODEL - explicit, e.g. claude-sonnet-4-5. Never omit - an omitted model
+    silently inherits the calling session's model tier. See SKILL.md Model Selection.]
   prompt: |
     You are implementing Task N: [task name]
 
     ## Task Description
 
-    [FULL TEXT of task from plan - paste it here, don't make subagent read file]
+    Read your exact task text from: [PATH to task-N-brief.md, produced by
+    `bash scripts/task-brief.sh <plan-file> N`]
+
+    Read only that file — not the rest of the plan. It's the verbatim task text
+    (no paraphrase drift from the controller re-typing it) scoped to just your task.
 
     ## Context
 
@@ -104,6 +110,8 @@ Task tool (general-purpose):
     - What you implemented (or what you attempted, if blocked)
     - What you tested and test results
     - Files changed
+    - Base commit before you started and HEAD commit after your final commit (the
+      controller needs both for the review package and the progress ledger)
     - Self-review findings (if any)
     - Any issues or concerns
 

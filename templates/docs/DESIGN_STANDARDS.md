@@ -1,13 +1,13 @@
 # Design Standards — UI/UX
 
-> **Standards & how-to for UI/UX.** This file holds *standards, skill routing, design profiles, media, and in-product help* — NOT process sequencing. For *when* each step happens (phases, gates, router), see [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md) (SSOT). Per-project specifics are locked as `<TBD>` in the PRD / Design Brief.
+> **Standards & how-to for UI/UX.** This file holds *standards, skill routing, design profiles, media, and in-product help* — NOT process sequencing. For *when* each step happens, see `using-hero` and `hero-planning`. Per-project specifics are locked as `<TBD>` in the PRD / Design Brief.
 
 ## §1 UX ↔ UI (two layers)
 - **UX (problem space):** user personas, primary flows, information architecture, screen inventory, per-screen states (empty / loading / error / success / partial).
 - **UI (solution surface):** brand, one locked visual direction, design tokens, component system.
 
 ## §2 Design profiles — fit the product
-Pick **one** profile per project (decided in the first PRD/TDD), record it in `docs/design/DESIGN_SYSTEM.md` and [TEAM_ROSTER.md](./TEAM_ROSTER.md) §4. The profile sets the *creativity × discipline* balance and which steps are required vs skippable.
+Pick **one** profile per project (decided in the first PRD/TDD), record it in `docs/design/DESIGN_SYSTEM.md`. The profile sets the *creativity × discipline* balance and which steps are required vs skippable.
 
 | Profile | Typical product | Creativity | Discipline | Brand & media | Required steps | Skippable |
 |---|---|---|---|---|---|---|
@@ -51,7 +51,7 @@ Default when the product type is unknown: **branded-product**, confirmed at the 
 Beyond CSS, products often need embedded media.
 - **Asset types:** icons, illustrations, photography/hero imagery, OG/social share images, diagrams, help/onboarding visuals (annotated screenshots, GIF/short video — see §8), optional short motion (lottie/video).
 - **Render paths:**
-  1. A **configured AI media provider** (provider-agnostic; API key from the consumer's environment) for higher-fidelity raster/illustration. Configure via `hero-vibe-kit init` (stores provider + env-var name only).
+  1. A **configured AI media provider** (provider-agnostic; API key from the consumer's environment) for higher-fidelity raster/illustration. Configure via `hero-mmt-kit init` (stores provider + env-var name only).
   2. **Claude-subagent fallback** (`imagegen-frontend-web/mobile`, `brandkit`) when no provider is configured — produces references, mockups, prompts, and within-capability assets.
 - **Storage:** source/reference & exploration → `docs/design/assets/` (durable, reviewable; keep small — large raw files under a gitignored path); production-ready optimized assets → the app's own asset directory (`<TBD>`).
 - **Asset DoD:** optimized/compressed, right format (SVG/WebP/AVIF where apt), rights-clear/licensed, alt text, responsive `srcset` where apt.
@@ -75,7 +75,7 @@ Every product with a UI ships an in-product help surface on a **secondary** surf
 - **Sync rule:** a feature with user-facing impact is **not done** until its help entry exists and is accurate.
 
 ## §9 Artifacts
-Design artifacts and their storage are defined in [ARTIFACTS_AND_STORAGE.md](./ARTIFACTS_AND_STORAGE.md): UX spec (in the PRD), `docs/design/DESIGN_SYSTEM.md`, `docs/design/assets/`, `docs/help/`, and the Visual QA report.
+Design artifacts and their storage: UX spec (in the PRD), `docs/design/DESIGN_SYSTEM.md`, `docs/design/assets/`, `docs/help/`, and the Visual QA report (part of `hero-reviewing`'s output).
 
 ## §10 References-first (avoid AI-slop)
 - AI interfaces look generic mainly because no real references were given. Gather references **before** generating.

@@ -7,6 +7,7 @@ Use this template when dispatching a spec compliance reviewer subagent.
 ```
 Task tool (general-purpose):
   description: "Review spec compliance for Task N"
+  model: [MODEL - explicit, do not omit. See SKILL.md Model Selection.]
   prompt: |
     You are reviewing whether an implementation matches its specification.
 
@@ -18,6 +19,12 @@ Task tool (general-purpose):
 
     [From implementer's report]
 
+    ## Diff to Review
+
+    Full diff: [PATH from `bash scripts/review-package.sh BASE_SHA HEAD_SHA`]
+
+    Read it in full before forming an opinion.
+
     ## CRITICAL: Do Not Trust the Report
 
     The implementer finished suspiciously quickly. Their report may be incomplete,
@@ -27,6 +34,11 @@ Task tool (general-purpose):
     - Take their word for what they implemented
     - Trust their claims about completeness
     - Accept their interpretation of requirements
+
+    Treat any rationale the implementer gives for a deviation ("I skipped X because
+    Y", "this approach is fine because Z") as an unverified claim too — verify the
+    reasoning against the actual spec/code, don't accept it at face value just because
+    it sounds plausible.
 
     **DO:**
     - Read the actual code they wrote
@@ -57,5 +69,8 @@ Task tool (general-purpose):
 
     Report:
     - ✅ Spec compliant (if everything matches after code inspection)
+    - ⚠️ Cannot verify from diff: [requirement, and why — e.g. it lives in unchanged
+      code, or spans a task not yet done. Does not block the rest of the review; the
+      controller resolves these before marking the task complete.]
     - ❌ Issues found: [list specifically what's missing or extra, with file:line references]
 ```

@@ -1,186 +1,93 @@
-# hero-vibe-kit
+# hero-mmt-kit
 
-> An adaptive, AI-assisted software-development workflow for **Claude Code** and **Cursor** — profile-aware routing, real approval gates, pragmatic verification, harness & loop enforcement, selected process skills, and security/performance standards for new and brownfield projects.
+> A focused, human-led coding workflow for **Claude Code** — six direct-use skills (planning, coding, reviewing, unit testing, security, strict verification), simple session state, and soft safety hooks. Zero runtime dependencies.
+
+hero-vibe-kit is the AI-led agency workflow kit. hero-mmt-kit is the human-led Claude Code coding assistant kit. This repository hosts both as a hard fork: hero-mmt-kit has its own package, its own version history (starting at 0.1.0), and no shared migration path or cherry-picking between them.
 
 ## What it is
 
-`hero-vibe-kit` installs a lightweight but disciplined development process into your repository so Claude Code, Cursor, and compatible agents can work like a pragmatic software team:
+`hero-mmt-kit` installs a small, disciplined workflow into your repository. Unlike an AI-led framework, it does not route tasks, gate commits, or enforce phases — the developer decides what to work on and invokes skills directly:
 
-- **Profile-aware workflow** — choose `vibecode` for high-agency AI execution or `coding-assistant` for developer-led collaboration.
-- **Project surfaces** — tune the workflow for `fullstack`, `backend`, or `frontend` projects.
-- **Verification levels** — choose `strict`, `pragmatic`, or `minimal` evidence requirements without changing the project structure.
-- **Task router** — classify each request (Q&A, chore, bugfix, hotfix, change, refactor, feature, spike, UI/UX) and use the smallest path that fits.
-- **Real gates** — approval gates use Claude Code Plan Mode, not prose promises.
-- **Adaptive sub-agents** — sub-agents and reviews are escalation tools. Normal Coding Assistant work stays lean; high-risk, broad, or sensitive work gets targeted review.
-- **Enforcement hooks** — `git-guard` blocks unsafe git operations; `stop-reminder` nudges state updates; `workflow-check` gates commits on Standard/Full paths behind a session checkpoint.
-- **Loop engineering** — `phase-handoff` skill checkpoints `session.json` at every real phase boundary; `doctor --strict` escalates compliance gaps to CI failures.
-- **Selected bundled skills** — `init` installs only the vendored process skills needed for the active profile/surface/verification.
-- **Standards** — Definition of Done, branching model, communication protocol, artifact storage, security, performance, and AI-feature templates.
+- **Six operative skills** (`hero-planning`, `hero-coding`, `hero-reviewing`, `hero-unit-test`, `hero-security`, `hero-strict`) covering the lifecycle of a change, each wrapping proven vendored technique skills instead of duplicating them.
+- **No router, no gates** — there is no task-classification doc and no hard PreToolUse enforcement. `using-hero` is a map, not a controller.
+- **Soft hooks only** — `git-guard` blocks a small set of genuinely dangerous git commands and reminds (never blocks) on ordinary commits; `stop-reminder` nudges you to update state when you stop with uncommitted changes; `session-bridge` injects session state into context once per session.
+- **Lightweight session state** — `.hero-mmt-kit/session.json` is a small resume pointer (`currentSkill`, `lastCheckpoint`, `resumePath`, `nextAction`), not a workflow engine.
+- **Full skill suite, every install** — the bundled process skills install unconditionally; there's no profile/surface logic deciding what you get.
+- **Standards docs** for security, performance, design, and interaction patterns, plus PRD/design-brief templates.
 
-It is **documentation + hooks + a zero-dependency CLI**. Optional third-party tools are referenced or installed from their original sources; they are not redistributed.
+It is **documentation + soft hooks + a zero-dependency CLI**. Optional third-party tools (the taste/design skill) are installed from their original sources, not redistributed.
 
 ## Quick start
 
 ```bash
 # In your project root (new or existing):
-npx hero-vibe-kit init
+npx hero-mmt-kit init
 
-# For existing codebases, create the first AI discovery map:
-npx hero-vibe-kit discover
+# For existing codebases, create the first discovery map:
+npx hero-mmt-kit discover
 
 # Then restart Claude Code (or run /hooks) to activate hooks, and:
-npx hero-vibe-kit doctor
+npx hero-mmt-kit doctor
 ```
 
 Non-interactive / CI example:
 
 ```bash
-npx hero-vibe-kit init --yes --preset small-team --profile coding-assistant --surface fullstack --verify pragmatic --ide cursor --skip-integrations
+npx hero-mmt-kit init --dir <tmp> --yes --skip-integrations
+# or, opting into the taste/design skill non-interactively:
+npx hero-mmt-kit init --dir <tmp> --yes --taste
 ```
 
 ## What `init` installs
 
 ```text
 your-project/
-  CLAUDE.md          # hero-vibe-kit managed block; your other content is preserved
+  CLAUDE.md          # hero-mmt-kit managed block; your other content is preserved
   AGENTS.md          # cross-agent entry pointer
-  docs/              # English-only workflow docs: AGENCY_WORKFLOW, ASSISTANCE_PROFILES,
-                     # CONTEXT_BUDGET, PHASE_HANDOFF_PROTOCOL, HANDOFF_TEMPLATES,
-                     # ARTIFACTS_AND_STORAGE, DEFINITION_OF_DONE, BRANCHING,
-                     # TEAM_ROSTER, ACTIVE_STATE, COMMUNICATION_PROTOCOL,
-                     # INTERACTION_PATTERNS, SECURITY_STANDARDS,
-                     # PERFORMANCE_STANDARDS, DESIGN_STANDARDS,
-                     # templates/PRD_AI_FEATURE, templates/DESIGN_BRIEF;
-                     # later specs/, plans/, reports/ as needed
+  docs/              # ACTIVE_STATE, BROWNFIELD_DISCOVERY, SECURITY_STANDARDS,
+                     # PERFORMANCE_STANDARDS, DESIGN_STANDARDS, INTERACTION_PATTERNS,
+                     # templates/PRD_AI_FEATURE, templates/DESIGN_BRIEF
   .claude/
     settings.json    # hooks merged into existing settings, not clobbered
-    hooks/           # git-guard.cjs, stop-reminder.cjs, workflow-check.cjs
-    skills/          # selected bundled process skills for the active profile/surface
-  .cursor/
-    hooks.json       # beforeShellExecution + stop hooks for Cursor
-    hooks/           # git-guard.cjs, stop-reminder.cjs, workflow-check.cjs (shared logic)
-    rules/           # hero-vibe-kit.mdc always-on workflow rule
-    skills/          # same selected bundled process skills as .claude/skills/
-  .hero-vibe-kit/
-    config.json      # preset, branching, profile, surface, verification, integrations
-    session.json     # live workflow pointer: path/phase/gates/resumePath (written by phase-handoff)
+    hooks/           # git-guard.cjs, stop-reminder.cjs, session-bridge.cjs
+    skills/          # full bundled skill suite (see below)
+  .hero-mmt-kit/
+    config.json      # { installTasteSkill, enforceLevel, version, brownfield, integrations }
+    session.json     # resume pointer: currentSkill/lastCheckpoint/resumePath/nextAction
 ```
 
 - **New project:** scaffolds the workflow from scratch.
-- **Brownfield project:** preserves existing `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`; inserts managed blocks and deep-merges hooks. `docs/ACTIVE_STATE.md` is never overwritten.
-- **English-only framework docs:** installed docs and templates are English-only for consistency and token efficiency. Agents still respond in the user's chat language unless asked otherwise.
+- **Brownfield project:** preserves existing `CLAUDE.md`, `AGENTS.md`, and `.claude/settings.json`; inserts managed blocks (`<!-- hero-mmt-kit:start/end -->`) and deep-merges hooks. `docs/ACTIVE_STATE.md` is never overwritten.
+- **English-only framework docs:** installed docs and templates are English-only for consistency and token efficiency. Claude still replies in the user's chat language unless asked otherwise.
 - **Idempotent updates:** re-running `init`/`update` refreshes framework-managed regions and backs up touched files to `*.bak` when needed.
+- **One interactive question:** `init` asks "Install the taste/design skill?" (default No). `--yes` accepts the default; `--taste` opts in without prompting.
 
-## Operating profiles
+## Workflow skills
 
-`init` records the active operating profile in `.hero-vibe-kit/config.json` and renders it into the installed docs.
+Invoke `using-hero` first for an overview — it explains which skill applies next and how session state carries across sessions. The six operative skills:
 
-| Setting | Values | Purpose |
+| Skill | Use when | Output artifact |
 |---|---|---|
-| Assistance profile | `vibecode`, `coding-assistant` | Chooses high-agency AI execution vs developer-led collaboration. |
-| Project surface | `fullstack`, `backend`, `frontend` | Coding Assistant only: tunes routing, checks, and optional taste/design install to the project shape. Vibecode uses implicit `fullstack`. |
-| Verification level | `strict`, `pragmatic`, `minimal` | Controls evidence requirements without encouraging false completion claims. |
-| IDE target | `claude-code`, `cursor`, `both` | Chooses which assistant surfaces to install (interactive prompt if omitted). |
+| `hero-planning` | Starting new work — a feature, bugfix, or refactor that needs a plan before code changes. | `docs/plans/YYYY-MM-DD-slug.md` |
+| `hero-coding` | Implementing an approved plan (or a small change that doesn't need one). | `docs/coding-reports/YYYY-MM-DD-slug.md` |
+| `hero-reviewing` | Fresh-eyes check of an implementation against its plan, before merge. | `docs/reviews/YYYY-MM-DD-slug.md` |
+| `hero-unit-test` | Verifying implementation correctness — TDD-first or post-implementation. | `docs/test-reports/YYYY-MM-DD-slug.md` |
+| `hero-security` | The change touches a sensitive surface (auth, data, secrets, external input, AI/LLM behavior). | Findings recorded in the invoking report. |
+| `hero-strict` | Extra rigor wanted before a "done" claim — a full verification pass. | Appends to the current report. |
 
-Defaults for `--yes` (with required `--ide`):
+A typical flow is `hero-planning` → `hero-coding` → `hero-unit-test` and/or `hero-reviewing` → (`hero-security` if a sensitive surface was touched) → done. Skip stages that don't fit the size of the change — a one-line typo fix doesn't need a plan artifact.
 
-```text
-profile: coding-assistant
-surface: fullstack
-verify : pragmatic
-ide    : (required — pass --ide claude-code | cursor | both)
-```
+These six skills wrap general-purpose vendored technique skills rather than duplicating them: `brainstorming`, `writing-plans`, `executing-plans`, `test-driven-development`, `systematic-debugging`, `verification-before-completion`, `requesting-code-review`, `receiving-code-review`, `dispatching-parallel-agents`, `subagent-driven-development`, `using-git-worktrees`, `finishing-a-development-branch`, plus a hero-mmt-kit-authored `security-review` skill. All are bundled under `templates/skills/` and installed unconditionally into `.claude/skills/` — every install gets the full suite, with attribution in `templates/skills/NOTICE`.
 
-### Vibecode
+## Session state
 
-Use when the user wants the AI to own technical execution end-to-end. Vibecode does not ask for backend/frontend/fullstack; it uses implicit `fullstack`, auto-installs installable design/taste skills, and coordinates sub-agents/review when risk, scope, or parallel work justifies them.
+`.hero-mmt-kit/session.json` is a small resume pointer, not a workflow engine. Each hero-* skill's Definition of Done includes writing it plus updating `docs/ACTIVE_STATE.md`.
 
-### Coding Assistant
+Resuming work in a fresh session:
 
-Use when the user is a developer who wants Claude to code and verify pragmatically while the developer remains the orchestrator and final review gate. Coding Assistant asks for backend/frontend/fullstack and installs design/taste skills only for frontend or fullstack. Normal tasks should stay lean:
-
-1. understand the request,
-2. make a short plan only when useful,
-3. implement directly when the scope is clear,
-4. run targeted checks,
-5. report what was verified, what was not verified, and what needs developer review.
-
-## Adaptive review and sub-agent policy
-
-Sub-agents are no longer default ceremony. The workflow uses the smallest review budget that supports the completion claim:
-
-| Review budget | Use when |
-|---|---|
-| None | Low-risk, localized work with credible targeted checks. |
-| Single combined review | Medium-risk changes where one reviewer can catch requirement, correctness, test, docs, or overengineering issues. |
-| Targeted specialist review | Security, performance, API/data, UI/accessibility, migration, or other specific risk. |
-| Full multi-stage review | HIGH/CRITICAL, broad multi-area work, or explicit user request for full process. |
-
-Do not run spec review, quality review, and final review over the same scope unless each pass has a distinct purpose. Final integration review is for multiple independent task streams, high-risk/core changes, or narrow prior reviews.
-
-## Bundled process skills
-
-Core process skills are bundled under `templates/skills/` as a curated MIT-licensed copy of `obra/superpowers` plus hero-vibe-kit-authored skills, with attribution in `templates/skills/NOTICE`.
-
-`init` installs the full bundled process suite for every profile: superpowers, brainstorming, planning, executing plans, TDD, debugging, code review, delegation, worktrees, branch finishing, security review, verification, and phase handoff. Profiles control when the workflow uses these skills, not whether they are available.
-
-Optional design/taste skills are installed separately from their original sources: Vibecode installs them automatically, while Coding Assistant installs them only for `frontend` or `fullstack` surfaces.
-
-`update` refreshes framework-managed bundled process skills and preserves user-added skill directories.
-
-## Task router
-
-| Task | Path | Gate | Typical branch |
-|---|---|---|---|
-| Q&A / explain / find code | Read-only | No | — |
-| chore / docs / config | Fast | No | `chore/`, `docs/` |
-| small localized bugfix | Fast | No, but repro test expected | `fix/` |
-| hotfix | Fast expedited | No | `hotfix/` |
-| change existing logic | Standard | Yes | `change/` |
-| refactor | Standard | Yes | `refactor/` |
-| new feature | Full | Yes, usually two gates | `feat/` |
-| spike / research | Timeboxed | No | `spike/` |
-| UI/UX design or redesign | Standard | Yes | `design/` |
-
-Full details live in `docs/AGENCY_WORKFLOW.md`, the single source of truth for routing, gates, phase handoff, and review budgets.
-
-## Harness & loop (v2.0)
-
-v2.0.0 adds an observable compliance layer: session state, loop-safe phase handoff, and commit enforcement.
-
-### Session state
-
-`phase-handoff` writes `.hero-vibe-kit/session.json` at every real phase boundary. It contains the current path, phase, gate status, review budget, resume path, and next action. Resume read order (≈200 tokens):
-
-1. `.hero-vibe-kit/session.json` — get `workItem` / `phase` / `resumePath` / `nextAction`
-2. the file `resumePath` names — one focused resume artifact
-3. the latest handoff only if the resume artifact is insufficient
-
-Read `ACTIVE_STATE.md` only when switching work items or when the session is blank/stale.
-
-### Commit gate
-
-`workflow-check.cjs` (PreToolUse hook) blocks `git commit` on Standard/Full paths unless the staged changes include a state checkpoint (session update, ACTIVE_STATE update, or a report artifact). Lean paths (read-only, fast, tiny, small) are always exempt. Override: `HVK_SKIP_STATE_GATE=1`.
-
-### Doctor compliance
-
-```bash
-npx hero-vibe-kit doctor          # reports session validity, drift, bloat
-npx hero-vibe-kit doctor --strict # exit 1 on any compliance failure (CI-safe)
-```
-
-`--strict` escalates compliance warnings to failures. Tool-presence warnings (GitNexus, Serena absent) are always soft and never cause strict failure.
-
-## Optional integrations
-
-| Tool | What it is | What init does | Tier |
-|---|---|---|---|
-| Core process skills | Bundled process skills from `obra/superpowers` (MIT) plus hero-vibe-kit-authored skills | Installs the full bundled suite into `.claude/skills/` and/or `.cursor/skills/` | Recommended |
-| taste-skill | UI/design skills from `Leonxlnx/taste-skill` | Auto-installed for `vibecode` profile or `frontend`/`fullstack` surface; skipped for `backend` + `coding-assistant` | Auto (no prompt) |
-| GitNexus | Code-intelligence CLI/MCP | Auto-runs `npx gitnexus analyze` only if this repo already has a `.gitnexus/` index; otherwise skipped | Auto (no prompt) |
-| Serena | Semantic code-intelligence MCP | Auto-seeds pointer notes only if `.serena/` already exists; otherwise skipped | Auto (no prompt) |
-
-Required: Node.js 18+ and Claude Code **or** Cursor. Everything else is optional.
+1. Read `.hero-mmt-kit/session.json` (~100 tokens) → `currentSkill`, `resumePath`, `nextAction`.
+2. Read the artifact at `resumePath` for concrete next steps.
+3. If `session.json` is blank/stale, read `docs/ACTIVE_STATE.md`'s Active Features table instead.
 
 ## Commands
 
@@ -192,26 +99,36 @@ Required: Node.js 18+ and Claude Code **or** Cursor. Everything else is optional
 | `brownfield` | Alias for `discover`. |
 | `doctor` | Validate hooks, settings, session state, doc links, and tool presence. `--strict` for CI. |
 | `version` | Print the package version. |
+| `help` | Show usage. |
 
 Flags:
 
 ```text
---dir <path>
---preset solo|small-team|enterprise
---profile vibecode|coding-assistant
---surface fullstack|backend|frontend
---verify strict|pragmatic|minimal
---ide claude-code|cursor|both
---yes
---skip-integrations
---strict      (doctor only) treat compliance warnings as failures — for CI use
+--dir <path>          Target project dir (default: current dir)
+--taste                Install the taste/design skill (default: off)
+--preset <name>        Load a bundled preset (enterprise | small-team | solo) — sets enforceLevel only
+--yes                  Non-interactive; accept defaults
+--skip-integrations    Skip design-skill / GitNexus / Serena integration steps
+--strict               (doctor only) treat compliance warnings as failures — for CI use
 ```
+
+## Optional integrations
+
+Integrations are auto-detected — no prompts beyond the single taste/design question in `init`.
+
+| Tool | What it is | What `init` does |
+|---|---|---|
+| Taste/design skills | UI/design skills from `Leonxlnx/taste-skill` | Installed from source via the `skills` CLI only if you opted in (`--taste` or the interactive Yes) |
+| GitNexus | Code-intelligence CLI/MCP | Auto-runs `npx gitnexus analyze` only if the repo already has a `.gitnexus/` index; otherwise skipped |
+| Serena | Semantic code-intelligence MCP | Auto-seeds pointer notes only if `.serena/` already exists; otherwise skipped |
+
+Required: Node.js 18+ and Claude Code. Everything else is optional.
 
 ## Update and customize
 
-- Edit anything outside `<!-- hero-vibe-kit:start/end -->` markers freely; `update` will not touch it.
-- Fill `<TBD>` placeholders in Definition of Done, Security, Performance, and design docs once the stack is known.
-- Run `npx hero-vibe-kit update` to refresh framework-managed docs/hooks to the latest version.
+- Edit anything outside `<!-- hero-mmt-kit:start/end -->` markers freely; `update` will not touch it.
+- Fill `<TBD>` placeholders in Security, Performance, and Design docs once the stack is known.
+- Run `npx hero-mmt-kit update` to refresh framework-managed docs/hooks to the latest version.
 - Never hand-edit inside managed regions; change the source template or use `update`.
 
 ## Uninstall
@@ -219,16 +136,15 @@ Flags:
 Remove:
 
 - framework docs under `docs/`,
-- `.claude/hooks/*` and the hook block in `.claude/settings.json` (if used),
-- `.cursor/hooks/*`, `.cursor/hooks.json`, and `.cursor/rules/hero-vibe-kit.mdc` (if used),
+- `.claude/hooks/*` and the hook block in `.claude/settings.json`,
 - the managed blocks in `CLAUDE.md` and `AGENTS.md`,
-- `.hero-vibe-kit/`,
-- bundled skills under `.claude/skills/` and `.cursor/skills/` that you no longer want.
+- `.hero-mmt-kit/`,
+- bundled skills under `.claude/skills/` that you no longer want.
 
 Review before deleting skill directories because some may be user-added or intentionally retained.
 
 ## License and attribution
 
-MIT (see `LICENSE`). hero-vibe-kit vendors a curated, lightly trimmed copy of the core process skills from [`obra/superpowers`](https://github.com/obra/superpowers) under `templates/skills/` with attribution in `templates/skills/NOTICE`.
+MIT (see `LICENSE`). hero-mmt-kit vendors a curated, lightly trimmed copy of core process skills from [`obra/superpowers`](https://github.com/obra/superpowers) under `templates/skills/` with attribution in `templates/skills/NOTICE`.
 
-Design/UI skills from [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill) are **not** redistributed; they are installed from source via the `skills` CLI under their own license when the user opts in.
+Design/UI skills from [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill) are **not** redistributed; they are installed from source via the `skills` CLI under their own license only when the user opts into the taste/design skill.

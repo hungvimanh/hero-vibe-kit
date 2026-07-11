@@ -5,6 +5,7 @@ const { exists, ensureDir } = require('./util.cjs');
 
 const CORE_SKILL_ORDER = [
   'using-superpowers',
+  'using-hero',
   'brainstorming',
   'writing-plans',
   'executing-plans',
@@ -18,38 +19,12 @@ const CORE_SKILL_ORDER = [
   'using-git-worktrees',
   'finishing-a-development-branch',
   'security-review',
-  'phase-handoff',
-];
-
-const BASELINE_SKILLS = [
-  'using-superpowers',
-  'brainstorming',
-  'writing-plans',
-  'executing-plans',
-  'systematic-debugging',
-  'verification-before-completion',
-  'phase-handoff',
-];
-
-const STRICT_VERIFICATION_SKILLS = [
-  'test-driven-development',
-  'requesting-code-review',
-  'receiving-code-review',
-];
-
-const FULLSTACK_SURFACE_SKILLS = [
-  'dispatching-parallel-agents',
-  'subagent-driven-development',
-];
-
-const VIBECODE_PROFILE_SKILLS = [
-  'test-driven-development',
-  'requesting-code-review',
-  'receiving-code-review',
-  'dispatching-parallel-agents',
-  'subagent-driven-development',
-  'using-git-worktrees',
-  'finishing-a-development-branch',
+  'hero-planning',
+  'hero-coding',
+  'hero-reviewing',
+  'hero-unit-test',
+  'hero-security',
+  'hero-strict',
 ];
 
 function uniqueCoreSkills(names) {
@@ -87,7 +62,7 @@ function sourceEntries(src, selectedSkills) {
 }
 
 // Install vendored core skills (templates/skills/<name>/) into the consumer's
-// native skills dirs (.claude/skills/ and/or .cursor/skills/). Framework-managed:
+// .claude/skills/ dir. Framework-managed:
 // overwrites requested framework skill dirs and the NOTICE file, but never deletes
 // user-added skill dirs outside the framework-managed process suite.
 function installSkills(pkgRoot, target, opts) {
@@ -126,11 +101,7 @@ function installSkills(pkgRoot, target, opts) {
 }
 
 module.exports = {
-  BASELINE_SKILLS,
   CORE_SKILL_ORDER,
-  FULLSTACK_SURFACE_SKILLS,
-  STRICT_VERIFICATION_SKILLS,
-  VIBECODE_PROFILE_SKILLS,
   installSkills,
   copyTree,
   selectProcessSkills,

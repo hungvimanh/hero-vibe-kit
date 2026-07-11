@@ -1,7 +1,24 @@
 # Changelog
 
-All notable changes to hero-vibe-kit are documented here. Format based on
+Notable changes to `hero-mmt-kit` are documented here from `0.1.0` onward. Entries before `[0.1.0]` predate the fork and describe `hero-vibe-kit`, retained for history only. Format based on
 [Keep a Changelog](https://keepachangelog.com/); versioning follows [SemVer](https://semver.org/).
+
+## [0.1.0] - 2026-07-10
+### Breaking
+- **Hard fork: `hero-vibe-kit` → `hero-mmt-kit`.** This branch/package becomes a new, independent product, not a continuation of hero-vibe-kit. Version numbering resets to `0.1.0`; all history above this entry belongs to hero-vibe-kit and is retained for reference only, not carried forward.
+- **Package/binary/runtime rename** — `hero-vibe-kit` → `hero-mmt-kit`; CLI binary `bin/hero-vibe-kit.js` → `bin/hero-mmt-kit.js`; consumer runtime directory `.hero-vibe-kit/` → `.hero-mmt-kit/`; managed-block markers `<!-- hero-vibe-kit:start/end -->` → `<!-- hero-mmt-kit:start/end -->`.
+- **Claude Code-only — Cursor support fully removed.** Deleted `src/cursor.cjs`, `.cursor/` templates, `CURSOR-RULE.mdc.tmpl`, the `--ide` flag, and all IDE target-selection logic.
+- **Profile/surface/verification-level config model removed.** Dropped `vibecode`/`coding-assistant` profiles, `fullstack`/`backend`/`frontend` surfaces, `strict`/`pragmatic`/`minimal` verification levels, and the `--profile`/`--surface`/`--verify` flags. `init` now asks a single yes/no question ("Install the taste/design skill?", default No), with `--taste` for non-interactive opt-in.
+- **Hard enforcement gates removed.** Deleted `edit-gate.cjs` and `workflow-check.cjs` PreToolUse hooks and their `settings.json` wiring. Remaining hooks (`git-guard.cjs`, `session-bridge.cjs`, `stop-reminder.cjs`) are soft/non-blocking only.
+- **Phase-handoff protocol removed.** Deleted the `phase-handoff` skill, `src/handoff-validate.cjs`, and the handoff-protocol docs (`PHASE_HANDOFF_PROTOCOL.md`, `HANDOFF_TEMPLATES.md`, `CONTEXT_BUDGET.md`).
+- **Session state schema simplified.** `.hero-mmt-kit/session.json` now has only `schemaVersion`, `currentSkill`, `lastCheckpoint`, `resumePath`, `nextAction`, `updatedAt` — dropped `path`/`mode`/`phase`/`gates`/`reviewBudget`/`loop`.
+- **No legacy migration path.** `hero-mmt-kit` does not read or migrate an old `.hero-vibe-kit/` install; it is a clean new package with no compatibility aliases.
+
+### Removed
+- Shared router doc `AGENCY_WORKFLOW.md` and companion docs `BRANCHING.md`, `DEFINITION_OF_DONE.md`, `TEAM_ROSTER.md`, `COMMUNICATION_PROTOCOL.md`, `ARTIFACTS_AND_STORAGE.md`, `ASSISTANCE_PROFILES.md` — replaced by 7 new self-contained Claude Code skills: `using-hero` (overview) plus 6 operative skills — `hero-planning`, `hero-coding`, `hero-reviewing`, `hero-unit-test`, `hero-security`, `hero-strict` — each wrapping the vendored obra/superpowers technique skills instead of duplicating a router doc.
+
+### Kept
+- Reference docs used by the optional taste/design skill and general standards remain: `ACTIVE_STATE.md`, `BROWNFIELD_DISCOVERY.md`, `SECURITY_STANDARDS.md`, `DESIGN_STANDARDS.md`, `PERFORMANCE_STANDARDS.md`, `INTERACTION_PATTERNS.md`, `templates/PRD_AI_FEATURE.md`, `templates/DESIGN_BRIEF.md`.
 
 ## [4.0.0] - 2026-07-07
 ### Breaking

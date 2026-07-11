@@ -1,24 +1,23 @@
-## 🧭 hero-vibe-kit workflow
+## 🧭 hero-mmt-kit workflow
 
-> **READ BEFORE DOING ANYTHING:** [`docs/AGENCY_WORKFLOW.md`](docs/AGENCY_WORKFLOW.md) is the **single source of truth** for this project's development process. Classify every request via the router table → pick a path (Read-only / Fast / Standard / Full). Don't run the heavy process for small tasks.
+> This is a human-led Claude Code workflow: you (the developer) decide what to work on and invoke the relevant skill directly. There is no router doc and no hard gate — use `using-hero` for the overview when it's unclear which skill applies next.
 
-> **Active operating profile:**
-> - Active assistance profile: {{ASSISTANCE_PROFILE_LABEL}} (`{{ASSISTANCE_PROFILE}}`)
-> - Project surface: {{PROJECT_SURFACE_LABEL}} (`{{PROJECT_SURFACE}}`)
-> - Verification level: {{VERIFICATION_LEVEL}}
-> See [ASSISTANCE_PROFILES](docs/ASSISTANCE_PROFILES.md) before changing gate, delegation, or verification strictness.
+Core Hero skills:
+- `hero-planning` — turn a request into an agreed, written plan before code changes.
+- `hero-coding` — implement an approved plan (or a small change that doesn't need one).
+- `hero-reviewing` — fresh-eyes check of an implementation against its plan, before merge.
+- `hero-unit-test` — verify correctness, TDD-first or post-implementation.
+- `hero-security` — focused security pass when a sensitive surface is touched.
+- `hero-strict` — opt-in full verification pass before a "done" claim.
 
 ### Context loading
-- **Always start with:** [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md) for routing, gates, sub-agents, and path-specific requirements.
-- **Resume (fast path):** read `.hero-vibe-kit/session.json` first → then the `resumePath` it names → then the latest handoff only if needed. Read [ACTIVE_STATE](docs/ACTIVE_STATE.md) only to switch work items or when session is blank/stale.
-- **Artifacts:** read [ARTIFACTS_AND_STORAGE](docs/ARTIFACTS_AND_STORAGE.md) only when creating/linking PRDs, plans, reports, design assets, or help content.
-- **Completion:** read [DEFINITION_OF_DONE](docs/DEFINITION_OF_DONE.md) before claiming done.
-- **Read on demand:** [BRANCHING](docs/BRANCHING.md), [TEAM_ROSTER](docs/TEAM_ROSTER.md), [COMMUNICATION_PROTOCOL](docs/COMMUNICATION_PROTOCOL.md), [SECURITY_STANDARDS](docs/SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS](docs/PERFORMANCE_STANDARDS.md), [DESIGN_STANDARDS](docs/DESIGN_STANDARDS.md), [BROWNFIELD_DISCOVERY](docs/BROWNFIELD_DISCOVERY.md), and templates under `docs/templates/` only when the selected path requires them.
+- **Resume (fast path):** read `.hero-mmt-kit/session.json` first → then the `resumePath` it names → then the latest artifact only if needed. Read [ACTIVE_STATE](docs/ACTIVE_STATE.md) only to switch work items or when session is blank/stale.
+- **Read on demand:** [SECURITY_STANDARDS](docs/SECURITY_STANDARDS.md), [PERFORMANCE_STANDARDS](docs/PERFORMANCE_STANDARDS.md), [DESIGN_STANDARDS](docs/DESIGN_STANDARDS.md), [BROWNFIELD_DISCOVERY](docs/BROWNFIELD_DISCOVERY.md), and templates under `docs/templates/` only when the current skill requires them.
 
 ### Non-negotiables
-- **Gates:** when a path requires a Gate, use Plan Mode (`EnterPlanMode` → `ExitPlanMode`) for real sign-off — not a prose promise.
-- **Enforcement:** hooks installed under `.claude/` — `git-guard` and `workflow-check` (PreToolUse on Bash), `edit-gate` (PreToolUse on Edit/Write), `session-bridge` (PostToolUse), `stop-reminder` (Stop). Don't bypass them.
-- **GitNexus (if installed):** skip on empty repos; use impact/context analysis for Standard/Full code changes and stale-index checks per [AGENCY_WORKFLOW](docs/AGENCY_WORKFLOW.md).
+- **Gates:** for risky or hard-to-reverse changes, use Plan Mode (`EnterPlanMode` → `ExitPlanMode`) for real sign-off — not a prose promise.
+- **Enforcement:** hooks installed under `.claude/` — `git-guard` (PreToolUse on Bash), `session-bridge` (PostToolUse), `stop-reminder` (Stop). Don't bypass them.
+- **GitNexus (if installed):** skip on empty repos; use impact/context analysis for non-trivial code changes and stale-index checks.
 - **Skills (if installed):** invoke relevant process skills via the `Skill` tool; do not load unrelated skill/docs context.
 - **Language:** framework instructions, skills, rules, and templates are English-only. Respond to the user in the same language they use in chat unless they request another language.
-- **Sub-agent delegation follows the active profile.** Resolve [ASSISTANCE_PROFILES](docs/ASSISTANCE_PROFILES.md) before changing review/QA strictness: Standard/Full review is path-triggered for Vibecode, while Coding Assistant keeps developer review central and applies its recommended/required review rules. Sub-agents are best for research and review; **delegating implementation is optional** — use when it helps, and not every task needs one. Sub-agent model/effort selection follows [TEAM_ROSTER](docs/TEAM_ROSTER.md); do not hardcode model IDs elsewhere.
+- **Sub-agent delegation is optional, not automatic.** Sub-agents are best for research and review; use one when it helps, and skip it when direct work is clearer. Don't hardcode model IDs — let the harness resolve the active model.

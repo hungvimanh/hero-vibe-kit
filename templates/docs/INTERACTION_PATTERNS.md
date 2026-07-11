@@ -1,6 +1,6 @@
 # Interaction Patterns — Assistant ↔ End-User (Product Layer)
 
-> A library of **patterns for how the PRODUCT talks to end-users**. Distinct from [COMMUNICATION_PROTOCOL.md](./COMMUNICATION_PROTOCOL.md) (human↔AI during *development*) — this is how the *built assistant* talks to *end-users*.
+> A library of **patterns for how the PRODUCT talks to end-users** — distinct from how the developer and the AI communicate during development. This is how the *built assistant* talks to *end-users*.
 >
 > A **reusable asset**: each AI-feature PRD (§3, §5, §8 of the [template](./templates/PRD_AI_FEATURE.md)) references these patterns instead of redesigning from scratch. Specific thresholds/details (`<TBD>`) are locked per PRD.
 
@@ -49,7 +49,7 @@
 - Don't expose sensitive data in responses/logs; follow the PRD §5 PII policy.
 
 ## P9 — Tone & Consistency
-- One consistent persona across features (locked in [TEAM_ROSTER.md](./TEAM_ROSTER.md) §3 / PRD §4).
+- One consistent persona across features (locked in PRD §4).
 - Concise by default; detailed when the user needs it.
 
 ---

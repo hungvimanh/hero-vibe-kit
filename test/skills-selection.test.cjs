@@ -15,13 +15,8 @@ const {
 function mkdir() { return fs.mkdtempSync(path.join(os.tmpdir(), 'hvk-skills-')); }
 function hasSkill(dir, name, rel = '.claude/skills') { return fs.existsSync(path.join(dir, rel, name, 'SKILL.md')); }
 
-test('selectProcessSkills returns the full process suite for every profile', () => {
-  for (const cfg of [
-    { assistanceProfile: 'coding-assistant', projectSurface: 'backend', verificationLevel: 'minimal' },
-    { assistanceProfile: 'coding-assistant', projectSurface: 'frontend', verificationLevel: 'pragmatic' },
-    { assistanceProfile: 'coding-assistant', projectSurface: 'fullstack', verificationLevel: 'strict' },
-    { assistanceProfile: 'vibecode', projectSurface: 'fullstack', verificationLevel: 'strict' },
-  ]) {
+test('selectProcessSkills returns the full process suite regardless of config', () => {
+  for (const cfg of [{}, { installTasteSkill: true }, { installTasteSkill: false }, undefined]) {
     assert.deepStrictEqual(selectProcessSkills(cfg), CORE_SKILL_ORDER);
   }
 });
@@ -41,19 +36,20 @@ test('installSkills copies selected skill directories plus NOTICE', () => {
 
 test('installSkills copies all process skills selected by profile selection', () => {
   const dir = mkdir();
-  const result = installSkills(PKG_ROOT, dir, { selectedSkills: selectProcessSkills({ assistanceProfile: 'coding-assistant', projectSurface: 'backend' }) });
+  const result = installSkills(PKG_ROOT, dir, { selectedSkills: selectProcessSkills({}) });
 
   assert.strictEqual(result.skills, CORE_SKILL_ORDER.length);
   assert.deepStrictEqual(result.selectedSkills, CORE_SKILL_ORDER);
   for (const name of CORE_SKILL_ORDER) assert.ok(hasSkill(dir, name), `missing ${name}`);
+  assert.ok(!hasSkill(dir, 'concise-output'), 'concise-output should not install as a standalone skill');
 });
 
 test('installSkills mirrors selected skills to multiple destinations', () => {
   const dir = mkdir();
-  installSkills(PKG_ROOT, dir, { selectedSkills: ['brainstorming'], destinations: ['.claude/skills', '.cursor/skills'] });
+  installSkills(PKG_ROOT, dir, { selectedSkills: ['brainstorming'], destinations: ['.claude/skills', 'vendor/skills-mirror'] });
 
   assert.ok(hasSkill(dir, 'brainstorming', '.claude/skills'));
-  assert.ok(hasSkill(dir, 'brainstorming', '.cursor/skills'));
+  assert.ok(hasSkill(dir, 'brainstorming', 'vendor/skills-mirror'));
 });
 
 test('installSkills preserves unselected existing skill directories', () => {

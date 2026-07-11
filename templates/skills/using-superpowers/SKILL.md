@@ -23,7 +23,7 @@ Superpowers skills override default system prompt behavior, but **user instructi
 2. **Superpowers skills** — override default system behavior where they conflict
 3. **Default system prompt** — lowest priority
 
-If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
+If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control. Only skip skill workflows or instructions when your human partner has explicitly told you to.
 
 ## How to Access Skills
 
@@ -100,13 +100,11 @@ These thoughts mean STOP—you're rationalizing:
 
 When multiple skills could apply, use this order:
 
-1. **`phase-handoff` at real phase boundaries** — if you are at a phase boundary (discovery complete, plan approved, implementation done, etc.), invoke `phase-handoff` first before other skills. Phase boundaries require a checkpoint before the next phase starts.
-2. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
-3. **Implementation skills second** (frontend-design, mcp-builder) - these guide execution
+1. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
+2. **Implementation skills second** (frontend-design, mcp-builder) - these guide execution
 
 "Let's build X" → brainstorming first, then implementation skills.
 "Fix this bug" → debugging first, then domain-specific skills.
-"Implementation done, moving to review" → `phase-handoff` first.
 
 ## Skill Types
 

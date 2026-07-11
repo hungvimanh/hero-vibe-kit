@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-const BIN = path.join(__dirname, '..', 'bin', 'hero-vibe-kit.js');
+const BIN = path.join(__dirname, '..', 'bin', 'hero-mmt-kit.js');
 function cli(args, opts) { return spawnSync('node', [BIN, ...args], Object.assign({ encoding: 'utf8' }, opts)); }
 function mkdir() { return fs.mkdtempSync(path.join(os.tmpdir(), 'hvk-discover-')); }
 
@@ -53,7 +53,7 @@ test('brownfield alias creates English report and is idempotent even when --lang
   assert.match(report, /What was found/);
   assert.doesNotMatch(report, /Những gì đã tìm thấy/);
   assert.match(report, /app\//);
-  assert.strictEqual((report.match(/hero-vibe-kit:start/g) || []).length, 1, 'managed block not duplicated');
+  assert.strictEqual((report.match(/hero-mmt-kit:start/g) || []).length, 1, 'managed block not duplicated');
 });
 
 test('help lists discover and brownfield commands', () => {

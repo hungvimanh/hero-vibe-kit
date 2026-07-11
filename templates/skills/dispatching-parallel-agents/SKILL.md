@@ -5,7 +5,7 @@ description: Use for ad-hoc investigation/debugging with 2+ independent problem 
 
 # Dispatching Parallel Agents
 
-> Scope: no formal plan exists yet — independent investigation/debugging work (e.g. unrelated test failures across files). If you already have an implementation plan or task list, use `subagent-driven-development` instead; it adds review budget, model-tier selection, and phase-handoff integration on top of the same parallel-dispatch idea.
+> Scope: no formal plan exists yet — independent investigation/debugging work (e.g. unrelated test failures across files). If you already have an implementation plan or task list, use `subagent-driven-development` instead; it adds review budget and model-tier selection on top of the same parallel-dispatch idea.
 
 ## Overview
 
@@ -66,6 +66,8 @@ Each agent gets:
 - **Expected output:** Summary of what you found and fixed
 
 ### 3. Dispatch in Parallel
+
+Multiple dispatch calls in one response = parallel execution. One per response = sequential.
 
 ```typescript
 // In Claude Code / AI environment

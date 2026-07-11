@@ -4,12 +4,12 @@ Use this when the project already has code and may have partial, outdated, or no
 
 ## When to run
 
-For an existing project that has never used hero-vibe-kit:
+For an existing project that has never used hero-mmt-kit:
 
 ```bash
-npx hero-vibe-kit init
-npx hero-vibe-kit discover
-npx hero-vibe-kit doctor
+npx hero-mmt-kit init
+npx hero-mmt-kit discover
+npx hero-mmt-kit doctor
 ```
 
 `init` installs the workflow. `discover` scans the current repo and creates `docs/BROWNFIELD_DISCOVERY.md` with the first evidence map.
@@ -23,7 +23,7 @@ npx hero-vibe-kit doctor
    - **Found** — directly observed in files.
    - **Likely** — inferred from names/structure, not yet proven.
    - **Needs confirmation** — requires the human or missing business context.
-5. For the first code changes after discovery, classify the request with the router in [AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md). If it touches > 2 files or any **Needs confirmation** area, treat it as Standard path: Plan Mode + impact analysis, then choose the active profile's review budget from actual risk and uncertainty.
+5. For the first code changes after discovery, use `using-hero` to pick the right skill. If it touches > 2 files or any **Needs confirmation** area, use Plan Mode (`hero-planning`) + impact analysis before implementing, and choose the review budget from actual risk and uncertainty.
 
 ## Context discipline
 

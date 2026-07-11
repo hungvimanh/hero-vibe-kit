@@ -1,7 +1,7 @@
 {
-  "name": "hero-vibe-kit",
-  "version": "4.0.0",
-  "description": "An opinionated, AI-assisted software development workflow for Claude Code and Cursor — task-type router, gates, enforcement hooks, human↔AI communication protocol, and security/performance standards. Works for new and existing (brownfield) projects.",
+  "name": "hero-mmt-kit",
+  "version": "0.1.0",
+  "description": "A focused Claude Code framework for human-led development — seven direct-use skills (planning, coding, reviewing, unit testing, security, strict mode) with simple state tracking. Works for new and existing (brownfield) projects.",
   "keywords": [
     "claude-code",
     "ai-workflow",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "type": "commonjs",
   "bin": {
-    "hero-vibe-kit": "bin/hero-vibe-kit.js"
+    "hero-mmt-kit": "bin/hero-mmt-kit.js"
   },
   "files": [
     "bin",

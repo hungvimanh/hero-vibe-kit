@@ -21,9 +21,9 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`hero-vibe-kit — AI-assisted development workflow for Claude Code and Cursor
+  console.log(`hero-mmt-kit — a focused Claude Code workflow for human-led development
 
-Usage: npx hero-vibe-kit <command> [flags]
+Usage: npx hero-mmt-kit <command> [flags]
 
 Commands:
   init      Install the workflow into the current project (new or brownfield)
@@ -36,16 +36,11 @@ Commands:
 
 Flags:
   --dir <path>          Target project dir (default: current dir)
-  --preset <name>       solo | small-team | enterprise
-  --profile <name>      Assistance profile: vibecode | coding-assistant
-  --surface <name>      Project surface: fullstack | backend | frontend
-  --verify <level>      Verification level: strict | pragmatic | minimal
-  --ide <target>        IDE target: claude-code | cursor | both (required with --yes)
+  --taste               Install the taste/design skill (default: off)
+  --preset <name>       Load a bundled preset (enterprise | small-team | solo)
   --yes                 Non-interactive; accept defaults
   --skip-integrations   Skip skills / gitnexus / serena prompts
-  --strict              (doctor only) treat warnings as failures — for CI use
-
-Assistance profile, project surface, verification level, and IDE target tune the installed workflow guidance.`);
+  --strict              (doctor only) treat warnings as failures — for CI use`);
 }
 
 async function main() {
@@ -55,7 +50,7 @@ async function main() {
   const version = () => console.log(require('../package.json').version);
 
   if (Object.prototype.hasOwnProperty.call(flags, 'lang')) {
-    console.error('Warning: --lang was removed. hero-vibe-kit templates are English-only.');
+    console.error('Warning: --lang was removed. hero-mmt-kit templates are English-only.');
   }
 
   if (flags.version || flags.v) { version(); return; }

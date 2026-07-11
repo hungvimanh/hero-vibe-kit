@@ -1,6 +1,6 @@
 # Security Standards
 
-> A **measurable** security baseline for this project. It is the bar `security-review` (Phase 4) grades against and part of [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md). Shift-left: most of it is considered during **threat modeling in Phase 2** ([AGENCY_WORKFLOW.md](./AGENCY_WORKFLOW.md)).
+> A **measurable** security baseline for this project. It is the bar `security-review` (invoked via `hero-security`) grades against. Shift-left: most of it is considered during threat modeling in `hero-planning`.
 >
 > Fill the `<TBD>`s per your stack/compliance when locked in the first PRD/TDD.
 
@@ -23,12 +23,11 @@
 - **Model/plugin supply chain**: only use models/MCP/plugins from trusted sources; record versions.
 
 ## 3. Process security (enforced by hooks)
-- `main` is protected; changes land via MR ([BRANCHING.md](./BRANCHING.md)). The `git-guard` hook blocks force-push, `commit --no-verify`, `reset --hard`.
-- The `workflow-check` hook gates `git commit` on Standard/Full paths behind a session checkpoint — ensures every commit is preceded by a phase-handoff artifact. Override with `HVK_SKIP_STATE_GATE=1` only for deliberate out-of-band commits.
+- `main` is protected; changes land via MR. The `git-guard` hook blocks force-push, `commit --no-verify`, `reset --hard`.
 - Don't bypass hooks/CI "to go faster".
 
 ## 4. Automated tools (optional — degrade if absent)
-> None of the hooks bundled by hero-vibe-kit (§3: `git-guard`, `workflow-check`, `edit-gate`, `session-bridge`, `stop-reminder`) run secret scanning, dependency audit, or SAST. These are placeholders for the consuming project to wire up (e.g. a `gitleaks` pre-commit hook, an `<AUDIT_CMD>` step in CI). Do not assume any of §4 is enforced until the project has actually wired it — check for the tool/hook before claiming this baseline is met.
+> None of the hooks bundled by hero-mmt-kit (§3: `git-guard`, `session-bridge`, `stop-reminder`) run secret scanning, dependency audit, or SAST. These are placeholders for the consuming project to wire up (e.g. a `gitleaks` pre-commit hook, an `<AUDIT_CMD>` step in CI). Do not assume any of §4 is enforced until the project has actually wired it — check for the tool/hook before claiming this baseline is met.
 - **Secret scanning**: e.g. `gitleaks` (can run as a pre-commit hook to **block**). `<TBD: on/off>`
 - **`<AUDIT_CMD>`** in CI / the `doctor` command.
 - **SAST** (stack-dependent): `<TBD>`.
